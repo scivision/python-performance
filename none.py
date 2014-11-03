@@ -19,10 +19,10 @@ def nonetest(x=None):
 
 #@jit
 def nantest(x=np.nan):
-    if np.isnan(x):
-        print('x is NaN')
-    else:
+    if not np.isnan(x):
         print(x)
+    else:
+        print('x is NaN')
 
 if __name__ == '__main__':
     print('Numba version ' + str(numbavers))
