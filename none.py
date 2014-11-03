@@ -15,6 +15,7 @@ def nonetest(x):
     ValueError: 'is not' is not in list
     '''
     if x is not None:
+    #if not x is None: #also doesn't work for Numba
         print(x)
     else:
         print('x was None')
