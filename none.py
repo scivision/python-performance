@@ -2,11 +2,13 @@
 from numba import jit
 from numba import __version__ as numbavers
 import numpy as np
-''' shows that Numba 0.15.1 doesn't understand "is not None" '''
+''' shows that Numba 0.15.1 doesn't understand "is not None"
+Note with Numba you have to give all arguments. Defaults not allowed.
+'''
 
 ''' uncomment @jit to show error'''
 #@jit
-def nonetest(x=None):
+def nonetest(x):
     ''' In Numba 0.15.1, this is known to give error:
     numba.lowering.LoweringError: Failed at object mode backend
     Internal error:
@@ -17,8 +19,8 @@ def nonetest(x=None):
     else:
         print('x was None')
 
-#@jit
-def nantest(x=np.nan):
+@jit
+def nantest(x):
     if not np.isnan(x):
         print(x)
     else:
@@ -26,10 +28,10 @@ def nantest(x=np.nan):
 
 if __name__ == '__main__':
     print('Numba version ' + str(numbavers))
-    nonetest()
+    nonetest(None)
     nonetest(3)
 
-    nantest()
+    nantest(np.nan)
     nantest(float('nan'))
     #nantest(None) #this isn't possible even without Numba--typeError
     nantest(3)
