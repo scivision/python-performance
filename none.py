@@ -2,20 +2,20 @@
 from numba import jit
 from numba import __version__ as numbavers
 import numpy as np
-''' shows that Numba 0.15.1 doesn't understand "is not None"
-Note with Numba you have to give all arguments. Defaults not allowed.
-'''
+"""
+This test was for a problem fixed after Numba 0.15.1
+in version 0.15.1, it gave error
+numba.lowering.LoweringErro: Failed at object mode backend
+Internal error:
+ValueError: 'is not' is not in list
 
-''' uncomment @jit to show error'''
-#@jit
+This is fixed now.
+"""
+
+
+@jit
 def nonetest(x):
-    ''' In Numba 0.15.1, this is known to give error:
-    numba.lowering.LoweringError: Failed at object mode backend
-    Internal error:
-    ValueError: 'is not' is not in list
-    '''
     if x is not None:
-    #if not x is None: #also doesn't work for Numba
         print(x)
     else:
         print('x was None')
