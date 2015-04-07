@@ -5,11 +5,12 @@ import numpy as np
 """
 This test was for a problem fixed after Numba 0.15.1
 in version 0.15.1, it gave error
-numba.lowering.LoweringErro: Failed at object mode backend
+numba.lowering.LoweringError: Failed at object mode backend
 Internal error:
 ValueError: 'is not' is not in list
 
-This is fixed now.
+This is fixed now:
+https://github.com/numba/numba/pull/857
 """
 
 
