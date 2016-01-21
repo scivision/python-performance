@@ -33,8 +33,8 @@ program benchrandmult
         d=0.d0 !necessary for DGEMM
         
         call system_clock(tic)
-        call dgemm('N','N',N,N,N,1.d0,A,N,B,N,1.d0,d,N)
-        !e = matmul(A,B)
+        !call dgemm('N','N',N,N,N,1.d0,A,N,B,N,1.d0,d,N) !ifort 14 10% faster than gfortran 5
+        e = matmul(A,B) !4-5 times slower with ifort 14 than gfortran 5!
         call system_clock(toc)
         
         if (toc-tic<tmin) tmin=toc-tic
