@@ -8,30 +8,45 @@ program benchrandmult
     integer :: k
     integer(i64) :: tic,toc,tmin
     
-    integer,parameter :: N=5000
-    real(dp) :: A(N,N), B(N,N),y(N,N)
+    integer,parameter :: N=500
+    real(dp) :: A(N,N), B(N,N)
 
-    Integer, parameter :: Nrun=10    
+    Integer, parameter :: Nrun=1000
+    
+    !real(dp),allocatable:: e(:,:)
+    real(dp) :: d(N,N),e(N,N)
 
 !    print *,'init random seed'
     call init_random_seed()
 !    print *,'fill matrices'
-    call random_number(A)
 
 ! https://github.com/JuliaLang/julia/blob/master/test/perf/micro/perf.f90
 
-    print *,'start loop'
+    print *,'priming loop'
+    ! recommended to call once before loop per Intel manual
+    call dgemm('N','N',N,N,N,1.d0,A,N,B,N,1.d0,d,N)
     do k = 1, Nrun
+    !refilling arrays with random numbers to be sure a clever compiler doesn't workaround
+        call random_number(A)
+        call random_number(B)
+        
+        d=0.d0 !necessary for DGEMM
+        
         call system_clock(tic)
-        y = matmul(A,B)
+        call dgemm('N','N',N,N,N,1.d0,A,N,B,N,1.d0,d,N)
+        !e = matmul(A,B)
         call system_clock(toc)
+        
         if (toc-tic<tmin) tmin=toc-tic
-        print *,real(k)/Nrun*100.
+        !print *,real(k)/Nrun*100.
+        !print *,d(2,1),e(2,1)
     end do
 
     tmin = toc-tic
+    
+    !deallocate(e)
 
-print "('fortran seconds per matmul',f0.3)", sysclock2ms(tmin) /1000.
+print "('fortran milliseconds per matmul ',f0.6)", sysclock2ms(tmin) 
 
 end program
 
