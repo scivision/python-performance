@@ -2,7 +2,7 @@ program benchrandmult
     Implicit None
     
     integer, parameter ::  dp = kind(0.d0)
-    integer, parameter :: i64 = selected_int_kind(18) ! At least 64-bit integer
+    integer, parameter :: i64 = selected_int_kind(18) 
     
     real(dp) :: sysclock2ms
     integer :: k
@@ -15,9 +15,7 @@ program benchrandmult
     
     real(dp) :: d(N,N),e(N,N)
 
-!    print *,'init random seed'
     call init_random_seed()
-!    print *,'fill matrices'
 
 ! https://github.com/JuliaLang/julia/blob/master/test/perf/micro/perf.f90
 
@@ -32,8 +30,8 @@ program benchrandmult
         d=0.d0 !necessary for DGEMM
         
         call system_clock(tic)
-        !call dgemm('N','N',N,N,N,1.d0,A,N,B,N,1.d0,d,N) !ifort 14 10% faster than gfortran 5
-        e = matmul(A,B) !4-5 times slower with ifort 14 than gfortran 5!
+        call dgemm('N','N',N,N,N,1.d0,A,N,B,N,1.d0,d,N) !ifort 14 10% faster than gfortran 5
+        !e = matmul(A,B) !4-5 times slower with ifort 14 than gfortran 5!
         call system_clock(toc)
         
         if (toc-tic<tmin) tmin=toc-tic
@@ -43,7 +41,7 @@ program benchrandmult
 
     tmin = toc-tic
     
-print "('fortran milliseconds per matmul ',f0.6)", sysclock2ms(tmin) 
+print "('fortran milliseconds per matrix multiplication ',f0.6)", sysclock2ms(tmin) 
 
 end program
 
