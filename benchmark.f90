@@ -13,8 +13,7 @@ program benchrandmult
 
     Integer, parameter :: Nrun=1000
     
-    real(dp),allocatable:: e(:,:)
-    real(dp) :: d(N,N)!,e(N,N)
+    real(dp) :: d(N,N),e(N,N)
 
 !    print *,'init random seed'
     call init_random_seed()
@@ -38,14 +37,12 @@ program benchrandmult
         call system_clock(toc)
         
         if (toc-tic<tmin) tmin=toc-tic
-        !print *,real(k)/Nrun*100.
+        print *,real(k)/Nrun*100.,'% done'
         !print *,d(2,1),e(2,1)
     end do
 
     tmin = toc-tic
     
-    deallocate(e)
-
 print "('fortran milliseconds per matmul ',f0.6)", sysclock2ms(tmin) 
 
 end program
