@@ -6,7 +6,7 @@ program benchrandmult
     
     real(dp) :: sysclock2ms
     integer :: k
-    integer(i64) :: tic,toc,tmin
+    integer(i64) :: tic,toc,tmin=huge(0)
     
     integer,parameter :: N=500
     real(dp) :: A(N,N), B(N,N)
@@ -35,13 +35,11 @@ program benchrandmult
         call system_clock(toc)
         
         if (toc-tic<tmin) tmin=toc-tic
-        print *,real(k)/Nrun*100.,'% done'
-        !print *,d(2,1),e(2,1)
+       
+        if (mod(k,50).eq.0) write(*,'(F5.1,A10)') real(k)/Nrun*100.,'% done'
     end do
-
-    tmin = toc-tic
     
-print "('fortran milliseconds per matrix multiplication ',f0.6)", sysclock2ms(tmin) 
+print "('fortran best millisec per matrix multiplication ',f10.4)", sysclock2ms(tmin) 
 
 end program
 
