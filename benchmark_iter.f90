@@ -12,10 +12,10 @@ Implicit None
     real(dp) :: A(N), x
 
    call init_random_seed()
-   call random_number(A)
    
    
    Do j = 1, Nrun
+       call random_number(A)
        call system_clock(tic)
        x = 0
        Do i = 1, N
