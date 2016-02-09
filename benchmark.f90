@@ -1,19 +1,21 @@
 program benchrandmult
     Implicit None
-    
+
+    integer, parameter :: sp  = kind(0.0)
     integer, parameter ::  dp = kind(0.d0)
     integer, parameter :: i64 = selected_int_kind(18) 
-    
+
     real(dp) :: sysclock2ms
     integer :: k
     integer(i64) :: tic,toc,tmin=huge(0)
     
-    integer,parameter :: N=500
-    real(dp) :: A(N,N), B(N,N)
-
-    Integer, parameter :: Nrun=1000
+    integer,parameter :: N=5000
+    Integer, parameter :: Nrun=10
     
-    real(dp) :: d(N,N),e(N,N)
+
+    real(dp) :: A(N,N), B(N,N)
+    real(dp) :: d(N,N),e(N,N),f(N,N)
+
 
     call init_random_seed()
 
@@ -21,22 +23,24 @@ program benchrandmult
 
     print *,'priming loop'
     ! recommended to call once before loop per Intel manual
-    call dgemm('N','N',N,N,N,1.d0,A,N,B,N,1.d0,d,N)
+    !call dgemm('N','N',N,N,N,1.d0,A,N,B,N,1.d0,d,N)
     do k = 1, Nrun
     !refilling arrays with random numbers to be sure a clever compiler doesn't workaround
         call random_number(A)
         call random_number(B)
         
         d=0.d0 !necessary for DGEMM
+        f=0.0 ! necessary for SGEMM
         
         call system_clock(tic)
+        !call sgemm('N','N',N,N,N,1.0,A,N,B,N,1.0,f,N)  !single prec only
         call dgemm('N','N',N,N,N,1.d0,A,N,B,N,1.d0,d,N) !ifort 14 10% faster than gfortran 5
         !e = matmul(A,B) !4-5 times slower with ifort 14 than gfortran 5!
         call system_clock(toc)
         
         if (toc-tic<tmin) tmin=toc-tic
        
-        if (mod(k,50).eq.0) write(*,'(F5.1,A10)') real(k)/Nrun*100.,'% done'
+        if (mod(k,1).eq.0) write(*,'(F5.1,A10)') real(k)/Nrun*100.,'% done'
     end do
     
 print "('fortran best millisec per matrix multiplication ',f10.4)", sysclock2ms(tmin) 
