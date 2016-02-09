@@ -8,10 +8,10 @@ program benchrandmult
     integer :: k
     integer(i64) :: tic,toc,tmin=huge(0)
     
-    integer,parameter :: N=500
+    integer,parameter :: N=5000
     real(dp) :: A(N,N), B(N,N)
 
-    Integer, parameter :: Nrun=1000
+    Integer, parameter :: Nrun=3
     
     real(dp) :: d(N,N),e(N,N)
 
@@ -30,13 +30,13 @@ program benchrandmult
         d=0.d0 !necessary for DGEMM
         
         call system_clock(tic)
-        call dgemm('N','N',N,N,N,1.d0,A,N,B,N,1.d0,d,N) !ifort 14 10% faster than gfortran 5
-        !e = matmul(A,B) !4-5 times slower with ifort 14 than gfortran 5!
+        !call dgemm('N','N',N,N,N,1.d0,A,N,B,N,1.d0,d,N) !ifort 14 10% faster than gfortran 5
+        e = matmul(A,B) !4-5 times slower with ifort 14 than gfortran 5!
         call system_clock(toc)
         
         if (toc-tic<tmin) tmin=toc-tic
        
-        if (mod(k,50).eq.0) write(*,'(F5.1,A10)') real(k)/Nrun*100.,'% done'
+        if (mod(k,1).eq.0) write(*,'(F5.1,A10)') real(k)/Nrun*100.,'% done'
     end do
     
 print "('fortran best millisec per matrix multiplication ',f10.4)", sysclock2ms(tmin) 
