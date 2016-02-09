@@ -23,7 +23,9 @@ program benchrandmult
 
     print *,'priming loop'
     ! recommended to call once before loop per Intel manual
-    !call dgemm('N','N',N,N,N,1.d0,A,N,B,N,1.d0,d,N)
+    call dgemm('N','N',N,N,N,1.d0,A,N,B,N,1.d0,d,N)
+    call sgemm('N','N',N,N,N,1.0,A,N,B,N,1.0,f,N)
+
     do k = 1, Nrun
     !refilling arrays with random numbers to be sure a clever compiler doesn't workaround
         call random_number(A)
