@@ -25,17 +25,18 @@ def gemm(A,B,dD):
     return D
 
 if __name__ == '__main__':
-    N=5000
+    N=500
     Nrun = 10
 
     A= np.asfortranarray(rand(N,N).astype(np.float32))
     B= np.asfortranarray(rand(N,N).astype(np.float32))
     D = np.asfortranarray(np.zeros_like(A,order='F'))
 
+    s = timer()
     dA = cuda.to_device(A)             # alloc and copy input data
     dB = cuda.to_device(B)
     dD = cuda.to_device(D, copy=False) # alloc only
-
+    print(timer() -s)
     # NumPy
     numpy_time=1000000
     for _ in range(Nrun):
