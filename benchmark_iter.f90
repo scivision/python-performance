@@ -1,62 +1,39 @@
-program benchiter
-Implicit None
+module benchmark_iter
+    use, intrinsic :: iso_fortran_env, only : REAL64,INT64
+    use perf, only : init_random_seed, sysclock2ms 
+    Implicit None
+contains
+    
+Real(kind=REAL64) function simple_iter(N,Nrun)
+    Implicit None
 
-    integer, parameter ::  dp = kind(0.d0)
-    integer, parameter :: i64 = selected_int_kind(18) 
+    integer :: j,i
+    integer(kind=INT64) :: tic,toc,tmin=huge(0)
     
-    real(dp) :: sysclock2ms
-    integer :: i,j
-    integer(i64) :: tic,toc,tmin=huge(0)
-    
-    integer,parameter :: N=1000000, Nrun=1000
-    real(dp) :: A(N), x
+    integer,Intent(in) :: N,Nrun
+    real(kind=REAL64) :: A(N)
+    ! volatile tells compiler that value is unpredictable, don't unroll, etc.
+    real(kind=REAL64), volatile ::x
 
    call init_random_seed()
-   call random_number(A)
    
    
    Do j = 1, Nrun
+       call random_number(A)
        call system_clock(tic)
-       x = 0
+       x = 0.d0
        Do i = 1, N
-        
-        x = 0.5*x + mod(A(i),10.)
-        if (x>huge(0)) exit !to defeat loop unrolling
-       
+          x = 0.5*x + mod(A(i),10.)
        End Do   
        call system_clock(toc)
        if (toc-tic<tmin) tmin=toc-tic 
        
    End Do
 
+    simple_iter = sysclock2ms(tmin)
    
-  print "('fortran millisec per iteration ',f11.7)", sysclock2ms(tmin)
+  print *,'fortran millisec per iteration ', simple_iter
+end Function simple_iter
 
-end program
+end module benchmark_iter
 
-
-! https://github.com/JuliaLang/julia/blob/master/test/perf/micro/perf.f90
-
-! Convert a number of clock ticks, as returned by system_clock called
-! with integer(i64) arguments, to milliseconds
-function sysclock2ms(t)
-    integer, parameter ::  dp = kind(0.d0)
-    integer, parameter :: i64 = selected_int_kind(18) ! At least 64-bit integer
-    
-  integer(i64), intent(in) :: t
-  integer(i64) :: rate
-  real(dp) ::  sysclock2ms,r
-  call system_clock(count_rate=rate)
-  r = 1000._dp / rate
-  sysclock2ms = t * r
-end function sysclock2ms
-
-subroutine init_random_seed()
-integer :: i, n, clock
-integer, allocatable :: seed(:)
-call random_seed(size=n)
-allocate(seed(n))
-call system_clock(count=clock)
-seed = clock + 37 * [ (i - 1, i = 1, n) ]
-call random_seed(put=seed)
-end subroutine
