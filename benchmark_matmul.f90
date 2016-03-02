@@ -8,7 +8,6 @@ contains
 !TODO upgrade to polymorphic
 
 Real(kind=REAL64) Function double_matmul(N,Nrun)
-    Implicit None
 
     integer, intent(in) :: N,Nrun
 
@@ -52,7 +51,6 @@ Real(kind=REAL64) Function double_matmul(N,Nrun)
 end function double_matmul
 
 Real(kind=REAL64) function single_matmul(N,Nrun)
-    Implicit None
 
     integer, intent(in) :: N,Nrun
 
