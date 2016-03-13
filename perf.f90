@@ -1,16 +1,16 @@
 ! https://github.com/JuliaLang/julia/blob/master/test/perf/micro/perf.f90
-Module perf
-    use, intrinsic :: iso_fortran_env, only : REAL64,INT64, stderr=>error_unit
-    Implicit None
-Contains
+module perf
+    use, intrinsic :: iso_fortran_env, only : dp=>REAL64,i64=>INT64, stderr=>error_unit
+    implicit none
+contains
 
-    real(REAL64) function sysclock2ms(t)
+    real(dp) function sysclock2ms(t)
     ! Convert a number of clock ticks, as returned by system_clock called
     ! with integer(i64) arguments, to milliseconds
-     
-        integer(kind=INT64), intent(in) :: t
-        integer(kind=INT64) :: rate
-        real(kind=REAL64) ::  r
+
+        integer(i64), intent(in) :: t
+        integer(i64) :: rate
+        real(dp) ::  r
         call system_clock(count_rate=rate)
         r = 1000.d0 / rate
         sysclock2ms = t * r
@@ -28,7 +28,7 @@ Contains
         call random_seed(put=seed)
     end subroutine
 
-    subroutine assert(cond) 
+    subroutine assert(cond)
         logical, intent(in) :: cond
 
         if (.not. cond) then
