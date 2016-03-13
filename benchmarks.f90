@@ -1,4 +1,4 @@
-program benchrandmult
+program benchmarks
 ! Fortran 2008
     use, intrinsic :: iso_fortran_env, only : sp=>REAL32,dp=>REAL64, INT64, &
             stdout=>output_unit, stderr=>error_unit
@@ -12,7 +12,8 @@ program benchrandmult
     integer,parameter :: Nmatmul=5000, Nrunmatmul=10, Nmand=5
     integer,parameter :: Niter=1000000, Nruniter=100,Nrunmand=1000
 
-    real(dp) :: tdmatmul,tsmatmul,titer,tmandel,Rhypot(26)
+    real(dp) :: tdmatmul,tsmatmul,titer,tmandel,Rhypot
+
 !----- tests-----------
     !tdmatmul = double_matmul(Nmatmul,Nrunmatmul)
     !tsmatmul = single_matmul(Nmatmul,Nrunmatmul)
@@ -24,7 +25,7 @@ program benchrandmult
      Rhypot = benchhypot()
 
     !write(stderr,*),tdmatmul,tsmatmul,titer,tmandel
-    write(stderr,*) Rhypot
+    write(stdout,*) 'sqrt(a^2+b^2) / hypot(a,b)  time ratio (hypot is slower): ',Rhypot
 
 end program
 
