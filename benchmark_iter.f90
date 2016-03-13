@@ -1,12 +1,12 @@
 module benchmark_iter
-    use, intrinsic :: iso_fortran_env, only : REAL64,INT64
+    use, intrinsic :: iso_fortran_env, only : dp=>REAL64,i64=>INT64
     use perf, only : init_random_seed, sysclock2ms, assert
     Implicit None
 contains
 !----------------- mandelbrot -------------------------------
 integer function mandel(z0) result(r)
-    complex(REAL64), intent(in) :: z0
-    complex(REAL64) :: c, z
+    complex(dp), intent(in) :: z0
+    complex(dp) :: c, z
     integer :: n, maxiter
     maxiter = 80
     z = z0
@@ -29,16 +29,16 @@ integer function mandelperf() result(mandel_sum)
     do while (re <= 5)
         im = -10
         do while (im <= 10)
-            mandel_sum = mandel_sum + mandel(cmplx(re/10._REAL64, im/10._REAL64, REAL64))
+            mandel_sum = mandel_sum + mandel(cmplx(re/10._dp, im/10._dp, dp))
             im = im + 1
         end do
         re = re + 1
     end do
 end function mandelperf
 
-Real(REAL64) function mandeltest(N,Nrun)
+Real(dp) function mandeltest(N,Nrun)
     integer, intent(in) :: N,Nrun
-    integer(int64) :: tic,toc,tmin = huge(0_INT64)
+    integer(i64) :: tic,toc,tmin = huge(0_i64)
     integer :: i,k,f=0
 
     do i = 1, Nrun
@@ -57,14 +57,14 @@ end function mandeltest
     
 !------------ end mandlebrot ------------------------------
 
-Real(REAL64) function simple_iter(N,Nrun)
+Real(dp) function simple_iter(N,Nrun)
     integer :: j,i
-    integer(INT64) :: tic,toc,tmin=huge(0_INT64)
+    integer(i64) :: tic,toc,tmin=huge(0_i64)
     
     integer,Intent(in) :: N,Nrun
-    real(REAL64) :: A(N)
+    real(dp) :: A(N)
     ! volatile tells compiler that value is unpredictable, don't unroll, etc.
-    real(kind=REAL64), volatile ::x
+    real(dp), volatile ::x
 
    call init_random_seed()
    

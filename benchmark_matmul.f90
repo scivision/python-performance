@@ -1,5 +1,5 @@
 module benchmark_matmul
-    use, intrinsic :: iso_fortran_env, only : REAL32,REAL64,INT64
+    use, intrinsic :: iso_fortran_env, only : sp=>REAL32,dp=>REAL64,i64=>INT64
     use perf, only : init_random_seed, sysclock2ms 
     Implicit None
     
@@ -7,14 +7,14 @@ contains
 
 !TODO upgrade to polymorphic
 
-Real(kind=REAL64) Function double_matmul(N,Nrun)
+Real(dp) Function double_matmul(N,Nrun)
 
     integer, intent(in) :: N,Nrun
 
-    real(kind=REAL64),allocatable :: A(:,:),B(:,:),D(:,:)
+    real(dp),allocatable :: A(:,:),B(:,:),D(:,:)
 
     integer :: k
-    integer(kind=INT64) :: tic,toc,tmin=huge(0)
+    integer(i64) :: tic,toc,tmin=huge(0)
 
     allocate(A(N,N))
     allocate(B(N,N),mold=A)
@@ -50,14 +50,14 @@ Real(kind=REAL64) Function double_matmul(N,Nrun)
 
 end function double_matmul
 
-Real(kind=REAL64) function single_matmul(N,Nrun)
+Real(dp) function single_matmul(N,Nrun)
 
     integer, intent(in) :: N,Nrun
 
-    real(kind=REAL32),allocatable :: A(:,:),B(:,:),D(:,:)
+    real(sp),allocatable :: A(:,:),B(:,:),D(:,:)
 
     integer :: k
-    integer(kind=INT64) :: tic,toc,tmin=huge(0)
+    integer(i64) :: tic,toc,tmin=huge(0)
 
     allocate(A(N,N))
     allocate(B(N,N))
