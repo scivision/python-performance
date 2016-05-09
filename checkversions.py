@@ -1,23 +1,31 @@
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python
 import importlib
-import platform as p
-modules=('numpy','scipy','astropy','pandas','h5py','matplotlib','cython','numba','six','xlrd')
-from os.path import join
+import platform as P
 
-def main(odir):
-    with open(join(odir,'vers.log'),'w') as f:
-        #first let's log system info
-        f.write('\n'.join((p.node(),p.processor(),p.system(),p.platform())) + '\n' +
-                   ' '.join((p.python_implementation(), p.python_version())) + '\n')
-        #now we'll log module versions
-        for mod in modules:
-            try:
-                m = importlib.import_module(mod)
-                #print(mod,m.__version__)
-                f.write(' '.join((mod, m.__version__)) + '\n')
-            except ImportError:
-                f.write(mod + ' not installed\n')
+def detect_versions(modules):
+    mlist = []
+#%% first let's log system info
+    versys =' '.join((P.node(),P.processor(),P.system(),P.platform())) 
+    print(versys)
+
+    mlist.append((P.python_implementation(), P.python_version()))
+#%% now we'll log module versions
+    for mod in modules:
+        try:
+            m = importlib.import_module(mod)
+            mlist.append((mod,m.__version__))
+        except ImportError:
+            print(mod + ' not installed')
+    
+    return mlist
 
 if __name__=='__main__':
-    from sys import argv
-    main(argv[1])
+    from argparse import ArgumentParser
+    p = ArgumentParser(description='list python module versions')
+    p.add_argument('-m','--modules',help='list of modules whose versions you want to check',default=['numpy','matplotlib'])
+    p = p.parse_args()
+
+    vers = detect_versions(p.modules)
+
+    print(vers)
+
