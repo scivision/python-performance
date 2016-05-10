@@ -6,7 +6,7 @@ complex(dp) :: d
 complex(cp) :: c
 complex(zp) :: z
 
-write(*,*), sp,dp,cp,zp
-write(*,*), sizeof(s),sizeof(d),sizeof(c),sizeof(z)
+print *, sp,dp,cp,zp
+print *, sizeof(s),sizeof(d),sizeof(c),sizeof(z)
 
 end program
