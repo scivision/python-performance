@@ -1,3 +1,6 @@
+.. image:: https://travis-ci.org/scienceopen/python-performance.svg?branch=master
+    :target: https://travis-ci.org/scienceopen/python-performance
+
 ==================
 Python Performance
 ==================
