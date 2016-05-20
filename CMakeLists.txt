@@ -3,6 +3,16 @@ project( bench Fortran )
 
 add_compile_options(-mtune=native -Werror=array-bounds -Wall -Wextra -Wpedantic)
 
+if (CMAKE_BUILD_TYPE STREQUAL "Debug" AND CMAKE_C_COMPILER_ID STREQUAL "GNU")
+    find_program( CODECOV_GCOV gcov )
+    find_program( CODECOV_LCOV lcov )
+    find_program( CODECOV_GENHTML genhtml )
+    add_compile_options( -fprofile-arcs -ftest-coverage )
+else()
+    add_compile_options(-O3)
+endif()
+
+#---------------------------------------
 find_package(BLAS REQUIRED)
 
 add_executable(kind kind.f90)
