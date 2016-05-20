@@ -25,6 +25,12 @@ matrix:
       compiler: gcc
       env: 
         - COMP=gfortran
+        
+install:
+    -if [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then
+      brew update
+      brew install gcc
+    fi
 
 script: 
     - cd bin
