@@ -1,8 +1,5 @@
 language: c
 
-sudo: true
-dist: trusty
-
 notifications:
   email: false
 
@@ -12,6 +9,8 @@ git:
 matrix:
   include:
     - os: linux
+      sudo: true
+      dist: trusty
       compiler: gcc
       addons:
         apt:
@@ -28,7 +27,7 @@ matrix:
       before_install:
         - brew update
         - brew install gcc 
-        - brew install openblas
+#        - brew install homebrew/science/openblas
 
 script: 
     - cd bin
