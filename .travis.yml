@@ -16,7 +16,7 @@ matrix:
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
-          packages: ['gfortran-5']
+          packages: ['gfortran-5','libopenblas-dev']
       env: 
         - COMP=gfortran-5
 
@@ -25,9 +25,10 @@ matrix:
       compiler: gcc
       env: 
         - COMP=gfortran
-      before install:
+      before_install:
         - brew update
-        - brew install gcc
+        - brew install gcc 
+        - brew install openblas
 
 script: 
     - cd bin
