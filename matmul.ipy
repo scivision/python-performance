@@ -1,0 +1,6 @@
+#!/usr/bin/env ipython
+N=5000
+import numpy as np
+A = np.matrix(np.random.randn(N,N))
+B = np.matrix(np.random.randn(N,N))
+%timeit A*B

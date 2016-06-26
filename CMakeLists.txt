@@ -12,13 +12,15 @@ else()
     add_compile_options(-O3)
 endif()
 
+set(CMAKE_VERBOSE_MAKEFILE 1)
 #---------------------------------------
 find_package(BLAS REQUIRED)
 
 add_executable(kind kind.f90)
 
-add_library(matmul benchmark_matmul.f90 perf.f90)
+add_executable(hypot Hypot.f90 benchmark_hypot.f90 perf.f90)
+
+add_executable(matmul matmul_drv.f90 matmul_sub.f90 perf.f90)
 target_link_libraries(matmul blas)
 
-add_executable(benchfort benchmarks.f90 benchmark_iter.f90 benchmark_hypot.f90 perf.f90)
-target_link_libraries(benchfort matmul)
+add_executable(iter iter_drv.f90 iter_sub.f90 perf.f90)

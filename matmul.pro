@@ -10,4 +10,6 @@ print,'mult AB, N=',N
 c=matrix_multiply(A,B)
 ;toc
 
+
+exit
 end
