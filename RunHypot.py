@@ -1,9 +1,10 @@
+#!/usr/bin/env python
 """
 Compare speed of hypot(x,y) vs. sqrt(x**2 + y**2)
 hypot() is faster for small arrays, but gets a little slower for large arrays.
 Breakpoint around 10**5 elements on my PC.
 """
-
+import subprocess
 import numpy as np
 from matplotlib.pyplot import figure,show
 from timeit import repeat
@@ -11,8 +12,9 @@ import sys
 import seaborn as sns
 sns.set_context('talk')
 
+# this must NOT be as function for a,b to work properly.
 N = np.logspace(1,6.5,25,True,dtype=int)
-print(N)
+print('N={}'.format(N))
 rat = np.empty(N.size)
 
 for i,n in enumerate(N):
@@ -40,3 +42,10 @@ ax.legend(loc='best')
 ax.grid(True,which='both')
 ax.set_xlabel('N length of vectors a,b')
 show()
+
+def benchmark_hypot_fortran():
+    subprocess.call(['./bin/hypot'])
+
+
+if __name__ == '__main__':
+    benchmark_hypot_fortran()
