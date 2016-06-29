@@ -1,0 +1,27 @@
+from __future__ import print_function
+from numba import jit # inline auto compilation to C of Python code
+import numba,numpy
+
+
+@jit(nopython=True)
+def pisum():
+    s = 0.0
+    for j in range(1, 501):
+        s = 0.0
+        for k in range(1, 10001):
+            s += 1.0/(k*k)
+    return s
+
+def pisum_numpy():
+    return (1./(numpy.arange(1,10000)**2.)).sum()
+
+print(pisum())
+print(pisum_numpy())
+
+#assert numpy.isclose(numpy.pi,pisum())
+
+print('Numba {}'.format(numba.__version__),end=' ')
+%timeit pisum()
+
+print('Numpy {}'.format(numpy.__version__),end=' ')
+%timeit pisum_numpy()
