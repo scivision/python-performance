@@ -1,27 +1,20 @@
-from __future__ import print_function
+from __future__ import division,print_function
 from numba import jit # inline auto compilation to C of Python code
 import numba,numpy
 
+N=100000
 
 @jit(nopython=True)
 def pisum():
-    s = 0.0
-    for j in range(1, 501):
-        s = 0.0
-        for k in range(1, 10001):
-            s += 1.0/(k*k)
-    return s
+    """
+    Machin formula for Pi http://mathworld.wolfram.com/PiFormulas.html
+    """
+    s = 0.
+    for k in range(1, N+1):
+        s += (-1)**(k+1)/(2*k-1)
+    return 4.*s
 
-def pisum_numpy():
-    return (1./(numpy.arange(1,10000)**2.)).sum()
-
-print(pisum())
-print(pisum_numpy())
-
-#assert numpy.isclose(numpy.pi,pisum())
+assert numpy.isclose(numpy.pi,pisum(),rtol=1e-4)
 
 print('Numba {}'.format(numba.__version__),end=' ')
 %timeit pisum()
-
-print('Numpy {}'.format(numpy.__version__),end=' ')
-%timeit pisum_numpy()
