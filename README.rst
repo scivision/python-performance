@@ -29,9 +29,9 @@ GNU Fortran::
 
 Benchmarks
 ===========
-Iterative benchmarks::
+Iterative benchmarks, here using the pisum algorithm::
 
-    ./RunIter.py
+    ./RunPisum.py
 
 Matrix Multiplication benchmarks::
 
