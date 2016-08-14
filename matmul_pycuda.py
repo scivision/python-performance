@@ -1,7 +1,8 @@
 from numpy.random import rand
 import accelerate.cuda as cuda
 from accelerate.cuda.blas import Blas
-
+# for testing
+import numba.cuda.api,numba.cuda.cudadrv.libs
 import numpy as np
 from timeit import default_timer as timer
 
@@ -24,7 +25,13 @@ def gemm(A,B,dD):
     print("Maximum error %f" % np.max(diff))
     return D
 
+def test_pycuda():
+    numba.cuda.cudadrv.libs.test()
+    assert numba.cuda.api.detect(),'https://scivision.co/install-cuda-accelerate-for-anaconda-python/'
+
 if __name__ == '__main__':
+    test_pycuda() # not necessary, just FYI
+
     N=500
     Nrun = 10
 
