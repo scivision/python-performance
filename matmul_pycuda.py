@@ -1,5 +1,5 @@
 from numpy.random import rand
-from numbapro import cuda
+import accelerate.cuda as cuda
 from accelerate.cuda.blas import Blas
 
 import numpy as np
@@ -33,9 +33,9 @@ if __name__ == '__main__':
     D = np.asfortranarray(np.zeros_like(A,order='F'))
 
     s = timer()
-    dA = cuda.to_device(A)             # alloc and copy input data
-    dB = cuda.to_device(B)
-    dD = cuda.to_device(D, copy=False) # alloc only
+    dA = cuda.cuda.to_device(A)             # alloc and copy input data
+    dB = cuda.cuda.to_device(B)
+    dD = cuda.cuda.to_device(D, copy=False) # alloc only
     print(timer() -s)
     # NumPy
     numpy_time=1000000
