@@ -9,40 +9,40 @@ if PY2:
 bdir = Path('pisum')
 #%% Fortran
 try:
-    S.run(['./bin/iter'])
+    S.check_call(['./bin/iter'])
 except FileNotFoundError:
     pass
 #%% Julia
 try:
-    S.run(['julia',str(bdir/'iter.jl')])
+    S.check_call(['julia',str(bdir/'iter.jl')])
 except FileNotFoundError:
     pass
 #%% GDL
 try:
     tic = time()
-    S.run(['gdl','-q','-e','.run '+str(bdir/'pisum.pro')])
-    S.run(['gdl','-v'])
+    S.check_call(['gdl','-q','-e','.run '+str(bdir/'pisum.pro')])
+    S.check_call(['gdl','-v'])
     print('{:.2f} seconds'.format(time()-tic))
 except FileNotFoundError:
     pass
 #%% Octave
 try:
-    S.run(['octave','-q','--eval','run '+ str(bdir/'iter.m')])
+    S.check_call(['octave','-q','--eval','run '+ str(bdir/'iter.m')])
 except FileNotFoundError:
     pass
 #%% Matlab
 try:
-    S.run(['matlab','-nodesktop','-nojvm','-nosplash','-r',
+    S.check_call(['matlab','-nodesktop','-nojvm','-nosplash','-r',
            'run ' + str(bdir/'iter.m') + '; exit'])
 except FileNotFoundError:
     pass
 #%% Python 2.7
 try:
-    S.run(['ipython2',str(bdir/'pisum.ipy')])
+    S.check_call(['ipython2',str(bdir/'pisum.ipy')])
 except FileNotFoundError:
     pass
 #%% Python 3
 try:
-    S.run(['ipython3',str(bdir/'pisum.ipy')])
+    S.check_call(['ipython3',str(bdir/'pisum.ipy')])
 except FileNotFoundError:
     pass

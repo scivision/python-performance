@@ -58,10 +58,10 @@ end function mandeltest
 !------------ end mandlebrot ------------------------------
 
 Real(dp) function simple_iter(N,Nrun)
+    integer,Intent(in) :: N,Nrun
+
     integer :: j,i
     integer(i64) :: tic,toc,tmin=huge(0_i64)
-
-    integer,Intent(in) :: N,Nrun
     real(dp) :: A(N)
     ! volatile tells compiler that value is unpredictable, don't unroll, etc.
     real(dp), volatile ::x
@@ -83,7 +83,28 @@ Real(dp) function simple_iter(N,Nrun)
 
     simple_iter = sysclock2ms(tmin)
 
-end Function simple_iter
+End Function simple_iter
+
+Real(dp) function pisum(N)
+    integer,Intent(in) :: N
+
+    integer(i64) :: tic,toc,tmin=huge(0_i64)
+    real(dp), volatile :: s,x
+    integer :: k
+
+    call system_clock(tic)
+    s = 0.
+    do k = 1,N
+        s = s + (-1)**(k+1)/(2*k-1)
+    enddo
+    call system_clock(toc)
+    if (toc-tic<tmin) tmin=toc-tic
+
+    x=4*s
+
+    pisum = sysclock2ms(tmin)
+
+End Function pisum
 
 end module benchmark_iter
 

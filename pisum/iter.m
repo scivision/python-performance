@@ -1,5 +1,7 @@
 function iter()
 
+N = 1000000;
+
 if isoctave
     disp('--> Octave')
 else
@@ -8,7 +10,7 @@ end
 
 %% simple_iter
   printf('simple_iter ')
-  A = rand(1000000,1);
+  A = rand(N,1);
   f = @() simple_iter(A); % this anon function required by timeit
   try
     timeit(f)
@@ -33,6 +35,22 @@ printf('mandelbrot ')
     disp([num2str(t),' sec.'])
   end
 
+ %% pisum
+  printf('pisum ')
+  tic
+  pisum(N);
+  t = toc;
+  disp([num2str(t),' sec.'])
+
+end
+
+function x = pisum(N)
+  s = 0.;
+  for k = 1:N
+    s = s + (-1)^(k+1)/(2*k-1);
+  end
+
+  x=4*s;
 end
 
 function x= simple_iter(A) %must return at least one argument or timeit breaks
