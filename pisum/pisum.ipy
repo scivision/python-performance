@@ -2,7 +2,7 @@ from __future__ import division,print_function
 from numba import jit # inline auto compilation to C of Python code
 import numba,numpy
 
-N=100000
+N=1000000
 
 @jit(nopython=True)
 def pisum():
@@ -16,5 +16,5 @@ def pisum():
 
 assert numpy.isclose(numpy.pi,pisum(),rtol=1e-4)
 
-print('Numba {}'.format(numba.__version__),end=' ')
+print('--> Numba {}'.format(numba.__version__))
 %timeit pisum()

@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from __future__ import print_function
 from pythonperformance import Path
 from time import time
 import subprocess as S
@@ -21,13 +22,15 @@ except FileNotFoundError:
 try:
     tic = time()
     S.check_call(['gdl','-q','-e','.run '+str(bdir/'pisum.pro')])
-    S.check_call(['gdl','-v'])
+    print('--> GDL',end=' ')
     print('{:.2f} seconds'.format(time()-tic))
 except FileNotFoundError:
     pass
+
 #%% Octave
 try:
     S.check_call(['octave','-q','--eval','run '+ str(bdir/'iter.m')])
+    print('TODO: Octave does not stdout for eval')
 except FileNotFoundError:
     pass
 #%% Matlab
@@ -36,13 +39,10 @@ try:
            'run ' + str(bdir/'iter.m') + '; exit'])
 except FileNotFoundError:
     pass
-#%% Python 2.7
+
+#%% Python
 try:
-    S.check_call(['ipython2',str(bdir/'pisum.ipy')])
+    S.run(['ipython',str(bdir/'pisum.ipy')])
 except FileNotFoundError:
-    pass
-#%% Python 3
-try:
-    S.check_call(['ipython3',str(bdir/'pisum.ipy')])
-except FileNotFoundError:
+    print('skip Python')
     pass

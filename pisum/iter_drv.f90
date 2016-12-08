@@ -18,7 +18,7 @@ Program run_iter
     t = mandeltest(Nmand,Nrunmand)
     print *, 'Mandelbrot (millisec): ',t
 !------pisum----------------
-    t = pisum(Niter)
+    t = pisum(Niter,Nruniter)
     print *, 'pisum (millisec): ',t
 
 

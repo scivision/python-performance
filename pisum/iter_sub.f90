@@ -78,27 +78,28 @@ Real(dp) function simple_iter(N,Nrun)
        End Do
        call system_clock(toc)
        if (toc-tic<tmin) tmin=toc-tic
-
    End Do
 
     simple_iter = sysclock2ms(tmin)
 
 End Function simple_iter
 
-Real(dp) function pisum(N)
-    integer,Intent(in) :: N
+Real(dp) function pisum(N,Nrun)
+    integer,Intent(in) :: N,Nrun
 
     integer(i64) :: tic,toc,tmin=huge(0_i64)
     real(dp), volatile :: s,x
-    integer :: k
+    integer :: k,j
 
-    call system_clock(tic)
-    s = 0.
-    do k = 1,N
-        s = s + (-1)**(k+1)/(2*k-1)
-    enddo
-    call system_clock(toc)
-    if (toc-tic<tmin) tmin=toc-tic
+    Do j = 1,Nrun
+        call system_clock(tic)
+        s = 0.
+        do k = 1,N
+            s = s + (-1)**(k+1)/(2*k-1)
+        enddo
+        call system_clock(toc)
+        if (toc-tic<tmin) tmin=toc-tic
+    End Do
 
     x=4*s
 
