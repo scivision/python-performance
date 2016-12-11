@@ -88,20 +88,27 @@ Real(dp) function pisum(N,Nrun)
     integer,Intent(in) :: N,Nrun
 
     integer(i64) :: tic,toc,tmin=huge(0_i64)
-    real(dp), volatile :: s,x
+    real(dp), volatile :: s
     integer :: k,j
+    real(dp),parameter :: pi = 4*atan(1.)
 
     Do j = 1,Nrun
         call system_clock(tic)
         s = 0.
         do k = 1,N
-            s = s + (-1)**(k+1)/(2*k-1)
+            s = s + (-1.)**(k+1)/(2*k-1)
         enddo
         call system_clock(toc)
         if (toc-tic<tmin) tmin=toc-tic
     End Do
 
-    x=4*s
+    s=4*s
+
+    if (abs(s-pi) .gt. 1e-4) then
+        print *, 'final value',s
+        print *, 'error mag ',abs(s-pi)
+        error stop 'FORTRAN pisum fail to converge'
+    endif
 
     pisum = sysclock2ms(tmin)
 

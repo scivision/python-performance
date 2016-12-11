@@ -1,11 +1,20 @@
 pro pisum
-N=100000
+N=1000000
 s=0.
 
 ; use linux "time" instead to avoid seg fault
 ;tic
-for k=1,N+1 do s = s+(-1)^(k+1)/(2*k-1)
+for k=1,N+1 do begin
+    s = s+(-1.)^(k+1) / (2*k-1)
+    if (s gt 1e100) then break
+endfor
 s=4*s
 ;toc
-assert,abs(s-!const.pi)<1e-4,'failed to converge GDL'
+if (abs(s-!const.pi) gt 1e-4) then begin
+    print,'|error| = ',abs(s-!const.pi)
+    print,k,' ',s,' ERROR GDL: failed to converge'
+endif
+
+
 end
+

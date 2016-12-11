@@ -1,6 +1,10 @@
 from __future__ import division,print_function
+import pyximport; pyximport.install()
 from numba import jit # inline auto compilation to C of Python code
-import numba,numpy
+import numba,numpy,math
+import platform,subprocess
+#
+import cpisum
 
 N=1000000
 
@@ -18,3 +22,26 @@ assert numpy.isclose(numpy.pi,pisum(),rtol=1e-4)
 
 print('--> Numba {}'.format(numba.__version__))
 %timeit pisum()
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%  PURE PYTHON
+def pisum_c():
+    """
+    Machin formula for Pi http://mathworld.wolfram.com/PiFormulas.html
+    """
+    s = 0.
+    for k in range(1, N+1):
+        s += (-1)**(k+1)/(2*k-1)
+    return 4.*s
+
+
+print('--> Python {}'.format(platform.python_version()))
+%timeit pisum()
+#%%%%%%%%%%%%%%%%%%%%%%%% CYTHON
+N = 1000000
+
+assert math.isclose(math.pi,cpisum.pisum(N),rel_tol=1e-4),'Cython convergence error'
+
+print('-->')
+subprocess.check_call(['cython','--version'])
+
+%timeit cpisum.pisum(N)

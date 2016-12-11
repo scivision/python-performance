@@ -9,38 +9,43 @@ else
 end
 
 %% simple_iter
-  printf('simple_iter ')
+fprintf('simple_iter ')
   A = rand(N,1);
-  f = @() simple_iter(A); % this anon function required by timeit
   try
-    timeit(f)
+    f = @() simple_iter(A); % this anon function required by timeit
+    t=timeit(f);
   catch
     tic
     simple_iter(A);
     t = toc;
-    disp([num2str(t),' sec.'])
   end
+disp([num2str(t*1000),' millisec.'])
+
 %% mandelbrot
 %mandel(complex(-.53,.68));
 %assert(sum(sum(mandelperf(true))) == 14791)
 
-printf('mandelbrot ')
+fprintf('mandelbrot ')
   try
     f = @() mandelperf(false);
-    timeit(f)
+    t=timeit(f);
   catch
     tic
     mandelperf();
     t = toc;
-    disp([num2str(t),' sec.'])
   end
-
+disp([num2str(t*1000),' millisec.'])
  %% pisum
-  printf('pisum ')
-  tic
-  pisum(N);
-  t = toc;
-  disp([num2str(t),' sec.'])
+fprintf('pisum ')
+  try
+    f = @() pisum(N);
+    t=timeit(f);
+  catch
+    tic
+    pisum(N);
+    t = toc;
+  end
+disp([num2str(t*1000),' millisec.'])
 
 end
 
@@ -57,6 +62,7 @@ function x= simple_iter(A) %must return at least one argument or timeit breaks
  x=0;
     for i = A
         x = 0.5*x + mod(i, 10);
+        if x>1e100; break; end
     end
 end
 %----------------------------
