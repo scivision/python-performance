@@ -24,9 +24,9 @@ matrix:
       compiler: gcc
       env: 
         - COMP=gfortran
-      before_install:
-        - brew update
-        - brew install gcc 
+#      before_install:
+#        - brew update
+#        - brew install gcc 
 #        - brew install homebrew/science/openblas
 
 script: 
