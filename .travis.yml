@@ -20,7 +20,7 @@ matrix:
         - COMP=gfortran-5
 
     - os: osx 
-      osx_image: xcode7.3 # or whatever the latest is
+      osx_image: xcode8.2 # Needs at least El Capitan for clock_gettime()
       compiler: gcc
       env: 
         - COMP=gfortran
