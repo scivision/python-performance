@@ -4,7 +4,7 @@ notifications:
   email: false
 
 git:
-  depth: 1
+  depth: 3
 
 matrix:
   include:
@@ -19,11 +19,11 @@ matrix:
       env: 
         - COMP=gfortran-5
 
-    - os: osx 
-      osx_image: xcode8.2 # Needs at least El Capitan for clock_gettime()
-      compiler: gcc
-      env: 
-        - COMP=gfortran
+#    - os: osx 
+#      osx_image: xcode8.2 # Needs at least El Capitan for clock_gettime()
+#      compiler: gcc
+#      env: 
+#        - COMP=gfortran
 #      before_install:
 #        - brew update
 #        - brew install gcc 
