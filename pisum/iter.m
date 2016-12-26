@@ -1,11 +1,13 @@
-function iter()
+function iter(~)
 
 N = 1000000;
 
 if isoctave
-    disp('--> Octave')
+    v = ver('octave'); % else matlab syntax checker errors
+    disp(['--> Octave ', v.Version])
 else
-    disp('--> Matlab')
+    v = ver('matlab');
+    disp(['--> Matlab ',v.Version])
 end
 
 %% simple_iter
@@ -47,8 +49,11 @@ fprintf('pisum ')
   end
 disp([num2str(t*1000),' millisec.'])
 
-end
+%exit % needed to avoid nuisance error from octave --eval iter.m.  
+% Instead do octave --eval "iter; exit" to avoid error or hanging at prompt
 
+end
+%%
 function x = pisum(N)
   s = 0.;
   for k = 1:N
@@ -57,7 +62,7 @@ function x = pisum(N)
 
   x=4*s;
 end
-
+%%
 function x= simple_iter(A) %must return at least one argument or timeit breaks
  x=0;
     for i = A
@@ -65,7 +70,7 @@ function x= simple_iter(A) %must return at least one argument or timeit breaks
         if x>1e100; break; end
     end
 end
-%----------------------------
+%%
 function n = mandel(z)
     c = z;
     for n=0:79
@@ -76,7 +81,7 @@ function n = mandel(z)
     end
     n = 80;
 end
-
+%%
 function M = mandelperf(~)
     x=-2.0:.1:0.5;
     y=-1:.1:1;
@@ -87,4 +92,4 @@ function M = mandelperf(~)
         end
     end
 end
-%---------------------------------------------
+

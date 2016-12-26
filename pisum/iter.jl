@@ -1,5 +1,5 @@
 #!/usr/bin/env julia
-println("--> Julia")
+println("--> Julia $VERSION")
 
 Pkg.add("BenchmarkTools")
 using BenchmarkTools

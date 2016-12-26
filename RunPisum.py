@@ -19,10 +19,10 @@ try:
 except FileNotFoundError:
     pass
 #%% Julia
-#try:
-#    S.check_call(['julia',str(bdir/'iter.jl')])
-#except FileNotFoundError:
-#    pass
+try:
+    S.check_call(['julia','iter.jl'],cwd=str(bdir))
+except FileNotFoundError:
+    pass
 #%% GDL
 try:
     # baseline
@@ -41,14 +41,13 @@ except FileNotFoundError:
 
 #%% Octave
 try:
-    S.check_call(['octave','-q','--eval','run iter.m'],cwd=str(bdir))
-    print('TODO: Octave does not stdout for eval')
+    S.check_call(['octave','-q','--eval','iter;exit'], cwd=str(bdir))
 except FileNotFoundError:
     pass
 #%% Matlab
 try:
     S.check_call(['matlab','-nodesktop','-nojvm','-nosplash','-r',
-           'run iter.m' + '; exit'],cwd=str(bdir))
+           'iter; exit'], cwd=str(bdir))
 except FileNotFoundError:
     pass
 

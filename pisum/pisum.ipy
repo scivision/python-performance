@@ -37,11 +37,12 @@ def pisum_c():
 print('--> Python {}'.format(platform.python_version()))
 %timeit pisum()
 #%%%%%%%%%%%%%%%%%%%%%%%% CYTHON
+import cython
 N = 1000000
 
 assert math.isclose(math.pi,cpisum.pisum(N),rel_tol=1e-4),'Cython convergence error'
 
-print('-->')
-subprocess.check_call(['cython','--version'])
+print('--> Cython ',cython.__version__)
+
 
 %timeit cpisum.pisum(N)
