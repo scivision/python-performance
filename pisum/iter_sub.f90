@@ -5,10 +5,12 @@ module benchmark_iter
 contains
 !----------------- mandelbrot -------------------------------
 integer function mandel(z0) result(r)
+    implicit none
     complex(dp), intent(in) :: z0
     complex(dp) :: c, z
-    integer :: n, maxiter
-    maxiter = 80
+    integer :: n
+    integer, parameter :: maxiter = 80
+
     z = z0
     c = z0
     do n = 1, maxiter
@@ -22,6 +24,7 @@ integer function mandel(z0) result(r)
     end function mandel
 
 integer function mandelperf() result(mandel_sum)
+    implicit none
     integer :: re, im
     volatile :: mandel_sum
     mandel_sum = 0
@@ -37,9 +40,12 @@ integer function mandelperf() result(mandel_sum)
 end function mandelperf
 
 Real(dp) function mandeltest(N,Nrun)
+    implicit none
     integer, intent(in) :: N,Nrun
-    integer(i64) :: tic,toc,tmin = huge(0_i64)
-    integer :: i,k,f=0
+    integer(i64) :: tic,toc,tmin
+    integer :: i,k,f
+    f = 0
+    tmin = huge(0_i64)
 
     do i = 1, Nrun
         call system_clock(tic)
@@ -58,13 +64,16 @@ end function mandeltest
 !------------ end mandlebrot ------------------------------
 
 Real(dp) function simple_iter(N,Nrun)
+    implicit none
     integer,Intent(in) :: N,Nrun
 
     integer :: j,i
-    integer(i64) :: tic,toc,tmin=huge(0_i64)
+    integer(i64) :: tic,toc,tmin
     real(dp) :: A(N)
     ! volatile tells compiler that value is unpredictable, don't unroll, etc.
-    real(dp), volatile ::x
+    real(dp), volatile :: x
+
+    tmin = huge(0_i64)
 
    call init_random_seed()
 
@@ -85,12 +94,15 @@ Real(dp) function simple_iter(N,Nrun)
 End Function simple_iter
 
 Real(dp) function pisum(N,Nrun)
+    implicit none
     integer,Intent(in) :: N,Nrun
 
-    integer(i64) :: tic,toc,tmin=huge(0_i64)
+    integer(i64) :: tic,toc,tmin
     real(dp), volatile :: s
     integer :: k,j
     real(dp),parameter :: pi = 4*atan(1.)
+
+    tmin = huge(0_i64)
 
     Do j = 1,Nrun
         call system_clock(tic)
