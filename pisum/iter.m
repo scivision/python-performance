@@ -43,9 +43,12 @@ fprintf('pisum ')
     f = @() pisum(N);
     t=timeit(f);
   catch
-    tic
-    pisum(N);
-    t = toc;
+    t = flintmax;
+    for i = 1:3
+        tic
+        pisum(N);
+        t = min(toc,t);
+    end
   end
 disp([num2str(t*1000),' millisec.'])
 
