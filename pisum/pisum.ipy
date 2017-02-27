@@ -2,7 +2,7 @@ from __future__ import division,print_function
 import pyximport; pyximport.install()
 from numba import jit # inline auto compilation to C of Python code
 import numba,numpy,math
-import platform,subprocess
+import platform
 #
 import cpisum
 

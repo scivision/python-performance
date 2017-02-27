@@ -3,6 +3,7 @@ from __future__ import print_function
 from pythonperformance import Path
 from time import time
 import subprocess as S
+from sys import stderr
 from six import PY2
 if PY2:
     FileNotFoundError=OSError
@@ -12,11 +13,13 @@ bdir = Path('pisum')
 try:
     S.check_call(['./iterc'],cwd='bin')
 except FileNotFoundError:
+    print('please compile pisum.c as per README',file=stderr)
     pass
 #%% Fortran
 try:
     S.check_call(['./iterfort'],cwd='bin')
 except FileNotFoundError:
+    print('please compile Pisum Fortran code as per README',file=stderr)
     pass
 #%% Julia
 try:
@@ -25,17 +28,17 @@ except FileNotFoundError:
     pass
 #%% GDL
 try:
-    # baseline
-    tic = time()
-    S.check_call(['gdl','-q','-e','exit'])
-    base = time() - tic
-    # benchmark
-    tic = time()
-    S.check_call(['gdl','-q','-e','pisum'],cwd=str(bdir))
-    toc = time() - tic 
-    t = toc - base
     print('--> GDL',end=' ')
-    print('{:.2f} milliseconds'.format(t*1000))
+#    # baseline
+#    tic = time()
+#    S.check_call(['gdl','-q','-e','exit'])
+#    base = time() - tic
+#    # benchmark
+#    tic = time()
+    S.check_call(['gdl','-q','-e','pisum'],cwd=str(bdir))
+#    toc = time() - tic 
+#    t = toc - base
+#    print('{:.2f} milliseconds'.format(t*1000))
 except FileNotFoundError:
     pass
 
@@ -55,5 +58,5 @@ except FileNotFoundError:
 try:
     S.run(['ipython','pisum.ipy'],cwd=str(bdir))
 except FileNotFoundError:
-    print('skip Python')
+    print('skip Python',file=stderr)
     pass
