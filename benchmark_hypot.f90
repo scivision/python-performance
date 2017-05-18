@@ -1,20 +1,20 @@
 module benchmark_hypot
-    use, intrinsic :: iso_fortran_env, only : dp=>REAL64,i64=>INT64
+    use, intrinsic :: iso_fortran_env, only : REAL64,INT64
     use perf, only : init_random_seed,sysclock2ms
     Implicit None
 contains
 
-real(dp) function benchhypot()
+real(real64) function benchhypot()
     integer :: i
-    integer(i64) :: tic,toc,tmin1=huge(0_i64),tmin2=huge(0_i64)
+    integer(int64) :: tic,toc,tmin1=huge(0_int64),tmin2=huge(0_int64)
 
     integer,parameter :: N=10000,Nrun=10000
-    real(dp),allocatable :: A(:),B(:)
+    real(real64),allocatable :: A(:),B(:)
 
-    real(dp) :: Rhypot(Nrun)
-    real(dp) :: Thypot,Trsq
+    real(real64) :: Rhypot(Nrun)
+    real(real64) :: Thypot,Trsq
     ! volatile tells compiler that value is unpredictable, don't unroll, etc.
-    real(dp),volatile :: C(N),D(N)
+    real(real64),volatile :: C(N),D(N)
 
     allocate(A(N),B(N))
     call init_random_seed()
@@ -47,7 +47,7 @@ real(dp) function benchhypot()
 
     enddo !i
 
-benchhypot = sum(Rhypot)/real(Nrun,dp)
+benchhypot = sum(Rhypot)/real(Nrun,real64)
 
 
 end Function benchhypot

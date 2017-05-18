@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from numpy import empty,nan
 def nans(shape=1, dtype=float, order='F'):
     a = empty(shape, dtype, order)
@@ -7,14 +8,14 @@ def nans(shape=1, dtype=float, order='F'):
 '''
 faster than using nan*empty()
 $ ipython
-Python 3.4.2 |Anaconda 2.1.0 (64-bit)| (default, Oct 21 2014, 17:16:37) 
-IPython 2.2.0 -- An enhanced Interactive Python.
-from nans import nans
-from numpy import empty,nan
+Python 3.6.1 |Continuum Analytics, Inc.| (default, Mar 22 2017, 19:54:23) 
+IPython 6.0.0
+
+from nans import nans; from numpy import empty,nan
 
 %timeit nans((1000,1000))
-100 loops, best of 3: 1.87 ms per loop
+428 µs ± 15.3 µs per loop (mean ± std. dev. of 7 runs, 1000 loops each)
 
 %timeit nan*empty((1000,1000))
-100 loops, best of 3: 3.24 ms per loop
+1.31 ms ± 7.31 µs per loop (mean ± std. dev. of 7 runs, 1000 loops each)
 '''

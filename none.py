@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 from numba import jit
 from numba import __version__ as numbavers
 import numpy as np
@@ -14,14 +14,14 @@ https://github.com/numba/numba/pull/857
 """
 
 
-@jit
+@jit(nopython=True)
 def nonetest(x):
     if x is not None:
         print(x)
     else:
         print('x was None')
 
-@jit
+@jit(nopython=True)
 def nantest(x):
     if not np.isnan(x):
         print(x)
@@ -29,7 +29,7 @@ def nantest(x):
         print('x is NaN')
 
 if __name__ == '__main__':
-    print('Numba version ' + str(numbavers))
+    print('Numba version',numbavers)
     nonetest(None)
     nonetest(3)
 

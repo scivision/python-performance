@@ -1,11 +1,11 @@
 Program run_hypot
 
-    use, intrinsic :: iso_fortran_env, only : dp=>REAL64
+    use, intrinsic :: iso_fortran_env, only : REAL64
     use benchmark_hypot,only: benchhypot
 
     Implicit None
 
-     real(dp) :: Rhypot
+     real(real64) :: Rhypot
 
      Rhypot = benchhypot()
 
