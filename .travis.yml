@@ -16,7 +16,7 @@ dist: trusty
 addons:
   apt:
     sources: ['ubuntu-toolchain-r-test']
-    packages: ['gfortran-5','libopenblas-dev']
+    packages: ['gfortran','libopenblas-dev']
 
 
 before_install:
