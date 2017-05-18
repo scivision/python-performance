@@ -22,7 +22,7 @@ env:
 
 before_install:
     - if [[ $TRAVIS_OS_NAME == osx ]]; then
-        env: FC=gfortran;
+        export FC=gfortran;
         brew update;
         brew install gcc;
         brew install homebrew/science/openblas;
