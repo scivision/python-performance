@@ -28,7 +28,7 @@ int main(int argc, char** argv){
 
     s = 4*s;
 
-    if (abs(s-M_PI)>1e-4) {
+    if (fabs(s-M_PI)>1e-4) {
         printf("C pisum: large error magnitude");
         return EXIT_FAILURE;
     }
