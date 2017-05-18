@@ -1,5 +1,5 @@
 .. image:: https://travis-ci.org/scivision/python-performance.svg?branch=master
-    :target: https://travis-ci.org/scivison/python-performance
+    :target: https://travis-ci.org/scivision/python-performance
 
 ==================
 Python Performance
