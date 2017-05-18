@@ -10,7 +10,7 @@ os:
   - linux
   - osx
   
-osx_image: xcode8  # needed for CLOCK_MONOTONIC() in pisum.c  
+osx_image: xcode8.2  #xcode8.2 needed for CLOCK_MONOTONIC() in pisum.c  
 dist: trusty
 
 addons:
