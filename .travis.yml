@@ -18,12 +18,9 @@ addons:
     sources: ['ubuntu-toolchain-r-test']
     packages: ['gfortran-5','libopenblas-dev']
 
-env:
-  - FC=gfortran-5
 
 before_install:
     - if [[ $TRAVIS_OS_NAME == osx ]]; then
-        export FC=gfortran;
         brew update;
         brew install gcc;
         brew install homebrew/science/openblas;
