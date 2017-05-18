@@ -8,6 +8,7 @@ git:
   
 os:
   - linux
+  - osx
   
 dist: trusty
 
@@ -19,15 +20,13 @@ addons:
 env:
   - FC=gfortran-5
 
-#    - os: osx 
-#      osx_image: xcode8.2
-#      compiler: gcc
-#      env: 
-#        - COMP=gfortran
-#      before_install:
-#        - brew update
-#        - brew install gcc 
-#        - brew install homebrew/science/openblas
+before_install:
+    - if [[ $TRAVIS_OS_NAME == osx ]]; then
+        env: FC=gfortran;
+        brew update;
+        brew install gcc;
+        brew install homebrew/science/openblas;
+    fi
 
 install: 
   - cd bin
