@@ -13,6 +13,8 @@ To compile the benchmarks::
     cd bin
     cmake ..
     make
+    
+.. contents ::
 
 
 Compiler selection
@@ -25,6 +27,21 @@ Intel Fortran::
 GNU Fortran::
 
     FC=gfortran cmake ..
+    
+MKL selection
+==============
+<https://software.intel.com/en-us/articles/intel-mkl-link-line-advisor>
+
+We give a hint to CMake where your MKL libraries on. 
+On Linux, this is typically ``/opt/intel/mkl``::
+
+    MKLROOT=/opt/intel/mkl cmake ..
+    
+Of course this option can be combined with ``FC``.
+
+You can set this environment variable permanetly for your convenience (normally you always want to use MKL) by adding to your ``~/.bashrc`` the line::
+
+    export MKLROOT=/opt/intel/mkl
 
 
 Benchmarks

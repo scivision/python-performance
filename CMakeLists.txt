@@ -18,6 +18,7 @@ endif()
 set(CMAKE_VERBOSE_MAKEFILE 0)
 #---------------------------------------
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
+# https://software.intel.com/en-us/articles/intel-mkl-link-line-advisor
 find_package(MKL)
 if(MKL_FOUND)
     include_directories(${MKL_INCLUDE_DIRS})
