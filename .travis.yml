@@ -13,6 +13,8 @@ os:
 osx_image: xcode8.2  #xcode8.2 needed for CLOCK_MONOTONIC() in pisum.c  
 dist: trusty
 
+env: FC=gfortran
+
 addons:
   apt:
     sources: ['ubuntu-toolchain-r-test']
