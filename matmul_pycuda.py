@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from numpy.random import rand
 import accelerate.cuda as cuda
 from accelerate.cuda.blas import Blas
@@ -32,7 +33,7 @@ def test_pycuda():
 if __name__ == '__main__':
     test_pycuda() # not necessary, just FYI
 
-    N=500
+    N=1000
     Nrun = 10
 
     A= np.asfortranarray(rand(N,N).astype(np.float32))

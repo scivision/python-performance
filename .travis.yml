@@ -5,35 +5,39 @@ notifications:
 
 git:
   depth: 3
-  
+
 os:
   - linux
-#  - osx # temp disbale due to travis image problem
-  
-osx_image: xcode8.2  #xcode8.2 needed for CLOCK_MONOTONIC() in pisum.c  
-dist: trusty
+#  - osx # temp disable due to travis image problem
 
-env: FC=gfortran
+osx_image: xcode8.2  #xcode8.2 needed for CLOCK_MONOTONIC() in pisum.c
+dist: trusty
 
 addons:
   apt:
-    sources: ['ubuntu-toolchain-r-test']
-    packages: ['gfortran','libopenblas-dev']
-
+    sources:
+        - ubuntu-toolchain-r-test
+    packages:
+        - gfortran
+        - libopenblas-dev
 
 before_install:
     - if [[ $TRAVIS_OS_NAME == osx ]]; then
         brew update;
         brew install gcc;
-        brew install gfortran;
         brew install homebrew/science/openblas;
+      else
+        mkdir -p $HOME/.local/bin;
+        ln -fs /usr/bin/gfortran-5 "$HOME/.local/bin/gfortran";
       fi
 
-install: 
+    - gfortran --version
+
+install:
   - cd bin
   - cmake ..
   - make
-   
-script:    
+
+script:
   - ./kind
 

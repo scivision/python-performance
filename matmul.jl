@@ -1,5 +1,5 @@
 #!/usr/bin/env julia
-
-A = randn(5000,5000); 
-B = randn(5000,5000);
+N = 1000;
+A = randn(N,N); 
+B = randn(N,N);
 @time A*B;

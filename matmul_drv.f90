@@ -5,13 +5,13 @@ Program run_matmul
 
     Implicit None
 
-    integer,parameter :: Nmatmul=5000, Nrunmatmul=10
+    integer,parameter :: Nmatmul=1000, Nrunmatmul=10
     real(dp) :: tdmatmul,tsmatmul
 
     tdmatmul = double_matmul(Nmatmul,Nrunmatmul)
     tsmatmul = single_matmul(Nmatmul,Nrunmatmul)
 
-     print '(A,F10.3)', 'real64 matmul (sec): ',tdmatmul
-     print '(A,F10.3)', 'real32 matmul (sec): ',tsmatmul
+     print '(A20,F10.4)', 'double matmul (sec): ',tdmatmul
+     print '(A20,F10.4)', 'single matmul (sec): ',tsmatmul
 
 End Program

@@ -7,19 +7,21 @@ Program run_iter
 
     integer,parameter :: Nmand=5
     integer,parameter :: Niter=1000000, Nruniter=100,Nrunmand=1000
+    
+    character(*),parameter :: frmt = '(A20,F10.4)'
 
     real(dp) :: t
 
-    print *, '--> FORTRAN'
+    print *, '--> FORTRAN (times in milliseconds)'
 !-----simple_iter----------------------
     t = simple_iter(Niter,Nruniter)
-    print *, 'Iteration (millisec): ',t
+    print frmt, 'Iteration: ',t
 !------mandlebrot-------------
     t = mandeltest(Nmand,Nrunmand)
-    print *, 'Mandelbrot (millisec): ',t
+    print frmt, 'Mandelbrot: ',t
 !------pisum----------------
-    t = pisum(Niter,Nruniter)
-    print *, 'pisum (millisec): ',t
+    t = pisum(Niter/10,Nruniter)
+    print frmt, 'pisum: ',t
 
 
 End Program
