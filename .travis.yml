@@ -29,7 +29,7 @@ before_install:
         brew install homebrew/science/openblas;
         export FC=gfortran;
       else
-        export FC=gfortran-5;
+        export FC=/usr/bin/gfortran-5;
       fi
 
 install: 
