@@ -8,12 +8,10 @@ git:
   
 os:
   - linux
-#  - osx # temp disbale due to travis image problem
+#  - osx # temp disable due to travis image problem
   
 osx_image: xcode8.2  #xcode8.2 needed for CLOCK_MONOTONIC() in pisum.c  
 dist: trusty
-
-env: FC=gfortran
 
 addons:
   apt:
@@ -29,6 +27,9 @@ before_install:
         brew install gcc;
         brew install gfortran;
         brew install homebrew/science/openblas;
+        export FC=gfortran;
+      else
+        export FC=gfortran-5;
       fi
 
 install: 
