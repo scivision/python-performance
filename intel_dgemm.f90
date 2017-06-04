@@ -1,6 +1,6 @@
     PROGRAM   MAIN
 
-    use,intrinsic :: iso_fortran_env, only: dp=>real64
+      use,intrinsic :: iso_fortran_env, only: dp=>real64
 
       IMPLICIT NONE
 
@@ -8,12 +8,6 @@
       INTEGER          M, K, N, I, J
       PARAMETER        (M=2000, K=200, N=1000)
       real(dp) A(M,K), B(K,N), C(M,N)
-
-      PRINT *, "This example computes real matrix C=alpha*A*B+beta*C"
-      PRINT *, "using Intel(R) MKL function dgemm, where A, B, and C"
-      PRINT *, "are matrices and alpha and beta are double precision "
-      PRINT *, "scalars"
-      PRINT *, ""
 
       PRINT *, "Initializing data for matrix multiplication C=A*B for "
       PRINT 10, " matrix A(",M," x",K, ") and matrix B(", K," x", N, ")"
@@ -30,10 +24,9 @@
 
       C(:,:) = 0
 
-      PRINT *, "Computing matrix product using Intel(R) MKL DGEMM subroutine"
+      PRINT *, "Computing matrix product using DGEMM subroutine"
       CALL DGEMM('N','N',M,N,K,ALPHA,A,M,B,K,BETA,C,M)
-      PRINT *, "Computations completed."
-      PRINT *, ""
+
 
       PRINT *, "Top left corner of matrix A:"
       PRINT 20, ((A(I,J), J = 1,MIN(K,6)), I = 1,MIN(M,6))
