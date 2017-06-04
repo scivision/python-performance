@@ -5,7 +5,8 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
 # NOTE: -fdefault-integer-8 -m64  are crucial for MKL to avoid SIGSEGV at runtime!
-add_compile_options(-mtune=native -Werror=array-bounds -Wall -Wextra -pedantic -fdefault-integer-8 -m64)
+set(FFLAGS ${FFLAGS} -fdefault-integer-8 -std=f2008)
+add_compile_options(-mtune=native -Werror=array-bounds -Wall -Wextra -pedantic -m64)
 
 #if (CMAKE_BUILD_TYPE STREQUAL "Debug" AND CMAKE_C_COMPILER_ID STREQUAL "GNU")
 #    find_program( CODECOV_GCOV gcov )
@@ -17,7 +18,9 @@ add_compile_options(-mtune=native -Werror=array-bounds -Wall -Wextra -pedantic -
 #endif()
 #---------- MKL tests -----------------------------
 add_executable(matmul matmul_drv.f90 matmul_sub.f90 perf.f90)
+target_compile_options(matmul PUBLIC ${FFLAGS})
 add_executable(inteld intel_dgemm.f90)
+target_compile_options(inteld PUBLIC ${FFLAGS})
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 # https://software.intel.com/en-us/articles/intel-mkl-link-line-advisor
