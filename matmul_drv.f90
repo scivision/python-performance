@@ -11,7 +11,7 @@ Program run_matmul
     tdmatmul = double_matmul(Nmatmul,Nrunmatmul)
     tsmatmul = single_matmul(Nmatmul,Nrunmatmul)
 
-     print *, 'double matmul (sec): ',tdmatmul
-     print *, 'single matmul (sec): ',tsmatmul
+     print '(A20,F10.4)', 'double matmul (sec): ',tdmatmul
+     print '(A20,F10.4)', 'single matmul (sec): ',tsmatmul
 
 End Program

@@ -1,6 +1,6 @@
 module benchmark_matmul
 
-    use, intrinsic :: iso_fortran_env, only : REAL32,dp=>REAL64,INT64
+    use, intrinsic :: iso_fortran_env, only : sp=>REAL32,dp=>REAL64,INT64
     use perf, only : init_random_seed, sysclock2ms 
     Implicit None
     
@@ -12,14 +12,15 @@ Real(dp) Function double_matmul(N,Nrun)
 
     integer, intent(in) :: N,Nrun
 
-    real(dp),allocatable :: A(:,:),B(:,:),D(:,:)
+    real(dp),allocatable, volatile :: A(:,:),B(:,:)
+    real(dp),allocatable, volatile :: D(:,:)
 
     integer :: k
     integer(int64) :: tic,toc,tmin=huge(0_int64)  ! MUST BE _int64!!!
 
     allocate(A(N,N))
-    allocate(B(N,N))
-    allocate(D(N,N))
+    allocate(B, mold=A)
+    allocate(D, mold=A)
 
     D(:,:) = 0_dp ! cannot initialize automatic array directly
 
@@ -36,18 +37,18 @@ Real(dp) Function double_matmul(N,Nrun)
         call random_number(B)
         
         call system_clock(tic)
-        call dgemm('N','N',N,N,N,1.d0,A,N,B,N,1.d0,D,N) !ifort 14 10% faster than gfortran 5
+        call dgemm('N','N',N,N,N,1_dp,A,N,B,N,0_dp,D,N) !ifort 14 10% faster than gfortran 5
         !D = matmul(A,B) !4-5 times slower with ifort 14 than gfortran 5!
         call system_clock(toc)
         
-        if (toc-tic<tmin) tmin=toc-tic
+        if (toc-tic < tmin) tmin=toc-tic
        
-        if (mod(k,1).eq.0) write(*,'(F5.1,A10)') real(k,dp)/Nrun*100.,'% done'
+        if (mod(k,1) == 0) write(*,'(F5.1,A10)') real(k,dp)/Nrun*100,'% done'
     end do
 
     double_matmul=sysclock2ms(tmin)
 
-  print *,'fortran milliseconds per iteration: ', double_matmul
+  print '(A,F7.4)','fortran milliseconds per iteration: ', double_matmul
 
 end function double_matmul
 
@@ -55,15 +56,15 @@ Real(dp) function single_matmul(N,Nrun)
 
     integer, intent(in) :: N,Nrun
 
-    real(real32),allocatable :: A(:,:),B(:,:),D(:,:)
+    real(sp),allocatable :: A(:,:),B(:,:),D(:,:)
 
     integer :: k
     integer(int64) :: tic,toc,tmin=huge(0_int64)
 
     allocate(A(N,N))
-    allocate(B(N,N))
-    allocate(D(N,N))
-    D=0.0 
+    allocate(B, mold=A)
+    allocate(D, mold=A)
+    D(:,:) = 0_sp 
 
     call init_random_seed()
 
@@ -71,7 +72,7 @@ Real(dp) function single_matmul(N,Nrun)
 
     print *,'priming single-prec. matmul loop'
     ! recommended to call once before loop per Intel manual
-    call sgemm('N','N',N,N,N,1.0,A,N,B,N,1.0,D,N)
+    call sgemm('N','N',N,N,N,1_sp,A,N,B,N,0_sp,D,N)
 
     do k = 1, Nrun
     !refilling arrays with random numbers to be sure a clever compiler doesn't workaround
@@ -79,18 +80,18 @@ Real(dp) function single_matmul(N,Nrun)
         call random_number(B)
         
         call system_clock(tic)
-        call sgemm('N','N',N,N,N,1.0,A,N,B,N,1.0,D,N)  !single prec only
+        call sgemm('N','N',N,N,N,1_sp,A,N,B,N,0_sp,D,N)  !single prec only
         !D = matmul(A,B) !4-5 times slower with ifort 14 than gfortran 5!
         call system_clock(toc)
         
         if (toc-tic<tmin) tmin=toc-tic
        
-        if (mod(k,1).eq.0) write(*,'(F5.1,A10)') real(k,dp)/Nrun*100.,'% done'
+        if (mod(k,1) == 0) write(*,'(F5.1,A10)') real(k,dp)/Nrun*100.,'% done'
     end do
 
     single_matmul=sysclock2ms(tmin)
 
-  print *,'fortran milliseconds per iteration: ', single_matmul
+  print '(A,F7.4)','fortran milliseconds per iteration: ', single_matmul
 
 end function single_matmul
 
