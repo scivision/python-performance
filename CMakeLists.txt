@@ -26,7 +26,7 @@ target_compile_options(inteld PUBLIC ${FFLAGS})
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 # https://software.intel.com/en-us/articles/intel-mkl-link-line-advisor
-#find_package(MKL)
+find_package(MKL)
 if(MKL_FOUND)
     include_directories(${MKL_INCLUDE_DIRS})
     target_link_libraries(matmul ${MKL_LIBRARIES} pthread dl)
