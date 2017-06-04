@@ -5,7 +5,7 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
 # NOTE: -fdefault-integer-8 -m64  are crucial for MKL to avoid SIGSEGV at runtime!
-set(FFLAGS ${FFLAGS} -fdefault-integer-8 -std=f2008)
+set(FFLAGS ${FFLAGS} -fdefault-integer-8 -std=f2008ts)
 add_compile_options(-mtune=native -Werror=array-bounds -Wall -Wextra -pedantic -m64)
 
 #if (CMAKE_BUILD_TYPE STREQUAL "Debug" AND CMAKE_C_COMPILER_ID STREQUAL "GNU")
