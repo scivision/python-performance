@@ -6,9 +6,17 @@ project( bench Fortran C)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
-# NOTE: -fdefault-integer-8 -m64  are crucial for MKL to avoid SIGSEGV at runtime!
-set(FFLAGS ${FFLAGS} -fdefault-integer-8 -std=f2008ts)
-add_compile_options(-O3 -mtune=native -Werror=array-bounds -Wall -Wextra -pedantic -m64)
+
+if(${CMAKE_Fortran_COMPILER_ID} STREQUAL "Intel")
+#    message(STATUS "be sure you have in your ~/.bashrc source compilervars.sh")
+    set(FFLAGS ${FFLAGS} -i8 -check all -fpe0 -warn -traceback -debug extended)
+else() # gfortran
+# NOTE: -fdefault-integer-8 -m64  are crucial for MKL using gfortran to avoid SIGSEGV at runtime!
+    set(FLAGS ${FLAGS} -Wall -Werror=array-bounds -Wextra -Wpedantic)
+    set(FFLAGS ${FFLAGS} -fdefault-integer-8 -std=f2008ts -m64 -fbacktrace -ffpe-trap=zero,overflow,underflow)
+endif()
+
+add_compile_options(-O3 -mtune=native ${FLAGS})
 
 #if (CMAKE_BUILD_TYPE STREQUAL "Debug" AND CMAKE_C_COMPILER_ID STREQUAL "GNU")
 #    find_program( CODECOV_GCOV gcov )
