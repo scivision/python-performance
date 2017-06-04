@@ -42,7 +42,7 @@ Real(dp) Function double_matmul(N,Nrun)
         
         if (toc-tic<tmin) tmin=toc-tic
        
-        if (mod(k,1).eq.0) write(*,'(F5.1,A10)') real(k)/Nrun*100.,'% done'
+        if (mod(k,1).eq.0) write(*,'(F5.1,A10)') real(k,dp)/Nrun*100.,'% done'
     end do
 
     double_matmul=sysclock2ms(tmin)
@@ -85,7 +85,7 @@ Real(dp) function single_matmul(N,Nrun)
         
         if (toc-tic<tmin) tmin=toc-tic
        
-        if (mod(k,1).eq.0) write(*,'(F5.1,A10)') real(k)/Nrun*100.,'% done'
+        if (mod(k,1).eq.0) write(*,'(F5.1,A10)') real(k,dp)/Nrun*100.,'% done'
     end do
 
     single_matmul=sysclock2ms(tmin)

@@ -1,11 +1,10 @@
 module benchmark_iter
-    use, intrinsic :: iso_fortran_env, only : dp=>REAL64,i64=>INT64
+    use, intrinsic :: iso_fortran_env, only : dp=>REAL64,i64=>INT64, stderr=>ERROR_UNIT
     use perf, only : init_random_seed, sysclock2ms, assert
     Implicit None
 contains
 !----------------- mandelbrot -------------------------------
 integer function mandel(z0) result(r)
-    implicit none
     complex(dp), intent(in) :: z0
     complex(dp) :: c, z
     integer :: n
@@ -24,7 +23,6 @@ integer function mandel(z0) result(r)
     end function mandel
 
 integer function mandelperf() result(mandel_sum)
-    implicit none
     integer :: re, im
     volatile :: mandel_sum
     mandel_sum = 0
@@ -40,7 +38,6 @@ integer function mandelperf() result(mandel_sum)
 end function mandelperf
 
 Real(dp) function mandeltest(N,Nrun)
-    implicit none
     integer, intent(in) :: N,Nrun
     integer(i64) :: tic,toc,tmin
     integer :: i,k,f
@@ -64,7 +61,6 @@ end function mandeltest
 !------------ end mandlebrot ------------------------------
 
 Real(dp) function simple_iter(N,Nrun)
-    implicit none
     integer,Intent(in) :: N,Nrun
 
     integer :: j,i
@@ -94,7 +90,6 @@ Real(dp) function simple_iter(N,Nrun)
 End Function simple_iter
 
 Real(dp) function pisum(N,Nrun)
-    implicit none
     integer,Intent(in) :: N,Nrun
 
     integer(i64) :: tic,toc,tmin
@@ -106,19 +101,20 @@ Real(dp) function pisum(N,Nrun)
 
     Do j = 1,Nrun
         call system_clock(tic)
-        s = 0.
+        s = 0_dp
         do k = 1,N
-            s = s + (-1.)**(k+1)/(2*k-1)
+        ! Note: -1_dp makes this overall equation real instead of integer  3.14 instead of 4
+            s = s + (-1_dp)**(real(k,dp)+1_dp)/(2_dp*k-1_dp)
         enddo
         call system_clock(toc)
         if (toc-tic<tmin) tmin=toc-tic
     End Do
 
-    s=4*s
+    s = 4*s
 
-    if (abs(s-pi) .gt. 1e-4) then
-        print *, 'final value',s
-        print *, 'error mag ',abs(s-pi)
+    if (abs(s-pi) > 1e-4) then
+        write(stderr,*) 'final value',s
+        write(stderr,*) 'error mag ',abs(s-pi)
         error stop 'FORTRAN pisum fail to converge'
     endif
 
