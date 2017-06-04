@@ -36,13 +36,14 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 # https://software.intel.com/en-us/articles/intel-mkl-link-line-advisor
 find_package(MKL)
 if(MKL_FOUND)
-    include_directories(${MKL_INCLUDE_DIRS})
+    set(MKLROOT $ENV{MKLROOT})
+    include_directories(${MKL_INCLUDE_DIRS} ${MKLROOT}/include/intel64/ilp64)
     target_link_libraries(matmul ${MKL_LIBRARIES} pthread dl)
     target_link_libraries(inteld ${MKL_LIBRARIES} pthread dl)
     # this example requires MKL
     add_executable(intelg intel_gemm.f90)
     target_compile_options(intelg PUBLIC ${FFLAGS})
-    target_link_libraries(intelg ${MKL_LIBRARIES} pthread dl)
+    target_link_libraries(intelg ${MKLROOT}/lib/intel64/libmkl_blas95_lp64.a ${MKL_LIBRARIES} pthread dl)
 else()
     find_package(BLAS REQUIRED)
     target_link_libraries(matmul blas)
@@ -61,15 +62,23 @@ target_link_libraries(iterc rt m)
 
 # manually:
 # https://software.intel.com/en-us/articles/intel-mkl-link-line-advisor
+#
+# manual, works
+# ifort -i8 intel_gemm.f90 -I${MKLROOT}/include/intel64/ilp64 ${MKLROOT}/lib/intel64/libmkl_blas95_lp64.a -L${MKLROOT}/lib/intel64 -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lpthread -lm -ldl 
+#
+# cmake
+# ifort -i8 intel_gemm.f90 -I${MKLROOT}/include/intel64/ilp64
+
+
 
 # source /opt/intel/compilers_and_libraries/linux/mkl/bin/mklvars.sh intel64
 # export F95ROOT=/opt/intel/compilers_and_libraries/linux/mkl
 
-# ifort -O3 -march=native -I${MKLROOT}/include/intel64/lp64 -I${MKLROOT}/include ../perf.f90 ../matmul_sub.f90 ../matmul_drv.f90  ${MKLROOT}/lib/intel64/libmkl_blas95_lp64.a ${MKLROOT}/lib/intel64/libmkl_lapack95_lp64.a -L${MKLROOT}/lib/intel64 -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lpthread -lm -ldl
+# ifort -O3 -march=native -I${MKLROOT}/include/intel64/ilp64 -I${MKLROOT}/include ../perf.f90 ../matmul_sub.f90 ../matmul_drv.f90  ${MKLROOT}/lib/intel64/libmkl_blas95_lp64.a ${MKLROOT}/lib/intel64/libmkl_lapack95_lp64.a -L${MKLROOT}/lib/intel64 -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lpthread -lm -ldl
 
 
 # Broken due to gfortran <= std=f95:
 # gfortran -O3 -march=native -I${F95ROOT}/include/intel64/lp64 -m64 -I${MKLROOT}/include ../perf.f90 ../matmul_sub.f90 ../matmul_drv.f90  ${F95ROOT}/lib/intel64/libmkl_blas95_lp64.a ${F95ROOT}/lib/intel64/libmkl_lapack95_lp64.a -L${MKLROOT}/lib/intel64 -Wl,--no-as-needed -lmkl_gf_lp64 -lmkl_sequential -lmkl_core -lpthread -lm -ldl
 
-#f951: Fatal Error: Reading module ‘lapack95’ at line 1 column 2: Unexpected EOF compilation terminated.
 
+#

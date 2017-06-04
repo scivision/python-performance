@@ -20,7 +20,7 @@ addons:
     sources:
         - ubuntu-toolchain-r-test
     packages:
-        - gfortran
+        - gfortran-5
         - libopenblas-dev
 
 before_install:

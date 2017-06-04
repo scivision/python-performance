@@ -1,7 +1,8 @@
     PROGRAM   MAIN
 
-     use blas95
-     use f95_precision
+     use blas95, only: gemm
+     !use lapack95
+     !use f95_precision
      use,intrinsic :: iso_fortran_env, only: dp=>real64
 
       IMPLICIT NONE
