@@ -1,6 +1,6 @@
 module benchmark_matmul
 
-    use, intrinsic :: iso_fortran_env, only : REAL32,REAL64,INT64
+    use, intrinsic :: iso_fortran_env, only : REAL32,dp=>REAL64,INT64
     use perf, only : init_random_seed, sysclock2ms 
     Implicit None
     
@@ -8,26 +8,27 @@ contains
 
 !TODO upgrade to polymorphic
 
-Real(real64) Function double_matmul(N,Nrun)
+Real(dp) Function double_matmul(N,Nrun)
 
     integer, intent(in) :: N,Nrun
 
-    real(real64),allocatable :: A(:,:),B(:,:),D(:,:)
+    real(dp),allocatable :: A(:,:),B(:,:),D(:,:)
 
     integer :: k
     integer(int64) :: tic,toc,tmin=huge(0_int64)  ! MUST BE _int64!!!
 
     allocate(A(N,N))
-    allocate(B(N,N),mold=A)
-    allocate(D(N,N),mold=A)
-    D=0.d0 ! cannot initialize automatic array directly
+    allocate(B(N,N))
+    allocate(D(N,N))
+
+    D(:,:) = 0_dp ! cannot initialize automatic array directly
 
     call init_random_seed()
 ! https://github.com/JuliaLang/julia/blob/master/test/perf/micro/perf.f90
 
     print *,'priming double-prec. matmul loop'
     ! recommended to call once before loop per Intel manual
-    call dgemm('N','N',N,N,N,1.d0,A,N,B,N,1.d0,D,N)
+    call dgemm('N','N',N,N,N,1_dp,A,N,B,N,0_dp,D,N)
 
     do k = 1, Nrun
     !refilling arrays with random numbers to be sure a clever compiler doesn't workaround
@@ -50,7 +51,7 @@ Real(real64) Function double_matmul(N,Nrun)
 
 end function double_matmul
 
-Real(real64) function single_matmul(N,Nrun)
+Real(dp) function single_matmul(N,Nrun)
 
     integer, intent(in) :: N,Nrun
 
