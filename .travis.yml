@@ -10,6 +10,8 @@ os:
   - linux
 #  - osx # temp disable due to travis image problem
 
+env: FC=/usr/bin/gfortran-5
+
 osx_image: xcode8.2  #xcode8.2 needed for CLOCK_MONOTONIC() in pisum.c
 dist: trusty
 
@@ -31,7 +33,7 @@ before_install:
         ln -fs /usr/bin/gfortran-5 "$HOME/.local/bin/gfortran";
       fi
 
-    - export PATH=$HOME/.local/bin:$PATH;
+    - export PATH="$HOME/.local/bin:$PATH"
     - gfortran --version
 
 install:
