@@ -17,9 +17,11 @@ env: FC=gfortran
 
 addons:
   apt:
-    sources: ['ubuntu-toolchain-r-test']
-    packages: ['gfortran','libopenblas-dev']
-
+    sources: 
+        - ubuntu-toolchain-r-test
+    packages: 
+        - gfortran
+        - libopenblas-dev
 
 before_install:
     - if [[ $TRAVIS_OS_NAME == osx ]]; then
