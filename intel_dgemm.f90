@@ -1,11 +1,13 @@
     PROGRAM   MAIN
 
+    use,intrinsic :: iso_fortran_env, only: dp=>real64
+
       IMPLICIT NONE
 
-      DOUBLE PRECISION ALPHA, BETA
+      real(dp) ALPHA, BETA
       INTEGER          M, K, N, I, J
       PARAMETER        (M=2000, K=200, N=1000)
-      DOUBLE PRECISION A(M,K), B(K,N), C(M,N)
+      real(dp) A(M,K), B(K,N), C(M,N)
 
       PRINT *, "This example computes real matrix C=alpha*A*B+beta*C"
       PRINT *, "using Intel(R) MKL function dgemm, where A, B, and C"
@@ -17,31 +19,18 @@
       PRINT 10, " matrix A(",M," x",K, ") and matrix B(", K," x", N, ")"
 10    FORMAT(a,I5,a,I5,a,I5,a,I5,a)
       PRINT *, ""
-      ALPHA = 1.0 
-      BETA = 0.0
+      ALPHA = 1
+      BETA = 0
 
       PRINT *, "Intializing matrix data"
       PRINT *, ""
-      DO I = 1, M
-        DO J = 1, K
-          A(I,J) = (I-1) * K + J
-        END DO
-      END DO
+      forall (I = 1:M, J = 1:K)  A(I,J) = (I-1) * K + J
 
-      DO I = 1, K
-        DO J = 1, N
-          B(I,J) = -((I-1) * N + J)
-        END DO
-      END DO
+      forall (I = 1:K, J = 1:N)  B(I,J) = -((I-1) * N + J)
 
-      DO I = 1, M
-        DO J = 1, N
-          C(I,J) = 0.0
-        END DO
-      END DO
+      C(:,:) = 0
 
-      PRINT *, "Computing matrix product using Intel(R) MKL DGEMM "
-      PRINT *, "subroutine"
+      PRINT *, "Computing matrix product using Intel(R) MKL DGEMM subroutine"
       CALL DGEMM('N','N',M,N,K,ALPHA,A,M,B,K,BETA,C,M)
       PRINT *, "Computations completed."
       PRINT *, ""
@@ -63,6 +52,4 @@
  30   FORMAT(6(ES12.4,1x))
 
       PRINT *, "Example completed."
-      STOP 
-
-      END
+      END program
