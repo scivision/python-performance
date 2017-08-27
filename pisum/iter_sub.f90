@@ -115,7 +115,7 @@ Real(dp) function pisum(N,Nrun)
 
         call system_clock(tic)
         psum = 0.0_dp
-        do k = im,Nrun, Nimg   ! 1,N
+        do k = im,N, Nimg   ! 1,N
             psum = psum + (-1.0_dp)**(real(k,dp)+1.0_dp)/(2.0_dp*k-1.0_dp)
         enddo
         call co_sum(psum)
@@ -124,16 +124,18 @@ Real(dp) function pisum(N,Nrun)
 
     enddo
 
-    psum = 4.0_dp*psum
-    print *, psum
+    if (im==1) then
+        psum = 4.0_dp*psum
+        print *, psum
 
-    if (abs(psum-pi) > 1e-4_dp) then
-        write(stderr,*) 'final value',psum
-        write(stderr,*) 'error ', psum - pi
-        error stop 'FORTRAN pisum fail to converge'
+        if (abs(psum-pi) > 1e-4_dp) then
+            write(stderr,*) 'final value',psum
+            write(stderr,*) 'error ', psum - pi
+            error stop 'FORTRAN pisum fail to converge'
+        endif
+
+        pisum = sysclock2ms(tmin)
     endif
-
-    pisum = sysclock2ms(tmin)
 
 End Function pisum
 
