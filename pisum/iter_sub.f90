@@ -101,27 +101,32 @@ Real(dp) function pisum(N,Nrun)
     integer,Intent(in) :: N,Nrun
 
     integer(i64) :: tic,toc,tmin
-    real(dp), volatile :: s
-    integer :: k,j
+    real(dp) :: psum[*] = 0.0_dp
+    integer :: k,j, im, Nimg
     real(dp),parameter :: pi = 4.0_dp*atan(1.0_dp)
 
     tmin = huge(0_i64)
 
-    Do j = 1,Nrun
+    im = this_image()
+    Nimg = num_images()
+
+    do j = im,Nrun, Nimg   ! 1,Nrun
         call system_clock(tic)
-        s = 0.0_dp
+        psum = 0.0_dp
         do k = 1,N
-            s = s + (-1.0_dp)**(real(k,dp)+1.0_dp)/(2.0_dp*k-1.0_dp)
+            psum = psum + (-1.0_dp)**(real(k,dp)+1.0_dp)/(2.0_dp*k-1.0_dp)
         enddo
+        call co_sum(psum)
         call system_clock(toc)
         if (toc-tic<tmin) tmin=toc-tic
     End Do
 
-    s = 4.0_dp*s
+    psum = 4.0_dp*psum
+    print *, psum
 
-    if (abs(s-pi) > 1e-4_dp) then
-        write(stderr,*) 'final value',s
-        write(stderr,*) 'error mag ',abs(s-pi)
+    if (abs(psum-pi) > 1e-4_dp) then
+        write(stderr,*) 'final value',psum
+        write(stderr,*) 'error ', psum - pi
         error stop 'FORTRAN pisum fail to converge'
     endif
 

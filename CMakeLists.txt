@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.12)
-project( bench Fortran C)
+project(bench Fortran C)
 
 # https://software.intel.com/en-us/mkl-developer-reference-fortran-fortran-95-interface-conventions-for-blas-routines
 
@@ -9,14 +9,16 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 
 if(${CMAKE_Fortran_COMPILER_ID} STREQUAL "Intel")
 #    message(STATUS "be sure you have in your ~/.bashrc source compilervars.sh")
-    set(FFLAGS ${FFLAGS} -i8 -check all -fpe0 -warn -traceback -debug extended)
-else() # gfortran
+    set(FFLAGS ${FFLAGS} -coarray -i8 -check all -fpe0 -warn -traceback -debug extended)
+elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL "GNU") # gfortran
 # NOTE: -fdefault-integer-8 -m64  are crucial for MKL using gfortran to avoid SIGSEGV at runtime!
     set(FLAGS ${FLAGS} -Wall -Werror=array-bounds -Wextra -Wpedantic)
-    set(FFLAGS ${FFLAGS} -fdefault-integer-8 -std=f2008ts -m64 -fbacktrace -ffpe-trap=zero,overflow,underflow)
+    set(FFLAGS ${FFLAGS} -fdefault-integer-8 -std=f2008ts -m64 -fbacktrace -ffpe-trap=zero,overflow,underflow -fcoarray=single)
+elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL "PGI") # flang
+
 endif()
 
-add_compile_options(-O3 -mtune=native ${FLAGS})
+add_compile_options(-O3 -g -mtune=native ${FLAGS})
 
 #if (CMAKE_BUILD_TYPE STREQUAL "Debug" AND CMAKE_C_COMPILER_ID STREQUAL "GNU")
 #    find_program( CODECOV_GCOV gcov )
@@ -54,10 +56,13 @@ endif()
 #------ Non-MKL test -----------------------------------
 
 add_executable(kind kind.f90)
+target_compile_options(kind PUBLIC ${FFLAGS})
 
 add_executable(hypot Hypot.f90 benchmark_hypot.f90 perf.f90)
+target_compile_options(hypot PUBLIC ${FFLAGS})
 
 add_executable(iterfort ../pisum/iter_drv.f90 ../pisum/iter_sub.f90 perf.f90)
+target_compile_options(iterfort PUBLIC ${FFLAGS})
 
 add_executable(iterc ../pisum/pisum.c)
 target_link_libraries(iterc rt m)
