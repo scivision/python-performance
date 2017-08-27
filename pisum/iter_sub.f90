@@ -98,28 +98,31 @@ Real(dp) function simple_iter(N,Nrun)
 End Function simple_iter
 
 Real(dp) function pisum(N,Nrun)
-    integer,Intent(in) :: N,Nrun
+
+    integer, intent(in) :: N,Nrun
 
     integer(i64) :: tic,toc,tmin
     real(dp) :: psum[*] = 0.0_dp
     integer :: k,j, im, Nimg
-    real(dp),parameter :: pi = 4.0_dp*atan(1.0_dp)
+    real(dp), parameter :: pi = 4.0_dp*atan(1.0_dp)
 
     tmin = huge(0_i64)
 
     im = this_image()
     Nimg = num_images()
 
-    do j = im,Nrun, Nimg   ! 1,Nrun
+    do j = 1,Nrun
+
         call system_clock(tic)
         psum = 0.0_dp
-        do k = 1,N
+        do k = im,Nrun, Nimg   ! 1,N
             psum = psum + (-1.0_dp)**(real(k,dp)+1.0_dp)/(2.0_dp*k-1.0_dp)
         enddo
         call co_sum(psum)
         call system_clock(toc)
         if (toc-tic<tmin) tmin=toc-tic
-    End Do
+
+    enddo
 
     psum = 4.0_dp*psum
     print *, psum
