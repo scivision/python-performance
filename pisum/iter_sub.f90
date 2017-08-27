@@ -67,8 +67,6 @@ Real(dp) function mandeltest(N,Nrun)
         if (toc-tic < tmin) tmin = toc-tic
     end do
 
-    print *,f
-
     call assert(f == 14791)
     mandeltest = sysclock2ms(tmin)
 
