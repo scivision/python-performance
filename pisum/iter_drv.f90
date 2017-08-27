@@ -22,11 +22,12 @@ Program run_iter
 !-----simple_iter----------------------
       t = simple_iter(Niter,Nruniter)
       print frmt, 'Iteration: ',t
+
+    endif
+
 !------mandlebrot-------------
       t = mandeltest(Nmand,Nrunmand)
       print frmt, 'Mandelbrot: ',t
-
-    endif
 
 !------pisum----------------
     t = pisum(Niter/10,Nruniter)

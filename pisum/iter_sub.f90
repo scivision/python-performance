@@ -27,18 +27,26 @@ elemental integer function mandel(z0) result(r)
 end function mandel
 
 
-elemental integer function mandelperf() result(mandel_sum)
+integer function mandelperf() result(mandel_sum)
 
-    integer :: re, im
-    volatile :: mandel_sum
+    integer :: re, im, img, Nimg
+    integer :: msum[*] = 0
 
     mandel_sum = 0
+    msum=0 ! must have this line!
 
-    do re=-20,5
+    img = this_image()
+    Nimg = num_images()
+
+    do re=img-21, 5, Nimg !re=-20,5
       do im = -10,10
-        mandel_sum = mandel_sum + mandel(cmplx(re/10.0_dp, im/10.0_dp, dp))
+        msum = msum + mandel(cmplx(re/10.0_dp, im/10.0_dp, dp))
       end do
     end do
+
+    call co_sum(msum)
+
+    mandel_sum = msum
 
 end function mandelperf
 
@@ -58,6 +66,8 @@ Real(dp) function mandeltest(N,Nrun)
         call system_clock(toc)
         if (toc-tic < tmin) tmin = toc-tic
     end do
+
+    print *,f
 
     call assert(f == 14791)
     mandeltest = sysclock2ms(tmin)
@@ -111,7 +121,7 @@ Real(dp) function pisum(N,Nrun)
     do j = 1,Nrun
 
         call system_clock(tic)
-        psum = 0.0_dp
+        psum = 0.0_dp ! must have this line
         do k = im,N, Nimg   ! 1,N
             psum = psum + (-1.0_dp)**(real(k,dp)+1.0_dp)/(2.0_dp*k-1.0_dp)
         enddo
