@@ -1,6 +1,6 @@
 Program run_iter
 
-    use, intrinsic :: iso_fortran_env, only : dp=>REAL64
+    use, intrinsic :: iso_fortran_env, only : dp=>real64
     use benchmark_iter,only : simple_iter,mandeltest, pisum
 
     Implicit None
@@ -12,7 +12,7 @@ Program run_iter
 
     real(dp) :: t
 
-    print *, '--> FORTRAN (times in milliseconds)'
+    print *, '--> Fortran (times in milliseconds)'
 !-----simple_iter----------------------
     t = simple_iter(Niter,Nruniter)
     print frmt, 'Iteration: ',t

@@ -1,10 +1,13 @@
 module benchmark_iter
-    use, intrinsic :: iso_fortran_env, only : dp=>REAL64,i64=>INT64, stderr=>ERROR_UNIT
+
+    use, intrinsic :: iso_fortran_env, only : dp=>real64,i64=>int64, stderr=>error_unit
     use perf, only : init_random_seed, sysclock2ms, assert
     Implicit None
+
 contains
 !----------------- mandelbrot -------------------------------
-integer function mandel(z0) result(r)
+elemental integer function mandel(z0) result(r)
+
     complex(dp), intent(in) :: z0
     complex(dp) :: c, z
     integer :: n
@@ -20,22 +23,25 @@ integer function mandel(z0) result(r)
         z = z**2 + c
     end do
     r = maxiter
-    end function mandel
 
-integer function mandelperf() result(mandel_sum)
+end function mandel
+
+
+elemental integer function mandelperf() result(mandel_sum)
+
     integer :: re, im
     volatile :: mandel_sum
+
     mandel_sum = 0
-    re = -20
-    do while (re <= 5)
-        im = -10
-        do while (im <= 10)
-            mandel_sum = mandel_sum + mandel(cmplx(re/10._dp, im/10._dp, dp))
-            im = im + 1
-        end do
-        re = re + 1
+
+    do re=-20,5
+      do im = -10,10
+        mandel_sum = mandel_sum + mandel(cmplx(re/10.0_dp, im/10.0_dp, dp))
+      end do
     end do
+
 end function mandelperf
+
 
 Real(dp) function mandeltest(N,Nrun)
     integer, intent(in) :: N,Nrun
@@ -52,6 +58,7 @@ Real(dp) function mandeltest(N,Nrun)
         call system_clock(toc)
         if (toc-tic < tmin) tmin = toc-tic
     end do
+
     call assert(f == 14791)
     mandeltest = sysclock2ms(tmin)
 
@@ -61,6 +68,7 @@ end function mandeltest
 !------------ end mandlebrot ------------------------------
 
 Real(dp) function simple_iter(N,Nrun)
+
     integer,Intent(in) :: N,Nrun
 
     integer :: j,i
@@ -77,9 +85,9 @@ Real(dp) function simple_iter(N,Nrun)
    Do j = 1, Nrun
        call random_number(A)
        call system_clock(tic)
-       x = 0.d0
+       x = 0.0_dp
        Do i = 1, N
-          x = 0.5*x + mod(A(i),10._dp)
+          x = 0.5_dp*x + mod(A(i),10._dp)
        End Do
        call system_clock(toc)
        if (toc-tic<tmin) tmin=toc-tic
@@ -95,24 +103,23 @@ Real(dp) function pisum(N,Nrun)
     integer(i64) :: tic,toc,tmin
     real(dp), volatile :: s
     integer :: k,j
-    real(dp),parameter :: pi = 4*atan(1.)
+    real(dp),parameter :: pi = 4.0_dp*atan(1.0_dp)
 
     tmin = huge(0_i64)
 
     Do j = 1,Nrun
         call system_clock(tic)
-        s = 0_dp
+        s = 0.0_dp
         do k = 1,N
-        ! Note: -1_dp makes this overall equation real instead of integer  3.14 instead of 4
-            s = s + (-1_dp)**(real(k,dp)+1_dp)/(2_dp*k-1_dp)
+            s = s + (-1.0_dp)**(real(k,dp)+1.0_dp)/(2.0_dp*k-1.0_dp)
         enddo
         call system_clock(toc)
         if (toc-tic<tmin) tmin=toc-tic
     End Do
 
-    s = 4*s
+    s = 4.0_dp*s
 
-    if (abs(s-pi) > 1e-4) then
+    if (abs(s-pi) > 1e-4_dp) then
         write(stderr,*) 'final value',s
         write(stderr,*) 'error mag ',abs(s-pi)
         error stop 'FORTRAN pisum fail to converge'
