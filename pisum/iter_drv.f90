@@ -32,16 +32,20 @@ Program run_iter
     t = mandeltest(Nmand,Nrunmand)
     call system_clock(toc)
     
-    print frmt, 'Mandelbrot: ',t
-    print '(A,I2,A,F8.3,A)','Total Mandelbrot time with ',num_images(),' images is ',sysclock2ms(toc-tic),' ms.'
+    if (im==1) then
+        print frmt, 'Mandelbrot: ',t
+        print '(A,I2,A,F8.3,A)','Total Mandelbrot time with ',num_images(),' images is ',sysclock2ms(toc-tic),' ms.'
+    endif
 
 !------pisum----------------
     call system_clock(tic)
     t = pisum(Niter/10,Nruniter)
     call system_clock(toc)
 
-    print frmt, 'pisum: ',t
-    print '(A,I2,A,F8.3,A)','Total pi time with ',num_images(),' images is ',sysclock2ms(toc-tic),' ms.'
+    if (im==1) then
+        print frmt, 'pisum: ',t
+        print '(A,I2,A,F8.3,A)','Total pi time with ',num_images(),' images is ',sysclock2ms(toc-tic),' ms.'
+    endif
 
 
 End Program
