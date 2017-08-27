@@ -101,12 +101,11 @@ Real(dp) function pisum(N,Nrun)
 
     integer, intent(in) :: N,Nrun
 
-    integer(i64) :: tic,toc,tmin
+    integer(i64) :: tic,toc
+    integer(i64) :: tmin[*] = huge(0_i64)
     real(dp) :: psum[*] = 0.0_dp
     integer :: k,j, im, Nimg
     real(dp), parameter :: pi = 4.0_dp*atan(1.0_dp)
-
-    tmin = huge(0_i64)
 
     im = this_image()
     Nimg = num_images()
@@ -126,7 +125,6 @@ Real(dp) function pisum(N,Nrun)
 
     if (im==1) then
         psum = 4.0_dp*psum
-        print *, psum
 
         if (abs(psum-pi) > 1e-4_dp) then
             write(stderr,*) 'final value',psum
@@ -134,8 +132,11 @@ Real(dp) function pisum(N,Nrun)
             error stop 'FORTRAN pisum fail to converge'
         endif
 
-        pisum = sysclock2ms(tmin)
     endif
+
+    call co_min(tmin)
+
+    pisum = sysclock2ms(tmin)
 
 End Function pisum
 
