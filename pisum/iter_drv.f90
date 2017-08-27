@@ -5,6 +5,8 @@ Program run_iter
 
     Implicit None
 
+    integer :: im
+
     integer,parameter :: Nmand=5
     integer,parameter :: Niter=1000000, Nruniter=100,Nrunmand=1000
     
@@ -12,13 +14,20 @@ Program run_iter
 
     real(dp) :: t
 
-    print *, '--> Fortran (times in milliseconds)'
+    im = this_image()
+
+    if (im==1) then
+
+      print *, '--> Fortran (times in milliseconds)'
 !-----simple_iter----------------------
-    t = simple_iter(Niter,Nruniter)
-    print frmt, 'Iteration: ',t
+      t = simple_iter(Niter,Nruniter)
+      print frmt, 'Iteration: ',t
 !------mandlebrot-------------
-    t = mandeltest(Nmand,Nrunmand)
-    print frmt, 'Mandelbrot: ',t
+      t = mandeltest(Nmand,Nrunmand)
+      print frmt, 'Mandelbrot: ',t
+
+    endif
+
 !------pisum----------------
     t = pisum(Niter/10,Nruniter)
     print frmt, 'pisum: ',t
