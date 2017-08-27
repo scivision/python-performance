@@ -72,12 +72,10 @@ Real(dp) function simple_iter(N,Nrun)
     integer,Intent(in) :: N,Nrun
 
     integer :: j,i
-    integer(i64) :: tic,toc,tmin
+    integer(i64) :: tic,toc,tmin = huge(0_i64)
     real(dp) :: A(N)
     ! volatile tells compiler that value is unpredictable, don't unroll, etc.
     real(dp), volatile :: x
-
-    tmin = huge(0_i64)
 
    call init_random_seed()
 
@@ -87,7 +85,7 @@ Real(dp) function simple_iter(N,Nrun)
        call system_clock(tic)
        x = 0.0_dp
        Do i = 1, N
-          x = 0.5_dp*x + mod(A(i),10._dp)
+          x = 0.5_dp*x + mod(A(i), 10.0_dp)
        End Do
        call system_clock(toc)
        if (toc-tic<tmin) tmin=toc-tic
