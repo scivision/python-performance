@@ -7,7 +7,7 @@ os:
 osx_image: xcode9  
 # xcode >= 8.2 needed for CLOCK_MONOTONIC() in pisum.c
 
-env: FC=gfortran-6
+env: FC=gfortran
 
 dist: trusty
 group: edge
@@ -20,19 +20,16 @@ git:
 
 addons:
   apt:
-    sources:
-      - ubuntu-toolchain-r-test
     packages:
-      - gfortran-6
+      - gfortran
       - libopenblas-dev
 
 before_install:
-    - if [[ $TRAVIS_OS_NAME == osx ]]; then
-        brew update;
-        brew install gcc;
-        brew install homebrew/science/openblas; 
-        export FC=gfortran;
-      fi
+  - if [[ $TRAVIS_OS_NAME == osx ]]; then
+      brew update;
+      brew install gcc;
+      brew install homebrew/science/openblas;
+    fi
 
 install:
   - cd bin
