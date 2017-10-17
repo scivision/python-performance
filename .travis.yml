@@ -2,9 +2,10 @@ language: c
 
 os:
   - linux
-#  - osx # temp disable due to travis image problem
+  - osx
 
-osx_image: xcode9  #xcode >= 8.2 needed for CLOCK_MONOTONIC() in pisum.c
+osx_image: xcode9  
+# xcode >= 8.2 needed for CLOCK_MONOTONIC() in pisum.c
 
 env: FC=gfortran-6
 
@@ -31,8 +32,6 @@ before_install:
         brew install gcc;
         brew install homebrew/science/openblas;
       fi
-
-    - gfortran --version
 
 install:
   - cd bin
