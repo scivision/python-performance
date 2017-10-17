@@ -30,12 +30,13 @@ before_install:
       brew install gcc;
       brew link --overwrite gcc;
       brew install openblas;
+      brew install opencoarrays;
     fi
 
 install:
   - cd bin
   - cmake ..
-  - make
+  - make -k
 
 script:
   - ./kind
