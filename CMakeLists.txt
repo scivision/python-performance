@@ -81,8 +81,11 @@ target_compile_options(iterfort PUBLIC ${FFLAGS} ${FCOOPT})
 target_link_libraries(iterfort ${FCOLIB})
 
 add_executable(iterc ../pisum/pisum.c)
-target_link_libraries(iterc rt m)
-
+if (${APPLE})
+  target_link_libraries(iterc m)
+else()
+  target_link_libraries(iterc rt m)
+endif()
 # manually:
 # https://software.intel.com/en-us/articles/intel-mkl-link-line-advisor
 #

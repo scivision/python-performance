@@ -18,22 +18,31 @@ int main(int argc, char** argv){
     printf("--> C\n");
 
 	struct timespec start, end;
-	clock_gettime(CLOCK_MONOTONIC, &start);
+	
+	#if (!defined(__APPLE__))
+	  clock_gettime(CLOCK_MONOTONIC, &start);
+	#endif  
+	    
     for (int k=1; k<=N; k++) {
        s += pow(-1., k+1.) / (2.*k-1);
     }
-    clock_gettime(CLOCK_MONOTONIC, &end);
-
+    
+    #if (!defined(__APPLE__))
+      clock_gettime(CLOCK_MONOTONIC, &end);
+    #endif
+    
     uint64_t diff = BILLION * (end.tv_sec - start.tv_sec) + end.tv_nsec - start.tv_nsec;
 
     s = 4*s;
 
     if (fabs(s-M_PI)>1e-4) {
-        printf("C pisum: large error magnitude");
+        fprintf(stderr,"C pisum: large error magnitude");
         return EXIT_FAILURE;
     }
 
-    printf("pisum: %.2f milliseconds   pi=%f\n",(float) diff/1000000,s);
+    #if (!defined(__APPLE__))
+      printf("pisum: %.2f milliseconds   pi=%f\n",(float) diff/1000000,s);
+    #endif
 
     return EXIT_SUCCESS;
 }
