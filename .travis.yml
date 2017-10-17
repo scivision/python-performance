@@ -28,7 +28,8 @@ before_install:
   - if [[ $TRAVIS_OS_NAME == osx ]]; then
       brew update;
       brew install gcc;
-      brew install homebrew/science/openblas;
+      brew link --overwrite gcc;
+      brew install openblas;
     fi
 
 install:
