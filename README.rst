@@ -24,7 +24,7 @@ Intel Fortran::
 
     FC=ifort cmake ..
 
-GNU Fortran::
+GNU Fortran (gfortran >= 6 required)::
 
     FC=gfortran cmake ..
     
