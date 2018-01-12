@@ -6,39 +6,39 @@ if PY2:
     FileNotFoundError=OSError
 #%% Fortran
 try:
-    S.run(['./bin/matmul'])
+    S.call(['./bin/matmul'])
 except FileNotFoundError:
     pass
 #%% Julia
 try:
-    S.run(['julia','matmul.jl'])
+    S.check_call(['julia','matmul.jl'])
 except FileNotFoundError:
     pass
 #%% GDL
 try:
     tic = time()
-    S.run(['gdl','-q','matmul.pro'])
-    S.run(['gdl','-v'])
+    S.check_call(['gdl','-q','matmul.pro'])
+    S.check_call(['gdl','-v'])
     print('{:.2f} seconds'.format(time()-tic))
 except FileNotFoundError:
     pass
 #%% Octave
 try:
-    S.run(['octave','-q','--eval','run matmul.m'])
+    S.check_call(['octave','-q','--eval','run matmul.m'])
 except FileNotFoundError:
     pass
 #%% Matlab
 try:
-    S.run(['matlab','-nodesktop','-nojvm','-nosplash','-r','run matmul.m; exit'])
+    S.check_call(['matlab','-nodesktop','-nojvm','-nosplash','-r','run matmul.m; exit'])
 except FileNotFoundError:
     pass
 #%% Python 2.7
 try:
-    S.run(['ipython2','matmul.ipy'])
+    S.check_call(['ipython2','matmul.ipy'])
 except FileNotFoundError:
     pass
 #%% Python 3
 try:
-    S.run(['ipython3','matmul.ipy'])
+    S.check_call(['ipython3','matmul.ipy'])
 except FileNotFoundError:
     pass
