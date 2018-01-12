@@ -8,8 +8,7 @@ os:
 osx_image: xcode9  
 # xcode >= 8.2 needed for CLOCK_MONOTONIC() in pisum.c
 
-env: 
-  - FC=gfortran-6
+env: FC=gfortran-6
 
 dist: trusty
 group: edge
@@ -33,15 +32,14 @@ before_install:
       brew update;
       brew install gcc;
       brew link --overwrite gcc;
-      brew install openblas;
-      brew install opencoarrays;
+      brew install openblas opencoarrays;
       export FC=gfortran;
     fi
 
 install:
   - cd bin
   - cmake ..
-  - make -k
+  - make -k || true
 
 script:
   - ./kind

@@ -24,7 +24,7 @@ except FileNotFoundError:
     pass
 #%% Octave
 try:
-    S.check_call(['octave','-q','--eval','run matmul.m'])
+    S.check_call(['octave-cli','-q','matmul.m'])
 except FileNotFoundError:
     pass
 #%% Matlab
