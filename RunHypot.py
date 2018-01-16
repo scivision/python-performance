@@ -9,8 +9,11 @@ import numpy as np
 from matplotlib.pyplot import figure,show
 from timeit import repeat
 import sys
-import seaborn as sns
-sns.set_context('talk')
+try:
+    import seaborn as sns
+    sns.set_context('talk')
+except ImportError:
+    pass
 
 # this must NOT be as function for a,b to work properly.
 N = np.logspace(1,6.5,25,True,dtype=int)

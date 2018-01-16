@@ -1,9 +1,8 @@
 #!/usr/bin/env python
-from __future__ import print_function
 from pythonperformance import Path
 from time import time
 import subprocess as S
-from sys import stderr
+import logging
 from six import PY2
 if PY2:
     FileNotFoundError=OSError
@@ -11,24 +10,28 @@ if PY2:
 bdir = Path('pisum')
 #%% C
 try:
-    S.check_call(['./iterc'],cwd='bin')
+    print('C -->')
+    S.check_call(['./iterc'], cwd='bin')
 except FileNotFoundError:
-    print('please compile pisum.c as per README',file=stderr)
-    pass
+    logging.error('please compile pisum.c as per README')
+    
 #%% Fortran
 try:
-    S.check_call(['./iterfort'],cwd='bin')
+    print('Fortran -->')
+    S.check_call(['./iterfort'], cwd='bin')
 except FileNotFoundError:
-    print('please compile Pisum Fortran code as per README',file=stderr)
-    pass
+    logging.error('please compile Pisum Fortran code as per README')
+
+
 #%% Julia
 try:
-    S.check_call(['julia','iter.jl'],cwd=str(bdir))
+    print('Julia -->')
+    S.check_call(['julia','iter.jl'], cwd=str(bdir))
 except FileNotFoundError:
-    pass
+    logging.warning('Julia test skipped')
 #%% GDL
 try:
-    print('--> GDL',end=' ')
+    print('GDL -->')
 #    # baseline
 #    tic = time()
 #    S.check_call(['gdl','-q','-e','exit'])
@@ -40,23 +43,26 @@ try:
 #    t = toc - base
 #    print('{:.2f} milliseconds'.format(t*1000))
 except FileNotFoundError:
-    pass
+    logging.warning('GDL test skipped')
 
 #%% Octave
 try:
-    S.check_call(['octave','-q','--eval','iter;exit'], cwd=str(bdir))
+    print('Octave -->')
+    S.check_call(['octave-cli','-q','iter.m'], cwd=str(bdir))
 except FileNotFoundError:
-    pass
+    logging.warning('Octave test skipped')
+    
 #%% Matlab
 try:
+    print('Matlab -->')
     S.check_call(['matlab','-nodesktop','-nojvm','-nosplash','-r',
            'iter; exit'], cwd=str(bdir))
 except FileNotFoundError:
-    pass
+    logging.warning('Matlab test skipped')
 
 #%% Python
 try:
-    S.run(['ipython','pisum.ipy'],cwd=str(bdir))
+    print('Python -->')
+    S.check_call(['ipython','pisum.ipy'],cwd=str(bdir))
 except FileNotFoundError:
-    print('skip Python',file=stderr)
-    pass
+    logging.warning('Python test skipped')
