@@ -14,16 +14,12 @@ Real(dp) Function double_matmul(N,Nrun)
 
     integer, intent(in) :: N,Nrun
 
-    real(dp),allocatable :: A(:,:), B(:,:), D(:,:)
+    real(dp), dimension(N,N) :: A, B, D
 
     integer :: k
     integer(int64) :: tic,toc,tmin=huge(0_int64)  ! MUST BE _int64!!!
 
-    allocate(A(N,N))
-    allocate(B, mold=A)
-    allocate(D, mold=A)
-
-    D(:,:) = 0_dp ! cannot initialize automatic array directly
+    D(:,:) = 0._dp ! cannot initialize automatic array directly
 
     call init_random_seed()
 ! https://github.com/JuliaLang/julia/blob/master/test/perf/micro/perf.f90
@@ -62,14 +58,11 @@ Real(dp) function single_matmul(N,Nrun)
 
     integer, intent(in) :: N,Nrun
 
-    real(sp),allocatable :: A(:,:), B(:,:), D(:,:)
+    real(sp),dimension(N,N) :: A, B, D
 
     integer :: k
     integer(int64) :: tic,toc, tmin=huge(0_int64)
 
-    allocate(A(N,N))
-    allocate(B, mold=A)
-    allocate(D, mold=A)
     D(:,:) = 0_sp 
 
     call init_random_seed()

@@ -34,7 +34,7 @@ elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL "PGI") # flang
 
 endif()
 
-add_compile_options(-O3 -g -mtune=native ${FLAGS})
+add_compile_options(-g -mtune=native ${FLAGS})
 
 #if (CMAKE_BUILD_TYPE STREQUAL "Debug" AND CMAKE_C_COMPILER_ID STREQUAL "GNU")
 #    find_program( CODECOV_GCOV gcov )
