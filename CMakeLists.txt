@@ -20,7 +20,7 @@ elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL "GNU") # gfortran
 
 # NOTE: -fdefault-integer-8 -m64  are crucial for MKL using gfortran to avoid SIGSEGV at runtime!
     set(FLAGS ${FLAGS} -Wall -Werror=array-bounds -Wextra -Wpedantic)
-    set(FFLAGS ${FFLAGS} -fdefault-integer-8 -std=f2008ts -m64 -fbacktrace -ffpe-trap=zero,overflow,underflow)
+    set(FFLAGS ${FFLAGS} -fdefault-integer-8 -std=f2008ts -m64 -fbacktrace)# -ffpe-trap=zero,overflow,underflow)
 
     find_package(CAF)
     if(CAF_FOUND)
