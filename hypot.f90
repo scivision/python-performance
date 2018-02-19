@@ -26,7 +26,7 @@ Program run_hypot
 
   Rhypot = benchhypot(N,Nrun)
 
-  print '(A,F7.5)', 'sqrt(a^2+b^2) / hypot(a,b)  time ratio: ',Rhypot
+  print '(A,I10,A,F7.5)', 'sqrt(a^2+b^2) / hypot(a,b).  N=',N,'  time ratio: ',Rhypot
 
 contains
 
