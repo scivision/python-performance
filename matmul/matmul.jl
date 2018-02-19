@@ -1,7 +1,14 @@
 #!/usr/bin/env julia
-N = 1000;
+println("--> Julia $VERSION")
 
-A = randn(N,N); 
+Pkg.add("BenchmarkTools")
+Pkg.update("BenchmarkTools")
+using BenchmarkTools
+
+N = parse(Int,ARGS[1]);
+
+A = randn(N,N);
 B = randn(N,N);
 
-@time A*B;
+o=@benchmark A*B;
+println(o)

@@ -2,9 +2,10 @@
 println("--> Julia $VERSION")
 
 Pkg.add("BenchmarkTools")
+Pkg.update("BenchmarkTools")
 using BenchmarkTools
 
-function f(N) 
+function f(N)
 x = 0.
     for ii = 0:N-1
         x = 0.5*x + mod(ii,10)

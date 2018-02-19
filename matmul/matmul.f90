@@ -28,8 +28,9 @@ Program run_matmul
   tdmatmul = double_matmul(N,Nrun)
   tsmatmul = single_matmul(N,Nrun)
 
-  print '(A20,F10.4)', 'double matmul (sec): ',tdmatmul
-  print '(A20,F10.4)', 'single matmul (sec): ',tsmatmul
+  print *,''
+  print '(A20,F10.6)', 'double matmul (sec): ',tdmatmul
+  print '(A20,F10.6)', 'single matmul (sec): ',tsmatmul
 
 contains
 
@@ -68,9 +69,9 @@ Real(wp) Function double_matmul(N,Nrun)
         endif
     end do
 
-    double_matmul = sysclock2ms(tmin)
-    print *,''
-    print '(A,F10.3)', 'fortran real64 ms / iteration: ', double_matmul
+    double_matmul = sysclock2ms(tmin) / 1000.
+!    print *,''
+!    print '(A,F10.3)', 'fortran real64 ms / iteration: ', double_matmul
 
 end function double_matmul
 
@@ -113,10 +114,10 @@ Real(wp) function single_matmul(N,Nrun)
         endif
     end do
 
-    single_matmul = sysclock2ms(tmin)
+    single_matmul = sysclock2ms(tmin) / 1000.
 
-    print *,''
-    print '(A,F10.3)', 'fortran real32 ms / iteration: ', single_matmul
+    !print *,''
+    !print '(A,F10.3)', 'fortran real32 ms / iteration: ', single_matmul
 
 end function single_matmul
 
