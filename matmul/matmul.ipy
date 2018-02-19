@@ -1,8 +1,14 @@
 #!/usr/bin/env ipython
-N=1000
+import platform
 import numpy as np
+
+N=1000
+
+print('--> Python {}'.format(platform.python_version()))
+
 #A = np.matrix(np.random.randn(N,N))
 #B = np.matrix(np.random.randn(N,N))
 A = np.array(np.random.randn(N,N))
 B = np.array(np.random.randn(N,N))
+
 %timeit A@B

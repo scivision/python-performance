@@ -1,4 +1,7 @@
 pro pisum
+
+print,!VERSION.RELEASE
+
 N=1000000
 s=0.
 

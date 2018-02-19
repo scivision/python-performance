@@ -1,5 +1,0 @@
-pro exit
-
-exit
-
-end

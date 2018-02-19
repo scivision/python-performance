@@ -1,3 +1,5 @@
+#!/usr/bin/env ipython
+
 from __future__ import division,print_function
 import pyximport; pyximport.install()
 from numba import jit # inline auto compilation to C of Python code

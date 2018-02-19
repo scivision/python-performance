@@ -15,7 +15,7 @@ try:
 except ImportError:
     pass
 
-# this must NOT be as function for a,b to work properly.
+# this must NOT be a function for a,b to work properly.
 N = np.logspace(1,6.5,25,True,dtype=int)
 print('N={}'.format(N))
 rat = np.empty(N.size)
@@ -47,7 +47,7 @@ ax.set_xlabel('N length of vectors a,b')
 show()
 
 def benchmark_hypot_fortran():
-    subprocess.call(['./bin/hypot'])
+    subprocess.check_call(['./bin/hypot'])
 
 
 if __name__ == '__main__':

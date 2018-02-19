@@ -16,6 +16,11 @@ To compile the benchmarks::
     
 .. contents ::
 
+Julia
+=====
+Julia binaries are often downloaded to a particular directory. 
+Python doesn't pickup ``.bash_aliases``, which is commonly used to point to Julia.
+
 
 Compiler selection
 ==================

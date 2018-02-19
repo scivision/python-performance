@@ -1,5 +1,7 @@
 function iter(~)
 
+addpath('..')
+
 N = 1000000;
 
 if isoctave
@@ -52,10 +54,7 @@ fprintf('pisum ')
   end
 disp([num2str(t*1000),' millisec.'])
 
-%exit % needed to avoid nuisance error from octave --eval iter.m.  
-% Instead do octave --eval "iter; exit" to avoid error or hanging at prompt
-
-end
+end % function iter
 %%
 function x = pisum(N)
   s = 0.;
@@ -66,7 +65,7 @@ function x = pisum(N)
   x=4*s;
 end
 %%
-function x= simple_iter(A) %must return at least one argument or timeit breaks
+function x = simple_iter(A) %must return at least one argument or timeit breaks
  x=0;
     for i = A
         x = 0.5*x + mod(i, 10);
