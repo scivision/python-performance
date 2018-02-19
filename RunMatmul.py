@@ -69,11 +69,12 @@ def test_matmul(juliapath, N, Nrun):
 
 
 # %%
-from argparse import ArgumentParser
-p = ArgumentParser()
-p.add_argument('juliapath',help='path to julia executable',nargs='?',default='')
-p.add_argument('-N',type=int,default=1000)
-p.add_argument('-Nrun',type=int,default=10)
-p = p.parse_args()
+if __name__ == '__main__':
+    from argparse import ArgumentParser
+    p = ArgumentParser()
+    p.add_argument('juliapath',help='path to julia executable',nargs='?',default='')
+    p.add_argument('-N',type=int,default=1000)
+    p.add_argument('-Nrun',type=int,default=10)
+    p = p.parse_args()
 
-test_matmul(p.juliapath, p.N, p.Nrun)
+    test_matmul(p.juliapath, p.N, p.Nrun)

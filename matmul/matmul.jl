@@ -1,8 +1,8 @@
 #!/usr/bin/env julia
 println("--> Julia $VERSION")
 
-Pkg.add("BenchmarkTools")
-Pkg.update("BenchmarkTools")
+#Pkg.add("BenchmarkTools")
+#Pkg.update("BenchmarkTools")
 using BenchmarkTools
 
 N = parse(Int,ARGS[1]);

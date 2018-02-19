@@ -1,9 +1,11 @@
 #!/usr/bin/env julia
 println("--> Julia $VERSION")
 
-Pkg.add("BenchmarkTools")
-Pkg.update("BenchmarkTools")
+#Pkg.add("BenchmarkTools")
+#Pkg.update("BenchmarkTools")
 using BenchmarkTools
+
+N=parse(Int,ARGS[1])
 
 function f(N)
 x = 0.
@@ -15,7 +17,7 @@ return x
 end
 
 println("simple_iter")
-o=@benchmark f(10^6)
+o=@benchmark f(N)
 println(o)
 
 function g(N)
@@ -30,5 +32,5 @@ return x
 end
 
 println("pisum")
-o=@benchmark g(10^6)
+o=@benchmark g(N)
 println(o)

@@ -18,17 +18,15 @@ function matmul(N)
    f = @() A*B;
 
   try % matlab
-    timeit(f)
+    tcum = timeit(f);
   catch % octave
     tcum = inf;
     for i=1:Nrun
       tic
       f();
-      t=toc;
-      tcum=min(tcum,t);
+      tcum=min(tcum,toc);
     end
-
-    disp([num2str(tcum),' seconds for N=',int2str(N)])
   end % try
+  disp([num2str(tcum),' seconds for N=',int2str(N)])
 
 end % function

@@ -22,13 +22,13 @@ elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL GNU) # gfortran
     set(FLAGS ${FLAGS} -Wall -Werror=array-bounds -Wextra -Wpedantic)
     set(FFLAGS ${FFLAGS} -fdefault-integer-8 -std=f2008ts -m64 -fbacktrace)# -ffpe-trap=zero,overflow,underflow)
 
-    find_package(CAF)
-    if(CAF_FOUND)
-        set(FCOOPT -fcoarray=lib)
-        set(FCOLIB caf_mpi)
-    else()
-        set(FCOOPT -fcoarray=single)
-    endif()
+  #  find_package(CAF)
+  #  if(CAF_FOUND)
+  #      set(FCOOPT -fcoarray=lib)
+  #      set(FCOLIB caf_mpi)
+  #  else()
+       set(FCOOPT -fcoarray=single)
+  #  endif()
 
 elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL PGI) # flang
 
@@ -69,9 +69,9 @@ target_compile_options(kind PUBLIC ${FFLAGS})
 add_executable(hypot hypot.f90 perf.f90)
 target_compile_options(hypot PUBLIC ${FFLAGS})
 
-add_executable(iterfort ../pisum/iter_drv.f90 ../pisum/iter_sub.f90 perf.f90)
-target_compile_options(iterfort PUBLIC ${FFLAGS} ${FCOOPT})
-target_link_libraries(iterfort ${FCOLIB})
+add_executable(pisumfort ../pisum/pisum.f90 ../pisum/iter_sub.f90 perf.f90)
+target_compile_options(pisumfort PUBLIC ${FFLAGS} ${FCOOPT})
+target_link_libraries(pisumfort ${FCOLIB})
 
 add_executable(iterc ../pisum/pisum.c)
 if (${APPLE})
@@ -83,7 +83,7 @@ endif()
 # https://software.intel.com/en-us/articles/intel-mkl-link-line-advisor
 #
 # manual, works
-# ifort -i8 intel_gemm.f90 -I${MKLROOT}/include/intel64/ilp64 ${MKLROOT}/lib/intel64/libmkl_blas95_lp64.a -L${MKLROOT}/lib/intel64 -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lpthread -lm -ldl 
+# ifort -i8 intel_gemm.f90 -I${MKLROOT}/include/intel64/ilp64 ${MKLROOT}/lib/intel64/libmkl_blas95_lp64.a -L${MKLROOT}/lib/intel64 -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lpthread -lm -ldl
 #
 # cmake
 # ifort -i8 intel_gemm.f90 -I${MKLROOT}/include/intel64/ilp64

@@ -29,14 +29,16 @@ end function mandel
 
 integer function mandelperf() result(mandel_sum)
 
-    integer :: re, im, img, Nimg
-    integer :: msum[*] = 0
+    integer :: re, im, img, Nimg,msum
+    !integer :: msum[*] = 0
 
     mandel_sum = 0
     msum=0 ! must have this line!
 
-    img = this_image()
-    Nimg = num_images()
+ !   img = this_image()
+ !   Nimg = num_images()
+   Nimg=1
+   img=1
 
     do re=img-21, 5, Nimg !re=-20,5
       do im = -10,10
@@ -44,7 +46,7 @@ integer function mandelperf() result(mandel_sum)
       end do
     end do
 
-    call co_sum(msum)
+  !  call co_sum(msum)
 
     mandel_sum = msum
 
@@ -107,29 +109,32 @@ Real(dp) function pisum(N,Nrun)
 
     integer, intent(in) :: N,Nrun
 
-    integer(i64) :: tic,toc
-    integer(i64) :: tmin[*] = huge(0_i64)
-    real(dp) :: psum[*] = 0.0_dp
+    integer(i64) :: tic,toc,tmin
+ !   integer(i64) :: tmin[*] = huge(0_i64)
+!    real(dp) :: psum[*] = 0.0_dp
     integer :: k,j, im, Nimg
     real(dp), parameter :: pi = 4.0_dp*atan(1.0_dp)
+    real(dp) :: psum
 
-    im = this_image()
-    Nimg = num_images()
+    !im = this_image()
+    !Nimg = num_images()
+    im=1
+    Nimg= 1
 
     do j = 1,Nrun
 
         call system_clock(tic)
-        psum = 0.0_dp ! must have this line
+        psum = 0._dp ! must have this line
         do k = im,N, Nimg   ! 1,N
             psum = psum + (-1.0_dp)**(real(k,dp)+1.0_dp)/(2.0_dp*k-1.0_dp)
         enddo
-        call co_sum(psum)
+ !       call co_sum(psum)
         call system_clock(toc)
         if (toc-tic<tmin) tmin=toc-tic
 
     enddo
 
-    if (im==1) then
+ !   if (im==1) then
         psum = 4.0_dp*psum
 
         if (abs(psum-pi) > 1e-4_dp) then
@@ -138,9 +143,9 @@ Real(dp) function pisum(N,Nrun)
             error stop 'FORTRAN pisum fail to converge'
         endif
 
-    endif
+!    endif
 
-    call co_min(tmin)
+  !  call co_min(tmin)
 
     pisum = sysclock2ms(tmin)
 
