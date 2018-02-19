@@ -31,10 +31,17 @@ def test_pycuda():
     assert numba.cuda.api.detect(),'https://scivision.co/install-cuda-accelerate-for-anaconda-python/'
 
 if __name__ == '__main__':
+    from argparse import ArgumentParser
+    p = ArgumentParser(description='Matmul benchmark')
+    p.add_argument('N',nargs='?',default=1000,type=int)
+    p.add_argument('Nrun',nargs='?',default=10,type=int)
+    p = p.parse_args()
+
+    N = p.N
+    Nrun = p.Nrun
+
     test_pycuda() # not necessary, just FYI
 
-    N=1000
-    Nrun = 10
 
     A= np.asfortranarray(rand(N,N).astype(np.float32))
     B= np.asfortranarray(rand(N,N).astype(np.float32))
