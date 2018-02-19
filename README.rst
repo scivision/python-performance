@@ -72,6 +72,10 @@ Observe that hypot() is faster from 1 to a few hundred elements, then sqrt(x**2+
     ./RunHypot.py
 
 
+.. image:: py36hypot.png
+  :alt: Python 3.6 hypot() vs rsq()
+  :scale: 60%
+
 .. image:: py27hypot.png
   :alt: Python 2.7 hypot() vs rsq()
   :scale: 60%
