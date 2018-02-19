@@ -10,13 +10,13 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
 
-if(${CMAKE_Fortran_COMPILER_ID} STREQUAL "Intel")
+if(${CMAKE_Fortran_COMPILER_ID} STREQUAL Intel)
 
 #    message(STATUS "be sure you have in your ~/.bashrc source compilervars.sh")
     set(FFLAGS ${FFLAGS} -i8 -check all -fpe0 -warn -traceback -debug extended)
     set(FCOOPT -coarray)
 
-elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL "GNU") # gfortran
+elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL GNU) # gfortran
 
 # NOTE: -fdefault-integer-8 -m64  are crucial for MKL using gfortran to avoid SIGSEGV at runtime!
     set(FLAGS ${FLAGS} -Wall -Werror=array-bounds -Wextra -Wpedantic)
@@ -30,20 +30,12 @@ elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL "GNU") # gfortran
         set(FCOOPT -fcoarray=single)
     endif()
 
-elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL "PGI") # flang
+elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL PGI) # flang
 
 endif()
 
 add_compile_options(-g -mtune=native ${FLAGS})
 
-#if (CMAKE_BUILD_TYPE STREQUAL "Debug" AND CMAKE_C_COMPILER_ID STREQUAL "GNU")
-#    find_program( CODECOV_GCOV gcov )
-#    find_program( CODECOV_LCOV lcov )
-#    find_program( CODECOV_GENHTML genhtml )
-#    add_compile_options( -fprofile-arcs -ftest-coverage )
-#else()
-#    add_compile_options(-m64 -g)#-O3)
-#endif()
 #---------- MKL tests -----------------------------
 add_executable(matmul ../matmul/matmul_drv.f90 ../matmul/matmul_sub.f90 perf.f90)
 target_compile_options(matmul PUBLIC ${FFLAGS})
@@ -73,7 +65,7 @@ endif()
 add_executable(kind kind.f90)
 target_compile_options(kind PUBLIC ${FFLAGS})
 
-add_executable(hypot Hypot.f90 benchmark_hypot.f90 perf.f90)
+add_executable(hypot hypot.f90 perf.f90)
 target_compile_options(hypot PUBLIC ${FFLAGS})
 
 add_executable(iterfort ../pisum/iter_drv.f90 ../pisum/iter_sub.f90 perf.f90)
