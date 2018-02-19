@@ -1,6 +1,4 @@
-# https://github.com/certik/hermes/blob/master/hermes_common/cmake/FindSCALAPACK.cmake
-# ScaLAPACK and BLACS
-#
+# Determines if/where Coarray Fortran libraries are installed (for GNU GFortran >= 2008)
 
 find_path(CAF_DIR libcoarrays HINTS ENV CAF_DIR)
 
