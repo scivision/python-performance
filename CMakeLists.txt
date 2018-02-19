@@ -37,8 +37,9 @@ endif()
 add_compile_options(-g -mtune=native ${FLAGS})
 
 #---------- MKL tests -----------------------------
-add_executable(matmul ../matmul/matmul_drv.f90 ../matmul/matmul_sub.f90 perf.f90)
+add_executable(matmul ../matmul/matmul.f90 perf.f90)
 target_compile_options(matmul PUBLIC ${FFLAGS})
+
 add_executable(inteld intel_dgemm.f90)
 target_compile_options(inteld PUBLIC ${FFLAGS})
 
