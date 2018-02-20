@@ -46,7 +46,6 @@ def test_pisum(juliapath, N, Nrun):
     #%% IDL
     try:
         print('\n --> IDL')
-        S.check_call(['idl','--version'])
 
         S.check_call(['idl','-q','-e','pisum'],cwd=bdir)
     except FileNotFoundError:

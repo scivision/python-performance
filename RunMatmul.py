@@ -39,7 +39,6 @@ def test_matmul(juliapath, N, Nrun):
     #%% IDL
     try:
         print('\n --> IDL')
-        subprocess.check_call(['idl','--version'])
 
         subprocess.check_call(['idl','-q','-e','matmul','-args',str(N)],cwd=bdir)
     except FileNotFoundError:
