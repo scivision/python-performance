@@ -14,14 +14,14 @@ def test_pisum(juliapath, N, Nrun):
     #%% C
     try:
         print()
-        S.check_call(['./iterc'], cwd='bin')
+        S.check_call(['./pisumc', str(N)], cwd='bin/'+bdir)
     except FileNotFoundError:
         logging.error('please compile pisum.c as per README')
 
     #%% Fortran
     try:
         print()
-        S.check_call(['./pisumfort',str(N),str(Nrun)], cwd='bin')
+        S.check_call(['./pisumfort',str(N),str(Nrun)], cwd='bin/'+bdir)
     except FileNotFoundError:
         logging.error('please compile Pisum Fortran code as per README')
 

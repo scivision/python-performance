@@ -9,6 +9,8 @@ Program run_hypot
   character(16) :: argv
   real(wp) :: Rhypot
 
+  call init_random_seed()
+
   argc = command_argument_count()
   if (argc>0) then
     call get_command_argument(1,argv)
@@ -42,9 +44,6 @@ real(wp) function benchhypot(N,Nrun)
   tmin1=huge(0_int64)
   tmin2=huge(0_int64)
 
-  call init_random_seed()
-
-
 ! priming
   call system_clock(tic)
     C = hypot(A,B)
@@ -68,11 +67,11 @@ real(wp) function benchhypot(N,Nrun)
 
     Trsq = sysclock2ms(tmin2)
 
-    Rhypot(i) = Trsq/Thypot
+    Rhypot(i) = Trsq / Thypot
 
   enddo main
 
-  benchhypot = sum(Rhypot)/real(Nrun, wp)
+  benchhypot = sum(Rhypot) / Nrun
 
 end function benchhypot
 

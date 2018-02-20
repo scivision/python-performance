@@ -13,7 +13,7 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 if(${CMAKE_Fortran_COMPILER_ID} STREQUAL Intel)
 
 #    message(STATUS "be sure you have in your ~/.bashrc source compilervars.sh")
-    set(FFLAGS ${FFLAGS} -i8 -check all -fpe0 -warn -traceback -debug extended)
+  set(FFLAGS ${FFLAGS} -i8 -check all -fpe0 -warn -traceback -debug extended)
  #   set(FCOOPT -coarray)
 
 elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL GNU) # gfortran

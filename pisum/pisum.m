@@ -18,11 +18,12 @@ function pisum(N)
       f = @() simple_iter(A); % this anon function required by timeit
       t=timeit(f);
     catch
+      t = inf;
       tic
       simple_iter(A);
-      t = toc;
+      t = min(toc,t);
     end
-  disp([num2str(t*1000),' millisec.'])
+  disp([num2str(t),' sec.'])
 
 %% mandelbrot
   %mandel(complex(-.53,.68));
@@ -33,11 +34,12 @@ function pisum(N)
     f = @() mandelperf(false);
     t=timeit(f);
   catch
+    t = inf;
     tic
     mandelperf();
-    t = toc;
+    t = min(toc,t);
   end
-  disp([num2str(t*1000),' millisec.'])
+  disp([num2str(t),' sec.'])
 %% pisum
   fprintf('pisum ')
     try
@@ -51,7 +53,7 @@ function pisum(N)
           t = min(toc,t);
       end
     end % try
-  disp([num2str(t*1000),' millisec.'])
+  disp([num2str(t),' sec.'])
 
 end % function iter
 %%

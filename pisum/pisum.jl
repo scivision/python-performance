@@ -23,7 +23,7 @@ println(o)
 function g(N)
   s = 0.
   for k = 1:N+1
-    s = s + (-1)^(k+1)/(2*k-1)
+    s = s + (-1)^(k+1) / (2*k-1)
   end
 
   x=4*s

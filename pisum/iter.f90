@@ -74,7 +74,7 @@ Real(dp) function mandeltest(N,Nrun) result(t)
 
   call assert(f == 14791)
   
-  t = sysclock2ms(tmin) / N
+  t = sysclock2ms(tmin) / 1000 / N
 
 end function mandeltest
 
@@ -86,10 +86,12 @@ Real(dp) function simple_iter(N,Nrun) result(t)
   integer,Intent(in) :: N,Nrun
 
   integer :: j,i
-  integer(i64) :: tic,toc,tmin = huge(0_i64)
+  integer(i64) :: tic,toc,tmin
   real(wp) :: A(N)
   ! volatile tells compiler that value is unpredictable, don't unroll, etc.
   real(wp), volatile :: x
+  
+  tmin = huge(0_i64)
 
   call init_random_seed()
 
@@ -105,7 +107,7 @@ Real(dp) function simple_iter(N,Nrun) result(t)
     if (toc-tic<tmin) tmin=toc-tic
   End Do
 
-  t = sysclock2ms(tmin) / N
+  t = sysclock2ms(tmin) / 1000 / N
 
 End Function simple_iter
 
@@ -120,6 +122,8 @@ Real(dp) function pisum(N,Nrun) result(t)
   integer :: k,j, im, Nimg
   real(wp), parameter :: pi = 4.0_wp*atan(1.0_wp)
   real(wp) :: psum
+  
+  tmin = huge(0_i64)
 
   !im = this_image()
   !Nimg = num_images()
@@ -152,7 +156,7 @@ Real(dp) function pisum(N,Nrun) result(t)
 
 !  call co_min(tmin)
 
-  t = sysclock2ms(tmin) / N
+  t = sysclock2ms(tmin) / 1000/ N
 
 End Function pisum
 
