@@ -69,7 +69,7 @@ def test_pisum(juliapath, N, Nrun):
     #%% Python
     try:
         print()
-        S.check_call(['ipython','pisum.ipy'],cwd=bdir)
+        S.check_call(['python','pisum.py'],cwd=bdir)
     except FileNotFoundError:
         logging.warning('Python test skipped')
 
