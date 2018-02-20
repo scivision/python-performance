@@ -12,9 +12,9 @@ for k=1,N+1 do begin
     if (0 gt 1) then break
 endfor
 s=4*s
-t=toc()
+t=toc() / N
 
-print,t,' seconds.'
+print,'pisum: ',t,' seconds.'
 
 if (abs(s-!const.pi) gt 1e-4) then begin
     print,'|error| = ',abs(s-!const.pi)
