@@ -47,7 +47,7 @@ def test_pisum(juliapath, N, Nrun):
     try:
         print('\n --> IDL')
 
-        S.check_call(['idl','-q','-e','pisum'],cwd=bdir)
+        S.check_call(['idl','-e','pisum'],cwd=bdir)
     except FileNotFoundError:
         logging.warning('IDL executable not found')
 

@@ -32,7 +32,7 @@ def test_matmul(juliapath, N, Nrun):
         print('\n --> GDL')
         subprocess.check_call(['gdl','--version'])
 
-        subprocess.check_call(['gdl','-q','-e','matmul','-args',str(N)], cwd=bdir)
+        subprocess.check_call(['gdl','-q','-e','matmul','-arg',str(N)], cwd=bdir)
     except FileNotFoundError:
         logging.warning('GDL executable not found')
 
@@ -40,7 +40,7 @@ def test_matmul(juliapath, N, Nrun):
     try:
         print('\n --> IDL')
 
-        subprocess.check_call(['idl','-q','-e','matmul','-args',str(N)],cwd=bdir)
+        subprocess.check_call(['idl','-e','matmul','-arg',str(N)],cwd=bdir)
     except FileNotFoundError:
         logging.warning('IDL executable not found')
 
