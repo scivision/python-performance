@@ -1,8 +1,6 @@
-    PROGRAM   MAIN
-! if you load the wrong library type LP vs. ILP it will say invalid parameter 8
-! https://software.intel.com/en-us/mkl-developer-reference-fortran-gemm
-     use blas95, only: gemm
-     use,intrinsic :: iso_fortran_env, only: dp=>real64
+PROGRAM   MAIN
+
+      use,intrinsic :: iso_fortran_env, only: dp=>real64
 
       IMPLICIT NONE
 
@@ -26,10 +24,9 @@
 
       C(:,:) = 0
 
-      PRINT *, "Computing matrix product using Intel(R) MKL GEMM subroutine"
-      CALL GEMM(A,B,C)
-      PRINT *, "Computations completed."
-      PRINT *, ""
+      PRINT *, "Computing matrix product using DGEMM subroutine"
+      CALL DGEMM('N','N',M,N,K,ALPHA,A,M,B,K,BETA,C,M)
+
 
       PRINT *, "Top left corner of matrix A:"
       PRINT 20, ((A(I,J), J = 1,MIN(K,6)), I = 1,MIN(M,6))
@@ -47,5 +44,5 @@
 
  30   FORMAT(6(ES12.4,1x))
 
-      PRINT *, "Example completed."
-      END program
+PRINT *, "Example completed."
+END program

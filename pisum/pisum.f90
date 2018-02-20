@@ -9,12 +9,15 @@ Program run_iter
   integer(i64) :: tic,toc
 
   integer,parameter :: Nmand=5,Nrunmand=1000
-  integer :: N, Nrun, argc
+  integer :: N, Nrun, argc, Ni
   character(16) :: argv
 
   character(*),parameter :: frmt = '(A20,F10.4)'
 
   real(dp) :: t
+  
+!  Ni = num_images()
+  Ni=1
 
   argc = command_argument_count()
   if (argc>0) then
@@ -43,7 +46,7 @@ Program run_iter
   call system_clock(toc)
 
   print frmt, 'Mandelbrot: ',t
-  print '(A,I2,A,F8.3,A)','Total Mandelbrot time with ',num_images(),' images is ',sysclock2ms(toc-tic),' ms.'
+  print '(A,I2,A,F8.3,A)','Total Mandelbrot time with ',Ni,' images is ',sysclock2ms(toc-tic),' ms.'
 
 !------pisum----------------
   call system_clock(tic)
@@ -51,7 +54,7 @@ Program run_iter
   call system_clock(toc)
 
   print frmt, 'pisum: ',t
-  print '(A,I2,A,F8.3,A)','Total pi time with ',num_images(),' images is ',sysclock2ms(toc-tic),' ms.'
+  print '(A,I2,A,F8.3,A)','Total pi time with ',Ni,' images is ',sysclock2ms(toc-tic),' ms.'
 
 
 End Program
