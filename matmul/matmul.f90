@@ -1,6 +1,7 @@
 Program run_matmul
 
-  use, intrinsic :: iso_fortran_env, only : sp=>REAL32,dp=>REAL64, INT64, stdout=>output_unit
+  use, intrinsic :: iso_fortran_env, only : sp=>REAL32,dp=>REAL64, INT64, stdout=>output_unit, &
+        compiler_version, compiler_options
   use perf, only : init_random_seed, sysclock2ms
 
   Implicit None
@@ -9,6 +10,9 @@ Program run_matmul
   integer :: N, Nrun, argc
   character(16) :: argv
   real(wp) :: tdmatmul,tsmatmul
+  
+  print *,compiler_version()
+  print *,compiler_options()
 
   argc = command_argument_count()
   if (argc>0) then

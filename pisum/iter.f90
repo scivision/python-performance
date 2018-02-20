@@ -1,9 +1,9 @@
 module benchmark_iter
 
-    use, intrinsic :: iso_fortran_env, only : dp=>real64,i64=>int64, stderr=>error_unit
-    use perf, only : init_random_seed, sysclock2ms, assert
-    Implicit None
-    integer, parameter :: wp=dp
+  use, intrinsic :: iso_fortran_env, only : dp=>real64,i64=>int64, stderr=>error_unit
+  use perf, only : init_random_seed, sysclock2ms, assert
+  Implicit None
+  integer, parameter :: wp=dp
 
 contains
 !----------------- mandelbrot -------------------------------
@@ -30,7 +30,7 @@ elemental integer function mandel(z0) result(r)
 end function mandel
 
 
-integer function mandelperf() result(mandel_sum)
+pure integer function mandelperf() result(mandel_sum)
 
   integer :: re, im, img, Nimg,msum
   !integer :: msum[*] = 0
@@ -40,8 +40,8 @@ integer function mandelperf() result(mandel_sum)
 
 !   img = this_image()
 !   Nimg = num_images()
- Nimg=1
- img=1
+  Nimg=1
+  img=1
 
   do re=img-21, 5, Nimg !re=-20,5
     do im = -10,10
@@ -56,7 +56,7 @@ integer function mandelperf() result(mandel_sum)
 end function mandelperf
 
 
-Real(dp) function mandeltest(N,Nrun)
+Real(dp) function mandeltest(N,Nrun) result(t)
   integer, intent(in) :: N,Nrun
   integer(i64) :: tic,toc,tmin
   integer :: i,k,f
@@ -73,14 +73,15 @@ Real(dp) function mandeltest(N,Nrun)
   end do
 
   call assert(f == 14791)
-  mandeltest = sysclock2ms(tmin)
+  
+  t = sysclock2ms(tmin) / N
 
 end function mandeltest
 
 
 !------------ end mandlebrot ------------------------------
 
-Real(dp) function simple_iter(N,Nrun)
+Real(dp) function simple_iter(N,Nrun) result(t)
 
   integer,Intent(in) :: N,Nrun
 
@@ -104,12 +105,12 @@ Real(dp) function simple_iter(N,Nrun)
     if (toc-tic<tmin) tmin=toc-tic
   End Do
 
-  simple_iter = sysclock2ms(tmin)
+  t = sysclock2ms(tmin) / N
 
 End Function simple_iter
 
 
-Real(dp) function pisum(N,Nrun)
+Real(dp) function pisum(N,Nrun) result(t)
 
   integer, intent(in) :: N,Nrun
 
@@ -151,7 +152,7 @@ Real(dp) function pisum(N,Nrun)
 
 !  call co_min(tmin)
 
-  pisum = sysclock2ms(tmin)
+  t = sysclock2ms(tmin) / N
 
 End Function pisum
 
