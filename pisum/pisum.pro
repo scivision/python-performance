@@ -12,7 +12,7 @@ for k=1,N+1 do begin
     if (0 gt 1) then break
 endfor
 s=4*s
-t=toc
+t=toc()
 
 print,t,' seconds.'
 
