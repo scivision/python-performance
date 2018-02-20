@@ -1,9 +1,8 @@
 pro pisum
 
 argv = command_line_args()
-N=long(argv)
+N=long(argv[0])
 
-;N=1000000
 s=0.
 
 tic

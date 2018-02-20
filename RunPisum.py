@@ -39,7 +39,7 @@ def test_pisum(juliapath, N, Nrun):
         print('\n --> GDL')
         S.check_call(['gdl','--version'])
 
-        S.check_call(['gdl','-q','-e','pisum'], cwd=bdir)
+        S.check_call(['gdl','-q','-e','pisum','-arg',str(N)], cwd=bdir)
     except FileNotFoundError:
         logging.warning('GDL executable not found')
 
@@ -47,7 +47,7 @@ def test_pisum(juliapath, N, Nrun):
     try:
         print('\n --> IDL')
 
-        S.check_call(['idl','-e','pisum'],cwd=bdir)
+        S.check_call(['idl','-e','pisum','-arg',str(N)],cwd=bdir)
     except FileNotFoundError:
         logging.warning('IDL executable not found')
 
