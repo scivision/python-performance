@@ -101,7 +101,7 @@ Real(dp) function simple_iter(N,Nrun) result(t)
     call system_clock(tic)
     x = 0._wp
     Do i = 1, N
-      x = 0.5_wp*x + mod(A(i), 10._wp)
+      x = 0.5_wp*x + modulo(A(i), 10._wp)
     End Do
     call system_clock(toc)
     if (toc-tic<tmin) tmin=toc-tic

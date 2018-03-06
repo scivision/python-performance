@@ -67,7 +67,7 @@ Real(wp) Function double_matmul(N,Nrun)
 
         if (toc-tic < tmin) tmin=toc-tic
 
-        if (mod(k,1) == 0) then
+        if (modulo(k,1) == 0) then
             write(stdout,'(F6.1,A1)', advance='no') real(k,wp)/Nrun*100,'% done'
             flush(stdout)
         endif
@@ -112,7 +112,7 @@ Real(wp) function single_matmul(N,Nrun)
 
         if (toc-tic < tmin) tmin=toc-tic
 
-        if (mod(k,1) == 0) then
+        if (modulo(k,1) == 0) then
             write(stdout,'(F6.1,A1)', advance='no') real(k,wp)/Nrun*100,'% done'
             flush(stdout)
         endif
