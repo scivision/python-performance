@@ -10,11 +10,7 @@ osx_image: xcode9
 
 env: FC=gfortran-6
 
-dist: trusty
-group: edge
-
-notifications:
-  email: false
+group: travis_latest
 
 git:
   depth: 3
@@ -39,8 +35,11 @@ before_install:
 install:
   - cd bin
   - cmake ..
-  - make -k || true
+  - make
 
 script:
-  - ./kind
+  - make test
+  
+on_failure:
+  - ctest -V
 

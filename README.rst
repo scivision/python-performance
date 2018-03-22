@@ -1,5 +1,8 @@
 .. image:: https://travis-ci.org/scivision/python-performance.svg?branch=master
     :target: https://travis-ci.org/scivision/python-performance
+    
+.. image:: https://ci.appveyor.com/api/projects/status/ofqahr0voj4bvmxw?svg=true
+   :target: https://ci.appveyor.com/project/scivision/python-performance
 
 ==================
 Python Performance

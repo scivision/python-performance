@@ -6,10 +6,14 @@ target_compile_options(pisumfort PUBLIC ${FFLAGS} ${FCOOPT})
 target_link_libraries(pisumfort ${FCOLIB})
 
 add_executable(pisumc pisum.c)
-if (${APPLE})
-  target_link_libraries(pisumc m)
-else()
-  target_link_libraries(pisumc rt m)
+target_link_libraries(pisumc m)
+
+if (UNIX AND NOT APPLE)
+  target_link_libraries(pisumc rt)
 endif()
 
+#------------
+enable_testing()
 
+add_test(NAME pisumFortran COMMAND pisumfort)
+add_test(NAME pisumC COMMAND pisumc)

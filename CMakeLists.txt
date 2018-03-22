@@ -10,13 +10,13 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
 
-if(${CMAKE_Fortran_COMPILER_ID} STREQUAL Intel)
+if(${CMAKE_Fortran_COMPILER_ID} EQUAL Intel)
 
 #    message(STATUS "be sure you have in your ~/.bashrc source compilervars.sh")
   set(FFLAGS ${FFLAGS} -i8 -check all -fpe0 -warn -traceback -debug extended)
  #   set(FCOOPT -coarray)
 
-elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL GNU) # gfortran
+elseif(${CMAKE_Fortran_COMPILER_ID} EQUAL GNU) # gfortran
 
 # NOTE: -fdefault-integer-8 -m64  are crucial for MKL using gfortran to avoid SIGSEGV at runtime!
     set(FLAGS ${FLAGS} -Wall -Werror=array-bounds -Wextra -Wpedantic)
@@ -30,7 +30,7 @@ elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL GNU) # gfortran
   #     set(FCOOPT -fcoarray=single)
   #  endif()
 
-elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL PGI) # flang
+elseif(${CMAKE_Fortran_COMPILER_ID} EQUAL PGI) # flang
 
 endif()
 
@@ -40,10 +40,13 @@ add_compile_options(-g -mtune=native ${FLAGS})
 add_subdirectory(pisum)
 add_subdirectory(matmul)
 
-
 add_executable(kind kind.f90)
 target_compile_options(kind PUBLIC ${FFLAGS})
 
 add_executable(hypot hypot.f90 perf.f90)
 target_compile_options(hypot PUBLIC ${FFLAGS})
+#-------------------------
+enable_testing()
 
+add_test(NAME kind COMMAND kind)
+add_test(NAME hypot COMMAND hypot)
