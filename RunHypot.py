@@ -9,11 +9,6 @@ import numpy as np
 from matplotlib.pyplot import figure,show
 import timeit
 import sys
-try:
-    import seaborn as sns
-    sns.set_context('talk')
-except ImportError:
-    pass
 
 
 def bench_hypot(N,Nrun):
