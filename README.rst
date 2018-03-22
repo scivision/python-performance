@@ -11,6 +11,13 @@ Python Performance
 All benchmarks are platform-indepenent (run on any computing device with appropriate hardware).
 A few tests require an NVIDIA GPU with Cuda toolkit installed.
 
+Continuous integration conducted on:
+
+* Ubuntu (Travis-CI)
+* MacOS  (Travis-CI)
+
+* Windows (AppVeyor)
+
 To compile the benchmarks::
 
     cd bin
