@@ -15,5 +15,14 @@ setup(name='python-performance',
       extras_require={'tests':tests_require},
       python_requires='>=2.7',
       version = '0.2.0',
+       classifiers=[
+      'Development Status :: 4 - Beta',
+      'Environment :: Console',
+      'Intended Audience :: Developers',
+      'Operating System :: OS Independent',
+      'Programming Language :: Python',
+      'Topic :: Software Development',
+      ],
+      include_package_data=True,
 	  )
 

@@ -15,7 +15,6 @@ Continuous integration conducted on:
 
 * Ubuntu (Travis-CI)
 * MacOS  (Travis-CI)
-
 * Windows (AppVeyor)
 
 To compile the benchmarks::
@@ -25,11 +24,6 @@ To compile the benchmarks::
     make
     
 .. contents ::
-
-Julia
-=====
-Julia binaries are often downloaded to a particular directory. 
-Python doesn't pickup ``.bash_aliases``, which is commonly used to point to Julia.
 
 
 Compiler selection
@@ -77,7 +71,20 @@ Fortran
 
 Hypotenuse
 ----------
-Observe that hypot() is faster from 1 to a few hundred elements, then sqrt(x**2+y**2) becomes slightly faster, but hypot is more numerically stable::
+Observe that ``hypot()`` is faster from 1 to a few hundred elements, then sqrt(x^2+y^2) becomes slightly faster.
+However, ``hypot()`` does not overflow for arguments near REALMAX.
+For example, in Python:
+
+.. code:: python
+
+    from math import sqrt, hypot
+    
+    a=1e154; hypot(a,a); sqrt(a**2+a**2); 
+
+    1.414213562373095e+154
+    inf
+    
+Execute the Hypot speed test by::
 
     ./RunHypot.py
 
@@ -93,4 +100,13 @@ Observe that hypot() is faster from 1 to a few hundred elements, then sqrt(x**2+
 .. image:: py35hypot.png
   :alt: Python 3.5 hypot() vs rsq()
   :scale: 60%
+
+
+Notes
+=====
+
+Julia
+-----
+Julia binaries are often downloaded to a particular directory. 
+Python doesn't pickup ``.bash_aliases``, which is commonly used to point to Julia.
 

@@ -1,35 +1,25 @@
 Program run_hypot
 
-  use, intrinsic :: iso_fortran_env, only : dp=>REAL64,INT64
+  use, intrinsic :: iso_fortran_env, only : wp=>REAL64,INT64
   use perf, only : init_random_seed,sysclock2ms
   Implicit None
 
-  integer, parameter :: wp=dp
-  integer :: argc, N, Nrun
+  integer :: argc, N, Nrun, ios
   character(16) :: argv
   real(wp) :: Rhypot
 
   call init_random_seed()
 
-  argc = command_argument_count()
-  if (argc>0) then
-    call get_command_argument(1,argv)
-    read(argv,*) N
-  else 
-    N = 1000
-  endif
+  N = 1000
+  call get_command_argument(1,argv, status=ios); if(ios==0) read(argv,*) N
 
-  if (argc>1) then
-    call get_command_argument(2,argv)
-    read(argv,*) Nrun
-  else
-    Nrun = 10
-  endif
+  Nrun = 10
+  call get_command_argument(2,argv, status=ios); if(ios==0) read(argv,*) Nrun
 
   Rhypot = benchhypot(N,Nrun)
 
-  print '(A,I10,A,F7.5)', 'sqrt(a^2+b^2) / hypot(a,b).  N=',N,'  time ratio: ',Rhypot
-
+  print '(A,I10,A,F7.5)', 'sqrt(a**2 + b**2) / hypot(a,b).  N=',N,'  time ratio: ',Rhypot
+  
 contains
 
 real(wp) function benchhypot(N,Nrun)
