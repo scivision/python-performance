@@ -25,6 +25,8 @@ before_build:
 - sh: export FC=/usr/bin/gfortran-6
 
 build_script:
+- pip install -e .[tests]
+
 - cd bin
 - cmd: cmake -G "MinGW Makefiles" ..
 - sh: cmake ..
