@@ -7,27 +7,18 @@ Program run_matmul
   Implicit None
 
   integer,parameter :: wp=dp
-  integer :: N, Nrun, argc
+  integer :: N, Nrun, ios
   character(16) :: argv
   real(wp) :: tdmatmul,tsmatmul
   
   print *,compiler_version()
   print *,compiler_options()
 
-  argc = command_argument_count()
-  if (argc>0) then
-    call get_command_argument(1,argv)
-    read(argv,*) N
-  else
-    N = 1000
-  endif
+  N=1000
+  call get_command_argument(1,argv,status=ios); if(ios==0) read(argv,*) N
 
-  if (argc>1) then
-    call get_command_argument(2,argv)
-    read(argv,*) Nrun
-  else
-    Nrun = 5
-  endif
+  Nrun=5
+  call get_command_argument(2,argv,status=ios); if(ios==0) read(argv,*) Nrun
 
   tdmatmul = double_matmul(N,Nrun)
   tsmatmul = single_matmul(N,Nrun)
@@ -53,7 +44,7 @@ Real(wp) Function double_matmul(N,Nrun)
 
     print *,'priming double-prec. matmul loop'
     ! recommended to call once before loop per Intel manual
-    call dgemm('N','N',N,N,N,1.,A,N,B,N,0.,D,N)
+    call dgemm('N','N',N,N,N,1._dp,A,N,B,N,0._dp,D,N)
 
     do k = 1, Nrun
     !refilling arrays with random numbers to be sure a clever compiler doesn't workaround
@@ -61,7 +52,7 @@ Real(wp) Function double_matmul(N,Nrun)
         call random_number(B)
 
         call system_clock(tic)
-        call dgemm('N','N',N,N,N,1.,A,N,B,N,0.,D,N) !ifort 14 10% faster than gfortran 5
+        call dgemm('N','N',N,N,N,1._dp,A,N,B,N,0._dp,D,N) !ifort 14 10% faster than gfortran 5
         !D = matmul(A,B)
         call system_clock(toc)
 
@@ -98,7 +89,7 @@ Real(wp) function single_matmul(N,Nrun)
 
     print *,'priming single-prec. matmul loop'
     ! recommended to call once before loop per Intel manual
-    call sgemm('N','N',N,N,N,1.,A,N,B,N,0.,D,N)
+    call sgemm('N','N',N,N,N,1._sp,A,N,B,N,0._sp,D,N)
 
     do k = 1, Nrun
     !refilling arrays with random numbers to be sure a clever compiler doesn't workaround

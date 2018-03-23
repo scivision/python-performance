@@ -4,7 +4,7 @@ Program run_hypot
   use perf, only : init_random_seed,sysclock2ms
   Implicit None
 
-  integer :: argc, N, Nrun, ios
+  integer :: N, Nrun, ios
   character(16) :: argv
   real(wp) :: Rhypot
 

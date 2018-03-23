@@ -1,26 +1,22 @@
-cmake_minimum_required(VERSION 2.8.12)
-project(bench Fortran C)
+cmake_minimum_required(VERSION 3.0)
+project(bench Fortran)
 
 # https://software.intel.com/en-us/mkl-developer-reference-fortran-fortran-95-interface-conventions-for-blas-routines
 
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
-
-set(CMAKE_C_STANDARD 11)
-set(CMAKE_C_STANDARD_REQUIRED ON)
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
 
-if(${CMAKE_Fortran_COMPILER_ID} EQUAL Intel)
+if(${CMAKE_Fortran_COMPILER_ID} STREQUAL Intel)
 
 #    message(STATUS "be sure you have in your ~/.bashrc source compilervars.sh")
-  set(FFLAGS ${FFLAGS} -i8 -check all -fpe0 -warn -traceback -debug extended)
+  list(APPEND FFLAGS -check all -fpe0 -warn -traceback -debug extended)
  #   set(FCOOPT -coarray)
 
-elseif(${CMAKE_Fortran_COMPILER_ID} EQUAL GNU) # gfortran
+elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL GNU) # gfortran
 
-# NOTE: -fdefault-integer-8 -m64  are crucial for MKL using gfortran to avoid SIGSEGV at runtime!
-    set(FLAGS ${FLAGS} -Wall -Werror=array-bounds -Wextra -Wpedantic)
-    set(FFLAGS ${FFLAGS} -fdefault-integer-8 -m64 -fbacktrace)# -ffpe-trap=zero,overflow,underflow)
+    list(APPEND FLAGS -Wall -Werror=array-bounds -Wextra -Wpedantic)
+    # -ffpe-trap=zero,overflow,underflow)
 
   #  find_package(CAF)
   #  if(CAF_FOUND)
@@ -30,7 +26,7 @@ elseif(${CMAKE_Fortran_COMPILER_ID} EQUAL GNU) # gfortran
   #     set(FCOOPT -fcoarray=single)
   #  endif()
 
-elseif(${CMAKE_Fortran_COMPILER_ID} EQUAL PGI) # flang
+elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL PGI) # flang
 
 endif()
 
