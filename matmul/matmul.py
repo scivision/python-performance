@@ -22,7 +22,7 @@ if __name__ == '__main__':
     p = p.parse_args()
 
 
-    print('--> Python {}'.format(platform.python_version()))
+    print('--> Python',platform.python_version())
 
     t = bench_matmul(p.N, p.Nrun)
 

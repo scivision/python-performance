@@ -33,3 +33,5 @@ build_script:
 after_build:
 - make test
 
+on_failure:
+- ctest -V

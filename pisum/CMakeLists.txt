@@ -21,7 +21,3 @@ enable_testing()
 add_test(NAME pisumFortran COMMAND pisumfort)
 add_test(NAME pisumC COMMAND pisumc)
 
-find_package(PythonInterp)
-if(PYTHONINTERP_FOUND)
-  add_test(NAME PiSumAll COMMAND python pisum.py WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
-endif()

@@ -26,9 +26,7 @@ if(MKL_FOUND)
   endif()
 else()
   find_package(BLAS)
-  if(BLAS_FOUND)
-    list(APPEND FLIBS ${BLAS_LIBRARIES})
-  endif()
+  list(APPEND FLIBS ${BLAS_LIBRARIES})
 endif()
 
 
@@ -48,7 +46,7 @@ if(MKL_FOUND OR BLAS_FOUND)
 endif()
 
 find_package(PythonInterp)
-if(PYTHONINTERP_FOUND)
+if(PYTHON_VERSION_STRING VERSION_GREATER_EQUAL 3.6)
   add_test(NAME MatmulAll COMMAND python matmul.py WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
 endif()
 
