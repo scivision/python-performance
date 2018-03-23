@@ -1,5 +1,8 @@
-cmake_minimum_required (VERSION 2.8.12)
-project(PiIterSum Fortran)
+cmake_minimum_required (VERSION 3.0)
+project(PiIterSum Fortran C)
+
+set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_STANDARD_REQUIRED ON)
 
 add_executable(pisumfort pisum.f90 iter.f90 ../perf.f90)
 target_compile_options(pisumfort PUBLIC ${FFLAGS} ${FCOOPT})
@@ -17,3 +20,8 @@ enable_testing()
 
 add_test(NAME pisumFortran COMMAND pisumfort)
 add_test(NAME pisumC COMMAND pisumc)
+
+find_package(PythonInterp)
+if(PYTHONINTERP_FOUND)
+  add_test(NAME PiSumAll COMMAND python pisum.py WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
+endif()

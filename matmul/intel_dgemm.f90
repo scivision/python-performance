@@ -44,5 +44,5 @@ PROGRAM   MAIN
 
  30   FORMAT(6(ES12.4,1x))
 
-PRINT *, "Example completed."
-END program
+stop "Example completed."
+end program
