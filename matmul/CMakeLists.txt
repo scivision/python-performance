@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.0)
+cmake_minimum_required (VERSION 3.7)
 project(MatMult Fortran C)
 enable_testing()
 
@@ -9,7 +9,7 @@ find_package(MKL)
 if(MKL_FOUND)
   set(MKLROOT $ENV{MKLROOT})
   include_directories(${MKL_INCLUDE_DIRS} ${MKLROOT}/include/intel64/ilp64)
-  
+ 
   find_package(Threads REQUIRED)
  
   list(APPEND FLIBS ${MKL_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${CMAKE_DL_LIBS})
@@ -40,15 +40,16 @@ if(MKL_FOUND OR BLAS_FOUND)
 
   target_link_libraries(matmul ${FLIBS})
   target_link_libraries(inteld ${FLIBS})
-
+  
   add_test(NAME matmul COMMAND matmul)
   add_test(NAME intelDGEMM COMMAND inteld)
 endif()
-
+  
 find_package(PythonInterp)
 if(PYTHON_VERSION_STRING VERSION_GREATER_EQUAL 3.6)
   add_test(NAME MatmulAll COMMAND python matmul.py WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
 endif()
+
 
 # https://software.intel.com/en-us/articles/intel-mkl-link-line-advisor
 #
