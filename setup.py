@@ -17,7 +17,7 @@ setup(name='python-performance',
                       'jit':['numba'], 
                       'io':['xarray','netcdf4','matplotlib'],},
       python_requires='>=2.7',
-      version = '0.2.0',
+      version = '0.2.1',
        classifiers=[
       'Development Status :: 4 - Beta',
       'Environment :: Console',
