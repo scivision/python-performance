@@ -6,10 +6,12 @@ Breakpoint around 10**5 elements on my PC.
 """
 import subprocess
 import numpy as np
-from matplotlib.pyplot import figure,show
 import timeit
 import sys
-
+try:
+    from matplotlib.pyplot import figure,show
+except (ImportError,RuntimeError):
+    figure=show=None
 
 def bench_hypot(N,Nrun):
     pyrat = []
@@ -65,5 +67,12 @@ if __name__ == '__main__':
     pyrat = bench_hypot(N, Nrun)
     fortrat = benchmark_hypot_fortran(N, Nrun)
 
-    plotspeed(N,pyrat,fortrat )
-    show()
+    if figure is not None:
+        plotspeed(N,pyrat,fortrat )
+        show()
+    else:
+        print('Python')
+        print(pyrat)
+        
+        print('Fortran')
+        print(fortrat)

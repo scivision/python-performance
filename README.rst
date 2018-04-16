@@ -17,44 +17,19 @@ Continuous integration conducted on:
 * MacOS  (Travis-CI)
 * Windows (AppVeyor)
 
-To compile the benchmarks::
-
-    cd bin
-    cmake ..
-    make
-    
+   
 .. contents ::
 
 
-Compiler selection
-==================
+Install
+=======
+This command compiles the Fortran code and prepares Python prereqs::
 
-Intel Fortran::
-
-    FC=ifort cmake ..
-
-GNU Fortran (gfortran >= 6 required)::
-
-    FC=gfortran cmake ..
-    
-MKL selection
-==============
-<https://software.intel.com/en-us/articles/intel-mkl-link-line-advisor>
-
-We give a hint to CMake where your MKL libraries on. 
-On Linux, this is typically ``/opt/intel/mkl``::
-
-    MKLROOT=/opt/intel/mkl cmake ..
-    
-Of course this option can be combined with ``FC``.
-
-You can set this environment variable permanetly for your convenience (normally you always want to use MKL) by adding to your ``~/.bashrc`` the line::
-
-    export MKLROOT=/opt/intel/mkl
+    pip install -e .
 
 
-Benchmarks
-===========
+Usage
+=====
 Iterative benchmarks, here using the pisum algorithm::
 
     ./RunPisum.py
@@ -109,4 +84,36 @@ Julia
 -----
 Julia binaries are often downloaded to a particular directory. 
 Python doesn't pickup ``.bash_aliases``, which is commonly used to point to Julia.
+
+
+
+Compiler selection
+------------------
+
+Intel Fortran::
+
+    FC=ifort cmake ..
+
+GNU Fortran (gfortran >= 6 required)::
+
+    FC=gfortran cmake ..
+    
+    
+Plain
+    
+MKL selection
+-------------
+<https://software.intel.com/en-us/articles/intel-mkl-link-line-advisor>
+
+We give a hint to CMake where your MKL libraries on. 
+On Linux, this is typically ``/opt/intel/mkl``::
+
+    MKLROOT=/opt/intel/mkl cmake ..
+    
+Of course this option can be combined with ``FC``.
+
+You can set this environment variable permanetly for your convenience (normally you always want to use MKL) by adding to your ``~/.bashrc`` the line::
+
+    export MKLROOT=/opt/intel/mkl
+
 

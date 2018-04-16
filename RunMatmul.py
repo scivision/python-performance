@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from pathlib import Path
+from pythonperformance import Path
 import logging
 import subprocess
 from six import PY2
@@ -15,7 +15,7 @@ def test_matmul(juliapath, N, Nrun):
     #%% Fortran
     try:
         print ('Fortran -->')
-        subprocess.call(['./bin/matmul', str(N), str(Nrun)])
+        subprocess.call(['./matmul', str(N), str(Nrun)], cwd=str(Path('bin')/bdir))
     except FileNotFoundError:
         logging.error('Fortran test skipped')
 
