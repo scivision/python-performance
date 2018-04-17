@@ -74,7 +74,7 @@ Real(dp) function mandeltest(N,Nrun) result(t)
 
   call assert(f == 14791)
   
-  t = sysclock2ms(tmin) / 1000 / N
+  t = sysclock2ms(tmin) / 1000
 
 end function mandeltest
 
@@ -107,7 +107,7 @@ Real(dp) function simple_iter(N,Nrun) result(t)
     if (toc-tic<tmin) tmin=toc-tic
   End Do
 
-  t = sysclock2ms(tmin) / 1000 / N
+  t = sysclock2ms(tmin) / 1000
 
 End Function simple_iter
 
@@ -156,7 +156,7 @@ Real(dp) function pisum(N,Nrun) result(t)
 
 !  call co_min(tmin)
 
-  t = sysclock2ms(tmin) / 1000/ N
+  t = sysclock2ms(tmin) / 1000
 
 End Function pisum
 

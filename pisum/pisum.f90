@@ -7,7 +7,7 @@ Program run_iter
   Implicit None
 
   integer,parameter :: Nmand=5,Nrunmand=1000
-  integer :: N, Nrun, argc, Ni
+  integer :: N=100000, Nrun=10, argc, Ni
   character(16) :: argv
 
   real(dp) :: t
@@ -19,15 +19,11 @@ Program run_iter
   if (argc>0) then
     call get_command_argument(1,argv)
     read(argv,*) N
-  else
-    N = 100000
   endif
 
   if (argc>1) then
     call get_command_argument(2,argv)
     read(argv,*) Nrun
-  else
-    Nrun = 10
   endif
 !-----------------------------------------------------
   print '(A,I12,A,I3,A)', '--> Fortran.  N=',N,' using',Ni,' images'

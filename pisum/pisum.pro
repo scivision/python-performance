@@ -10,7 +10,7 @@ for k=1,N+1 do begin
     s = s+(-1.)^(k+1) / (2*k-1)
 endfor
 s=4*s
-t=toc() / N
+t=toc()
 
 print,'pisum: ',t,' seconds.  N=',N
 
