@@ -3,7 +3,6 @@ project(bench Fortran)
 
 # https://software.intel.com/en-us/mkl-developer-reference-fortran-fortran-95-interface-conventions-for-blas-routines
 
-
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
 
@@ -30,7 +29,7 @@ elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL PGI) # flang
 
 endif()
 
-add_compile_options(-g -mtune=native ${FLAGS})
+add_compile_options(-O3 -g -mtune=native ${FLAGS})
 
 
 add_subdirectory(pisum)
