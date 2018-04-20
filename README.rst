@@ -64,15 +64,15 @@ Execute the Hypot speed test by::
     ./RunHypot.py
 
 
-.. image:: py36hypot.png
+.. image:: tests/py36hypot.png
   :alt: Python 3.6 hypot() vs rsq()
   :scale: 60%
 
-.. image:: py27hypot.png
+.. image:: tests/py27hypot.png
   :alt: Python 2.7 hypot() vs rsq()
   :scale: 60%
 
-.. image:: py35hypot.png
+.. image:: tests/py35hypot.png
   :alt: Python 3.5 hypot() vs rsq()
   :scale: 60%
 
