@@ -25,8 +25,9 @@ elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL GNU) # gfortran
   #     set(FCOOPT -fcoarray=single)
   #  endif()
 
-elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL PGI) # flang
-
+elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL Flang)
+  add_compile_options(-Mallocatable=03)
+  link_libraries(-static-flang-libs)
 endif()
 
 add_compile_options(-O3 -g -mtune=native ${FLAGS})
