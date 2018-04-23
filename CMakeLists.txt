@@ -17,14 +17,6 @@ elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL GNU) # gfortran
     list(APPEND FLAGS -Wall -Werror=array-bounds -Wextra -Wpedantic)
     # -ffpe-trap=zero,overflow,underflow)
 
-  #  find_package(CAF)
-  #  if(CAF_FOUND)
-  #      set(FCOOPT -fcoarray=lib)
-  #      set(FCOLIB caf_mpi)
-  #  else()
-  #     set(FCOOPT -fcoarray=single)
-  #  endif()
-
 elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL Flang)
   add_compile_options(-Mallocatable=03)
   link_libraries(-static-flang-libs)
