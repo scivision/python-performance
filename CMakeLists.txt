@@ -10,19 +10,19 @@ if(${CMAKE_Fortran_COMPILER_ID} STREQUAL Intel)
 
 #    message(STATUS "be sure you have in your ~/.bashrc source compilervars.sh")
   list(APPEND FFLAGS -check all -fpe0 -warn -traceback -debug extended)
- #   set(FCOOPT -coarray)
 
 elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL GNU) # gfortran
 
-    list(APPEND FLAGS -Wall -Werror=array-bounds -Wextra -Wpedantic)
+    add_compile_options(-mtune=native -Wall -Werror=array-bounds -Wextra -Wpedantic)
     # -ffpe-trap=zero,overflow,underflow)
-
-elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL Flang)
+elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL PGI)
+  add_compile_options(-Mallocatable=03)
+elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL Flang) # cmake >= 3.10
   add_compile_options(-Mallocatable=03)
   link_libraries(-static-flang-libs)
 endif()
 
-add_compile_options(-O3 -g -mtune=native ${FLAGS})
+add_compile_options(-O3 -g)
 
 
 add_subdirectory(pisum)
