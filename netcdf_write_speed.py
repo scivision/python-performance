@@ -17,28 +17,28 @@ from numpy import packbits
 import xarray
 from time import time
 
-SIZE = (3,200000) # arbitrary size to test
+SIZE = (3, 200000)  # arbitrary size to test
 
-#%% create random Boolean array
+# %% create random Boolean array
 xb = random(SIZE) > 0.5   # mean ~ 0.5
 xbl = xb.tolist()
-Xb = xarray.DataArray(xb,name='bool')
+Xb = xarray.DataArray(xb, name='bool')
 
 
 with tempfile.NamedTemporaryFile(suffix='.nc') as f:
     tic = time()
-    Xb.to_netcdf(f.name,'w',encoding={'bool':{'fletcher32':True}})
+    Xb.to_netcdf(f.name, 'w', encoding={'bool': {'fletcher32': True}})
 print(f'{time()-tic:.3f} sec. to write boolean from Numpy bool')
 
 with tempfile.NamedTemporaryFile(suffix='.nc') as f:
     tic = time()
-    xi = packbits(xbl,axis=0) # each column becomes uint8 BIG-ENDIAN
-    Xi = xarray.DataArray(xi,name='uint8')
-    Xi.to_netcdf(f.name,'w',encoding={'uint8':{'fletcher32':True}})
+    xi = packbits(xbl, axis=0)  # each column becomes uint8 BIG-ENDIAN
+    Xi = xarray.DataArray(xi, name='uint8')
+    Xi.to_netcdf(f.name, 'w', encoding={'uint8': {'fletcher32': True}})
 print(f'{time()-tic:.3f} sec. to write uint8')
-#%% here's what nidaqmx gives us
+# %% here's what nidaqmx gives us
 with tempfile.NamedTemporaryFile(suffix='.nc') as f:
     tic = time()
     Xbl = xarray.DataArray(xbl, name='listbool')
-    Xbl.to_netcdf(f.name,'w',encoding={'listbool':{'fletcher32':True}})
+    Xbl.to_netcdf(f.name, 'w', encoding={'listbool': {'fletcher32': True}})
 print(f'{time()-tic:.3f} sec. to write boolean from bool list')

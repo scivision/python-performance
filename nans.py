@@ -1,14 +1,17 @@
 #!/usr/bin/env python
-from numpy import empty,nan
+from numpy import empty, nan
+
+
 def nans(shape=1, dtype=float, order='F'):
     a = empty(shape, dtype, order)
     a.fill(nan)
     return a
 
+
 '''
 faster than using nan*empty()
 $ ipython
-Python 3.6.1 |Continuum Analytics, Inc.| (default, Mar 22 2017, 19:54:23) 
+Python 3.6.1 |Continuum Analytics, Inc.| (default, Mar 22 2017, 19:54:23)
 IPython 6.0.0
 
 from nans import nans; from numpy import empty,nan

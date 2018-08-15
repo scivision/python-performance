@@ -7,15 +7,15 @@ or that you don't print more than 80 characters per line.
 from time import sleep
 # %% too wide
 for i in range(20):
-    x=f'testing {i-2}                                          '
-    x+=f' {i-1}           {i}                  {i+1}      {i+2} '
-    print(x+'\r',end="")
+    x = f'testing {i-2}                                          '
+    x += f' {i-1}           {i}                  {i+1}      {i+2} '
+    print(x+'\r', end="")
     sleep(0.1)
 
 print('done             ')
 # %% progress indicator
-N=12
+N = 12
 
 for i in range(N):
-   sleep(0.5)
-   print(f"{i/N*100:.1f} %\r",end="")
+    sleep(0.5)
+    print(f"{i/N*100:.1f} %\r", end="")

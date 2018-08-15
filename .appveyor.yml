@@ -1,39 +1,31 @@
 image:
 - Visual Studio 2017
-
+- Ubuntu
 
 stack: python 3
 
 environment:
   MINGW_DIR: C:\mingw-w64\x86_64-7.2.0-posix-seh-rt_v5-rev1\mingw64\bin
-  PY_DIR: C:\Python36-x64
+  PY_DIR: C:\Python37-x64
 
 clone_depth: 3
 
-before_build:
-- cmd: set PATH=%MINGW_DIR%;%PY_DIR%;%PY_DIR%\Scripts;%PATH%
-# fix CMake sh.exe issue, by removing Git path.
-- cmd: set PATH=%PATH:C:\Program Files\Git\usr\bin;=%
-- cmd: set FC=%MINGW_DIR%\gfortran
-- cmd: set CXX=%MINGW_DIR%\g++
-- cmd: set CC=%MINGW_DIR%\gcc
-- cmd: mklink bin\make.exe %MINGW_DIR%\mingw32-make.exe
+build: off
 
-- sh: sudo -E apt-add-repository -y "ppa:ubuntu-toolchain-r/test" > /dev/null
-- sh: sudo apt-get -yq update > /dev/null
-- sh: sudo apt-get install -yq --no-install-suggests --no-install-recommends gfortran-6 cmake make > /dev/null
-- sh: export FC=/usr/bin/gfortran-6
+init:
+- cmd: set PATH=%MINGW_DIR%;%PATH%
+- cmd: set PATH=%PY_DIR%;%PY_DIR%\Scripts;%PATH%
 
-build_script:
+install:
 - pip install -e .[tests]
 
 - cd bin
-- cmd: cmake -G "MinGW Makefiles" ..
+- cmd: cmake -G "MinGW Makefiles" -DCMAKE_SH="CMAKE_SH-NOTFOUND" ..
 - sh: cmake ..
-- make
+- cmake --build .
 
-after_build:
-- make test
-
-on_failure:
+test_script:
 - ctest -V
+- cd ..
+- pytest -rsv
+

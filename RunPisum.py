@@ -3,84 +3,88 @@ from pythonperformance import Path
 import logging
 import subprocess as S
 from six import PY2
-
+from argparse import ArgumentParser
 if PY2:
-    FileNotFoundError=OSError
+    FileNotFoundError = OSError
 
 bdir = 'pisum'
 
+
+def main():
+
+    p = ArgumentParser()
+    p.add_argument('juliapath', help='path to julia executable',
+                   nargs='?', default='')
+    p.add_argument('-N', type=int, default=1000000)
+    p.add_argument('-Nrun', type=int, default=10)
+    p = p.parse_args()
+
+    test_pisum(p.juliapath, p.N, p.Nrun)
+
+
 def test_pisum(juliapath, N, Nrun):
     juliapath = Path(juliapath).expanduser() / 'julia'
-    #%% C
+    # %% C
     try:
         print()
         S.check_call(['./pisumc', str(N)], cwd='bin/'+bdir)
     except FileNotFoundError:
         logging.error('please compile pisum.c as per README')
 
-    #%% Fortran
+    # %% Fortran
     try:
         print()
-        S.check_call(['./pisumfort',str(N),str(Nrun)], cwd='bin/'+bdir)
+        S.check_call(['./pisumfort', str(N), str(Nrun)], cwd='bin/'+bdir)
     except FileNotFoundError:
         logging.error('please compile Pisum Fortran code as per README')
 
-
-    #%% Julia
+    # %% Julia
     try:
         print()
-        S.check_call([juliapath,'pisum.jl',str(N)], cwd=bdir)
+        S.check_call([juliapath, 'pisum.jl', str(N)], cwd=bdir)
     except FileNotFoundError:
         logging.warning('Julia executable not found')
 
-
-    #%% GDL
+    # %% GDL
     try:
         print('\n --> GDL')
-        S.check_call(['gdl','--version'])
+        S.check_call(['gdl', '--version'])
 
-        S.check_call(['gdl','-q','-e','pisum','-arg',str(N)], cwd=bdir)
+        S.check_call(['gdl', '-q', '-e', 'pisum', '-arg', str(N)], cwd=bdir)
     except FileNotFoundError:
         logging.warning('GDL executable not found')
 
-    #%% IDL
+    # %% IDL
     try:
         print('\n --> IDL')
 
-        S.check_call(['idl','-e','pisum','-arg',str(N)],cwd=bdir)
+        S.check_call(['idl', '-e', 'pisum', '-arg', str(N)], cwd=bdir)
     except FileNotFoundError:
         logging.warning('IDL executable not found')
 
-    #%% Octave
+    # %% Octave
     try:
         print()
-        S.check_call(['octave-cli','-q','--eval',f'pisum({N})'], cwd=bdir)
+        S.check_call(['octave-cli', '-q', '--eval', f'pisum({N})'], cwd=bdir)
     except FileNotFoundError:
         logging.warning('Octave executable not found')
 
-    #%% Matlab
+    # %% Matlab
     try:
         print()
-        S.check_call(['matlab','-nodesktop','-nojvm','-nosplash','-r',
-               f'pisum({N}); exit'], cwd=bdir)
+        S.check_call(['matlab', '-nodesktop', '-nojvm', '-nosplash', '-r',
+                      f'pisum({N}); exit'], cwd=bdir)
     except FileNotFoundError:
         logging.warning('Matlab executable not found')
 
-    #%% Python
+    # %% Python
     try:
         print()
-        S.check_call(['python','pisum.py'],cwd=bdir)
+        S.check_call(['python', 'pisum.py'], cwd=bdir)
     except FileNotFoundError:
         logging.warning('Python test skipped')
 
 
 # %%
 if __name__ == '__main__':
-    from argparse import ArgumentParser
-    p = ArgumentParser()
-    p.add_argument('juliapath',help='path to julia executable',nargs='?',default='')
-    p.add_argument('-N',type=int,default=1000000)
-    p.add_argument('-Nrun',type=int,default=10)
-    p = p.parse_args()
-
-    test_pisum(p.juliapath, p.N, p.Nrun)
+    main()

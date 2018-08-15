@@ -3,6 +3,7 @@ import numba
 import numpy as np
 import timeit
 import sys
+from argparse import ArgumentParser
 """
 Test speed of None vs. NaN
 
@@ -17,6 +18,44 @@ Python version 3.6.4 |Anaconda, Inc.| (default, Mar 13 2018, 01:15:57)
 
 Numba gives ~20x speed up on isnan(), making it like "is None"
 """
+
+
+p = ArgumentParser()
+p.add_argument('Nrun', type=int, nargs='?', default=3)
+p = p.parse_args()
+
+print('Numba version', numba.__version__)
+print('Python version', sys.version)
+
+x = np.nan
+
+print('--> Numba NaN sentinel: ', end='')
+t = timeit.repeat(f'nantest()',
+                  'import gc; gc.enable(); from __main__ import nantest',
+                  repeat=p.Nrun, number=1)
+
+print(min(t))
+
+print('--> Numba None sentinel: ', end='')
+t = timeit.repeat(f'nonetest()',
+                  'import gc; gc.enable(); from __main__ import nonetest',
+                  repeat=p.Nrun, number=1)
+
+print(min(t))
+
+print('--> CPython NaN sentinel: ', end='')
+t = timeit.repeat(f'pynantest()',
+                  'import gc; gc.enable(); from __main__ import pynantest',
+                  repeat=p.Nrun, number=1)
+
+print(min(t))
+
+print('--> CPython None sentinel: ', end='')
+t = timeit.repeat(f'pynonetest()',
+                  'import gc; gc.enable(); from __main__ import pynonetest',
+                  repeat=p.Nrun, number=1)
+
+print(min(t))
 
 
 @numba.jit(nopython=True)
@@ -35,44 +74,3 @@ def pynonetest():
 
 def pynantest():
     return np.isnan(x)
-
-
-if __name__ == '__main__':
-    from argparse import ArgumentParser
-    p = ArgumentParser()
-    p.add_argument('Nrun',type=int,nargs='?',default=3)
-    p = p.parse_args()
-
-    print('Numba version', numba.__version__)
-    print('Python version',sys.version)
-
-    x = np.nan
-
-    print('--> Numba NaN sentinel: ',end='')
-    t = timeit.repeat(f'nantest()',
-               'import gc; gc.enable(); from __main__ import nantest',
-               repeat=p.Nrun, number=1)
-
-    print(min(t))
-
-    print('--> Numba None sentinel: ',end='')
-    t = timeit.repeat(f'nonetest()',
-               'import gc; gc.enable(); from __main__ import nonetest',
-               repeat=p.Nrun, number=1)
-
-    print(min(t))
-
-
-    print('--> CPython NaN sentinel: ',end='')
-    t = timeit.repeat(f'pynantest()',
-               'import gc; gc.enable(); from __main__ import pynantest',
-               repeat=p.Nrun, number=1)
-
-    print(min(t))
-
-    print('--> CPython None sentinel: ',end='')
-    t = timeit.repeat(f'pynonetest()',
-               'import gc; gc.enable(); from __main__ import pynonetest',
-               repeat=p.Nrun, number=1)
-
-    print(min(t))

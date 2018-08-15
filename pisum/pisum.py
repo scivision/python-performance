@@ -1,19 +1,21 @@
 #!/usr/bin/env python
-import pyximport; pyximport.install()
-import numpy,math
+import numpy
+import math
 import platform
 import timeit
 import cython
+import cpisum
+import pyximport
+pyximport.install()
 try:
     import numba
     from numba import jit
 except ImportError:
     numba = None
-#
-import cpisum
 
-N=1000000
-Nrun=3
+
+N = 1000000
+Nrun = 3
 
 if numba is not None:
     @jit(nopython=True)
@@ -40,39 +42,40 @@ def pisum_c():
 if __name__ == '__main__':
     from argparse import ArgumentParser
     p = ArgumentParser(description='pisum benchmark')
-    p.add_argument('N',nargs='?',default=1000000,type=int)
-    p.add_argument('Nrun',nargs='?',default=10,type=int)
+    p.add_argument('N', nargs='?', default=1000000, type=int)
+    p.add_argument('Nrun', nargs='?', default=10, type=int)
     p = p.parse_args()
-    
+
 
 # %% Numba
     if numba is not None:
-        assert numpy.isclose(numpy.pi,pisum(),rtol=1e-4)
+        assert numpy.isclose(numpy.pi, pisum(), rtol=1e-4)
 
         print('--> Numba {}'.format(numba.__version__))
         t = timeit.repeat('pisum()',
-                   'import gc; gc.enable(); from __main__ import pisum',
-                   repeat=Nrun, number=1)
+                          'import gc; gc.enable(); from __main__ import pisum',
+                          repeat=Nrun, number=1)
 
         t = min(t)
         print(f'{t:.3e} seconds.')
 # %%  PURE PYTHON
     print('--> Python {}'.format(platform.python_version()))
     t = timeit.repeat('pisum_c()',
-               'import gc; gc.enable(); from __main__ import pisum_c',
-               repeat=Nrun, number=1)
+                      'import gc; gc.enable(); from __main__ import pisum_c',
+                      repeat=Nrun, number=1)
 
     t = min(t)
     print(f'{t:.3e} seconds.')
-    
-# %% CYTHON
-    assert math.isclose(math.pi,cpisum.pisum(N),rel_tol=1e-4),'Cython convergence error'
 
-    print('--> Cython ',cython.__version__)
+# %% CYTHON
+    assert math.isclose(math.pi, cpisum.pisum(
+        N), rel_tol=1e-4), 'Cython convergence error'
+
+    print('--> Cython ', cython.__version__)
 
     t = timeit.repeat(f'cpisum.pisum({N})',
-               'import gc; gc.enable(); import cpisum',
-               repeat=Nrun, number=1)
+                      'import gc; gc.enable(); import cpisum',
+                      repeat=Nrun, number=1)
 
     t = min(t)
     print(f'{t:.3e} seconds.')

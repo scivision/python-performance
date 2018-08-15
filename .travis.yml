@@ -1,19 +1,15 @@
 language: c
-fast_finish: true
-
-os:
-  - linux
-  - osx
-
-osx_image: xcode9  
-# xcode >= 8.2 needed for CLOCK_MONOTONIC() in pisum.c
-
-env: FC=gfortran-6
-
 group: travis_latest
 
 git:
   depth: 3
+  quiet: true
+
+os:
+- linux
+- osx
+
+env: FC=gfortran-6
 
 addons:
   apt:
@@ -24,22 +20,29 @@ addons:
       - libopenblas-dev
 
 before_install:
-  - if [[ $TRAVIS_OS_NAME == osx ]]; then
-      brew update;
-      brew install gcc || true;
-      brew link --overwrite gcc;
-      brew install openblas opencoarrays;
-      export FC=gfortran;
-    fi
+- if [[ $TRAVIS_OS_NAME == osx ]]; then
+  brew update > /dev/null;
+  brew install gcc > /dev/null || brew link --overwrite gcc > /dev/null;
+  brew install openblas opencoarrays;
+  export FC=gfortran;
+  fi
 
 install:
-  - cd bin
-  - cmake ..
-  - make
+- cd bin
+- cmake ..
+- cmake --build .
 
 script:
-  - make test
-  
-on_failure:
-  - ctest -V
+- ctest -V
+- cd ..
+
+- pytest -rsv
+- flake8
+#- mypy . --ignore-missing-imports
+
+after_success:
+- if [[ $TRAVIS_PYTHON_VERSION == 3.6* ]]; then
+  pytest --cov --cov-config=setup.cfg;
+  coveralls;
+  fi
 
