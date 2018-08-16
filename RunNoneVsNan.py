@@ -3,6 +3,7 @@ import numba
 import numpy as np
 import timeit
 import sys
+import math
 from argparse import ArgumentParser
 """
 Test speed of None vs. NaN
@@ -36,6 +37,8 @@ t = timeit.repeat(f'nantest()',
 
 print(min(t))
 
+# %%
+
 print('--> Numba None sentinel: ', end='')
 t = timeit.repeat(f'nonetest()',
                   'import gc; gc.enable(); from __main__ import nonetest',
@@ -43,12 +46,25 @@ t = timeit.repeat(f'nonetest()',
 
 print(min(t))
 
+# %%
+
 print('--> CPython NaN sentinel: ', end='')
 t = timeit.repeat(f'pynantest()',
                   'import gc; gc.enable(); from __main__ import pynantest',
                   repeat=p.Nrun, number=1)
 
 print(min(t))
+
+# %%
+
+print('--> Numpy NaN sentinel: ', end='')
+t = timeit.repeat(f'numpynantest()',
+                  'import gc; gc.enable(); from __main__ import numpynantest',
+                  repeat=p.Nrun, number=1)
+
+print(min(t))
+
+# %%
 
 print('--> CPython None sentinel: ', end='')
 t = timeit.repeat(f'pynonetest()',
@@ -73,4 +89,8 @@ def pynonetest():
 
 
 def pynantest():
+    return math.isnan(x)
+
+
+def numpynantest():
     return np.isnan(x)

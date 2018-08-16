@@ -5,7 +5,7 @@ import os
 setup()
 
 if os.name == 'nt':
-    subprocess.check_call(['cmake', '-G', 'MinGW Makefiles', '-DCMAKE_SH="CMAKE_SH-NOTFOUND"', '..'])
+    subprocess.check_call(['cmake', '-G', 'MinGW Makefiles', '-DCMAKE_SH="CMAKE_SH-NOTFOUND"', '..'], cwd='bin')
 else:
     subprocess.check_call(['cmake', '..'], cwd='bin')
 

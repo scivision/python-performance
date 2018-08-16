@@ -28,11 +28,11 @@ before_install:
   fi
 
 install:
+- pip install -e .[tests]
+
 - cd bin
 - cmake ..
 - cmake --build .
-
-- pip install -e .[tests]
 
 script:
 - ctest -V
