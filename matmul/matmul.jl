@@ -4,6 +4,7 @@ println("--> Julia $VERSION")
 try
   using BenchmarkTools
 catch
+  import Pkg
   Pkg.add("BenchmarkTools")
   Pkg.update("BenchmarkTools")
   using BenchmarkTools

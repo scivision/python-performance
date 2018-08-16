@@ -8,6 +8,7 @@ import subprocess
 import numpy as np
 import timeit
 import sys
+import os
 try:
     from matplotlib.pyplot import figure, show
 except (ImportError, RuntimeError):
@@ -54,8 +55,8 @@ def plotspeed(N, pyrat, fortrat):
     pyver = sys.version_info
     pyver = '{}.{}.{}'.format(pyver[0], pyver[1], pyver[2])
 
-    fortver = subprocess.check_output(
-        ['gfortran', '--version'], universal_newlines=True).split('\n')[0].split(' ')[-1]
+    fortver = subprocess.check_output(['gfortran', '--version'],
+                                      universal_newlines=True).split('\n')[0].split(' ')[-1]
 
     ax = figure().gca()
 
@@ -72,9 +73,12 @@ def plotspeed(N, pyrat, fortrat):
 
 def benchmark_hypot_fortran(N, Nrun):
     fortrat = []
+    exe = './hypot'
+    if os.name == 'nt':
+        exe = exe[2:]
+
     for n in N:
-        r = subprocess.check_output(
-            ['./bin/hypot', str(n), str(Nrun)], universal_newlines=True)
+        r = subprocess.check_output([exe, str(n), str(Nrun)], universal_newlines=True, cwd='bin')
         fortrat.append(float(r.split(' ')[-1]))
 
     return fortrat

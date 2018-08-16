@@ -4,9 +4,11 @@ import math
 import platform
 import timeit
 import cython
-import cpisum
+#
 import pyximport
 pyximport.install()
+import cpisum  # noqa: E402
+#
 try:
     import numba
     from numba import jit

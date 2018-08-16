@@ -3,6 +3,7 @@ from pythonperformance import Path
 import logging
 import subprocess
 from six import PY2
+import os
 from argparse import ArgumentParser
 if PY2:
     FileNotFoundError = OSError
@@ -28,7 +29,10 @@ def test_matmul(juliapath, N, Nrun):
     # %% Fortran
     try:
         print('Fortran -->')
-        subprocess.call(['./matmul', str(N), str(Nrun)],
+        exe = './matmul'
+        if os.name == 'nt':
+            exe = exe[2:]
+        subprocess.call([exe, str(N), str(Nrun)],
                         cwd=str(Path('bin')/bdir))
     except FileNotFoundError:
         logging.error('Fortran test skipped')

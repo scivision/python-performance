@@ -13,7 +13,7 @@ if(${CMAKE_Fortran_COMPILER_ID} STREQUAL Intel)
 
 elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL GNU) # gfortran
 
-    add_compile_options(-mtune=native -Wall -Werror=array-bounds -Wextra -Wpedantic)
+    add_compile_options(-mtune=native -Wall -Warray-bounds -Wextra -Wpedantic)
     # -ffpe-trap=zero,overflow,underflow)
 elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL PGI)
   add_compile_options(-Mallocatable=03)

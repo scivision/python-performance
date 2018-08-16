@@ -32,6 +32,8 @@ install:
 - cmake ..
 - cmake --build .
 
+- pip install -e .[tests]
+
 script:
 - ctest -V
 - cd ..

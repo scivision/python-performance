@@ -6,10 +6,17 @@ from pythonperformance import Path
 root = Path(__file__).parents[1]
 
 
-def test_scripts():
-    for s in ('RunHypot', 'RunMatmul', 'RunPisum'):
-        subprocess.check_call([s])
+def test_hypot():
+    subprocess.check_call(['RunHypot'])
+
+
+def test_matmul():
+    subprocess.check_call(['RunMatmul'])
+
+
+def test_pisum():
+    subprocess.check_call(['RunPisum'])
 
 
 if __name__ == '__main__':
-    pytest.main(['-x', __file__])
+    pytest.main(['-xrsv', __file__])

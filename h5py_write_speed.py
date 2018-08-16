@@ -16,7 +16,7 @@ xb = (random(SIZE) > 0.5)   # mean ~ 0.5
 xbl = xb.tolist()
 
 fn = mkstemp('.h5')[1]
-with h5py.File(fn, 'w', libver='latest') as f:
+with h5py.File(fn, 'w') as f:
     tic = time()
     f['bool'] = xb
     print(f'{time()-tic:3e} sec. to write boolean from Numpy bool', fn)

@@ -3,6 +3,7 @@ from pythonperformance import Path
 import logging
 import subprocess as S
 from six import PY2
+import os
 from argparse import ArgumentParser
 if PY2:
     FileNotFoundError = OSError
@@ -24,17 +25,23 @@ def main():
 
 def test_pisum(juliapath, N, Nrun):
     juliapath = Path(juliapath).expanduser() / 'julia'
+
+    cexe = './pisumc'
+    fexe = './pisumfort'
+    if os.name == 'nt':
+        cexe = cexe[2:]
+        fexe = fexe[2:]
     # %% C
     try:
         print()
-        S.check_call(['./pisumc', str(N)], cwd='bin/'+bdir)
+        S.check_call([cexe, str(N)], cwd='bin/'+bdir)
     except FileNotFoundError:
         logging.error('please compile pisum.c as per README')
 
     # %% Fortran
     try:
         print()
-        S.check_call(['./pisumfort', str(N), str(Nrun)], cwd='bin/'+bdir)
+        S.check_call([fexe, str(N), str(Nrun)], cwd='bin/'+bdir)
     except FileNotFoundError:
         logging.error('please compile Pisum Fortran code as per README')
 
