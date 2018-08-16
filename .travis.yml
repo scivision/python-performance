@@ -1,13 +1,16 @@
-language: c
+language: python
 group: travis_latest
 
 git:
   depth: 3
   quiet: true
 
+python:
+  - 3.6
+  - 3.7
+
 os:
 - linux
-- osx
 
 env: FC=gfortran-6
 
