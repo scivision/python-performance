@@ -40,7 +40,7 @@ def test_matmul(juliapath, N, Nrun):
     # %% Julia
     try:
         print()
-        subprocess.check_call([juliapath, 'matmul.jl', str(N)], cwd=bdir)
+        subprocess.check_call([str(juliapath), 'matmul.jl', str(N)], cwd=bdir)
     except FileNotFoundError:
         logging.warning('Julia executable not found')
 

@@ -48,7 +48,7 @@ def test_pisum(juliapath, N, Nrun):
     # %% Julia
     try:
         print()
-        S.check_call([juliapath, 'pisum.jl', str(N)], cwd=bdir)
+        S.check_call([str(juliapath), 'pisum.jl', str(N)], cwd=bdir)
     except FileNotFoundError:
         logging.warning('Julia executable not found')
 

@@ -9,6 +9,7 @@ import numpy as np
 import timeit
 import sys
 import os
+import logging
 try:
     from matplotlib.pyplot import figure, show
 except (ImportError, RuntimeError):
@@ -20,17 +21,19 @@ def main():
     N = np.logspace(1, 6.5, 20, True, dtype=int)
 
     pyrat = bench_hypot(N, Nrun)
-    fortrat = benchmark_hypot_fortran(N, Nrun)
+    try:
+        fortrat = benchmark_hypot_fortran(N, Nrun)
+    except FileNotFoundError:
+        fortrat = None
+        logging.error('Fortran Hypot skipped')
 
     if figure is not None:
         plotspeed(N, pyrat, fortrat)
         show()
     else:
-        print('Python')
-        print(pyrat)
+        print('Python', pyrat)
 
-        print('Fortran')
-        print(fortrat)
+        print('Fortran', fortrat)
 
 
 def bench_hypot(N, Nrun):
@@ -61,7 +64,8 @@ def plotspeed(N, pyrat, fortrat):
     ax = figure().gca()
 
     ax.plot(N, pyrat, label='Python')
-    ax.plot(N, fortrat, label='Fortran')
+    if fortrat is not None:
+        ax.plot(N, fortrat, label='Fortran')
 
     ax.set_title('timeit(sqrt(a**2+b**2)) / timeit(hypot(a,b)) \n Numpy {} Python {} Gfortran {}'.format(
         np.__version__, pyver, fortver))
