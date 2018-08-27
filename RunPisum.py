@@ -72,7 +72,7 @@ def test_pisum(juliapath, N, Nrun):
     # %% Octave
     try:
         print()
-        S.check_call(['octave-cli', '-q', '--eval', f'pisum({N})'], cwd=bdir)
+        S.check_call(['octave-cli', '-q', '--eval', 'pisum({})'.format(N)], cwd=bdir)
     except FileNotFoundError:
         logging.warning('Octave executable not found')
 
@@ -80,7 +80,7 @@ def test_pisum(juliapath, N, Nrun):
     try:
         print()
         S.check_call(['matlab', '-nodesktop', '-nojvm', '-nosplash', '-r',
-                      f'pisum({N}); exit'], cwd=bdir)
+                      'pisum({}); exit'.format(N)], cwd=bdir)
     except FileNotFoundError:
         logging.warning('Matlab executable not found')
 

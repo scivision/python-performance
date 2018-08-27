@@ -3,11 +3,13 @@ import numpy
 import math
 import platform
 import timeit
-import cython
-#
-import pyximport
-pyximport.install()
-import cpisum  # noqa: E402
+try:
+    import cython
+    import pyximport
+    pyximport.install()
+    import cpisum  # noqa: E402
+except ImportError:
+    cython = None
 #
 try:
     import numba
@@ -59,7 +61,7 @@ if __name__ == '__main__':
                           repeat=Nrun, number=1)
 
         t = min(t)
-        print(f'{t:.3e} seconds.')
+        print('{:.3e} seconds.'.format(t))
 # %%  PURE PYTHON
     print('--> Python {}'.format(platform.python_version()))
     t = timeit.repeat('pisum_c()',
@@ -67,17 +69,18 @@ if __name__ == '__main__':
                       repeat=Nrun, number=1)
 
     t = min(t)
-    print(f'{t:.3e} seconds.')
+    print('{:.3e} seconds.'.format(t))
 
 # %% CYTHON
-    assert math.isclose(math.pi, cpisum.pisum(
-        N), rel_tol=1e-4), 'Cython convergence error'
+    if cython is not None:
+        assert math.isclose(math.pi, cpisum.pisum(N), rel_tol=1e-4), 'Cython convergence error'
 
-    print('--> Cython ', cython.__version__)
+        print('--> Cython ', cython.__version__)
 
-    t = timeit.repeat(f'cpisum.pisum({N})',
-                      'import gc; gc.enable(); import cpisum',
-                      repeat=Nrun, number=1)
+        t = timeit.repeat('cpisum.pisum({})'.format(N),
+                          'import gc; gc.enable(); import cpisum',
+                          repeat=Nrun, number=1)
 
-    t = min(t)
-    print(f'{t:.3e} seconds.')
+        t = min(t)
+        print('{:.3e} seconds.'.format(t))
+

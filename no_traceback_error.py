@@ -9,7 +9,8 @@ None prints only error message, no traceback
 1 shows error and line error occured in.
 """
 import sys
-sys.tracebacklimit = None  # 0 doesn't work, but None does.
+# 0 doesn't work, but None does.
+sys.tracebacklimit = None  # type: ignore
 
 
 def funA():

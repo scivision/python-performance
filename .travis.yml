@@ -6,7 +6,8 @@ git:
   quiet: true
 
 python:
-  - 3.6
+- 2.7
+- 3.6
 
 os:
 - linux
@@ -31,6 +32,7 @@ before_install:
 
 install:
 - pip install -e .[tests]
+- if [[ $TRAVIS_PYTHON_VERSION == 3.6* ]]; then pip install -e .[cov]; fi
 
 - cd bin
 - cmake ..
@@ -40,9 +42,10 @@ script:
 - ctest -V
 - cd ..
 
-- pytest -rsv
-- flake8
-#- mypy . --ignore-missing-imports
+- if [[ $TRAVIS_PYTHON_VERSION == 3.6* ]]; then
+  flake8;
+  mypy . --ignore-missing-imports;
+  fi
 
 after_success:
 - if [[ $TRAVIS_PYTHON_VERSION == 3.6* ]]; then

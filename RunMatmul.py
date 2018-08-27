@@ -67,7 +67,7 @@ def test_matmul(juliapath, N, Nrun):
     try:
         print()
         subprocess.check_call(
-            ['octave-cli', '-q', '--eval', f'matmul({N})'], cwd=bdir)
+            ['octave-cli', '-q', '--eval', 'matmul({})'.format(N)], cwd=bdir)
     except FileNotFoundError:
         logging.warning('Octave executable not found')
 
@@ -75,7 +75,7 @@ def test_matmul(juliapath, N, Nrun):
     try:
         print()
         subprocess.check_call(['matlab', '-nodesktop', '-nojvm',
-                               '-nosplash', '-r', f'matmul({N}); exit'], cwd=bdir)
+                               '-nosplash', '-r', 'matmul({}); exit'.format(N)], cwd=bdir)
     except FileNotFoundError:
         logging.warning('Matlab executable not found')
 

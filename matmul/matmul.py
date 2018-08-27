@@ -8,9 +8,9 @@ def bench_matmul(N, Nrun):
     # A = np.matrix(np.random.randn(N,N))
     # B = np.matrix(np.random.randn(N,N))
 
-    t = timeit.repeat('A@B',
-                      (f'import gc; gc.enable();import numpy as np;'
-                       f'A = np.array(np.random.randn({N},{N}));B = np.array(np.random.randn({N},{N}))'),
+    t = timeit.repeat('A.dot(B)',
+                      ('import gc; gc.enable();import numpy as np;'
+                       'A = np.array(np.random.randn({},{}));B = np.array(np.random.randn({},{}))'.format(N,N,N,N)),
                       repeat=Nrun, number=1)
 
     return min(t)
@@ -27,4 +27,4 @@ if __name__ == '__main__':
 
     t = bench_matmul(p.N, p.Nrun)
 
-    print(f'{t:.6f} seconds for N={p.N}')
+    print('{:.6f} seconds for N={}'.format(t, p.N))
