@@ -13,7 +13,7 @@ Continuous integration conducted on:
 -   MacOS (Travis-CI)
 -   Windows (AppVeyor)
 
-
+Tested on Python 2.7, 3.5, 3.6 and PyPy3.
 
 ## Install
 

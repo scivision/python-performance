@@ -83,4 +83,3 @@ if __name__ == '__main__':
 
         t = min(t)
         print('{:.3e} seconds.'.format(t))
-

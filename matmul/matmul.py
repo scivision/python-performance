@@ -10,7 +10,7 @@ def bench_matmul(N, Nrun):
 
     t = timeit.repeat('A.dot(B)',
                       ('import gc; gc.enable();import numpy as np;'
-                       'A = np.array(np.random.randn({},{}));B = np.array(np.random.randn({},{}))'.format(N,N,N,N)),
+                       'A = np.array(np.random.randn({},{}));B = np.array(np.random.randn({},{}))'.format(N, N, N, N)),
                       repeat=Nrun, number=1)
 
     return min(t)
