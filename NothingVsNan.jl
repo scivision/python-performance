@@ -13,7 +13,6 @@ catch
   using BenchmarkTools
 end
 
-
 function fnan()
 for i = 0:100
    x = isnan(i)
