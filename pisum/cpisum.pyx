@@ -11,6 +11,6 @@ def pisum(int N):
     cdef int k
     s = 0.
     for k in range(1, N+1):
-        s += (-1)**(k+1)/(2*k-1)
+        s += (-1)**(k+1) / (2*k-1)
     return 4.*s
 

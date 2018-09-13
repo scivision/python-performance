@@ -41,7 +41,7 @@ int main(int argc, char** argv){
     }
 
     #if (!defined(__APPLE__))
-      printf("pisum: %.3e seconds   pi=%f\n",(float) diff/1000000000,s);
+      printf("pisum: %.3e seconds",(float) diff/BILLION);
     #endif
 
     return EXIT_SUCCESS;

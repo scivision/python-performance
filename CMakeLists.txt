@@ -1,5 +1,6 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.1)
 project(bench Fortran)
+enable_testing()
 
 # https://software.intel.com/en-us/mkl-developer-reference-fortran-fortran-95-interface-conventions-for-blas-routines
 
@@ -30,11 +31,9 @@ add_subdirectory(matmul)
 
 add_executable(kind kind.f90)
 target_compile_options(kind PUBLIC ${FFLAGS})
+add_test(NAME kind COMMAND kind)
 
 add_executable(hypot hypot.f90 perf.f90)
 target_compile_options(hypot PUBLIC ${FFLAGS})
-#-------------------------
-enable_testing()
-
-add_test(NAME kind COMMAND kind)
 add_test(NAME hypot COMMAND hypot)
+

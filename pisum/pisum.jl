@@ -16,17 +16,7 @@ else
   N = parse(Int,ARGS[1]);
 end
 
-function f(N)
-x = 0.
-    for ii = 0:N-1
-        x = 0.5*x + mod(ii,10)
-    end
-return x
-end
 
-println("simple_iter:   N: $N")
-o=@benchmark f(N)
-println(o)
 
 function g(N)
   s = 0.
@@ -35,8 +25,6 @@ function g(N)
   end
 
   x=4*s
-
-
 return x
 end
 
