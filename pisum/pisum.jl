@@ -1,5 +1,6 @@
 #!/usr/bin/env julia
 println("--> Julia $VERSION")
+using Test
 
 try
   using BenchmarkTools
@@ -11,14 +12,14 @@ catch
 end
 
 if length(ARGS) < 1
-  N = 100
+  N = 1000
 else
-  N = parse(Int,ARGS[1]);
+  N = parse(Int, ARGS[1]);
 end
 
 
 
-function g(N)
+function g(N::Int)
   s = 0.
   for k = 1:N+1
     s = s + (-1)^(k+1) / (2*k-1)
@@ -28,7 +29,7 @@ function g(N)
 return x
 end
 
-@assert abs(g(N)-pi) < 0.01
+@test isapprox(g(100), pi, atol=0.01)
 println("pisum:   N: $N")
-o=@benchmark g(N)
+o = @benchmark g(N)
 println(o)
