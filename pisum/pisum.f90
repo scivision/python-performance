@@ -45,7 +45,8 @@ psum = 4._wp*psum
 if (abs(psum-pi) > 1e-4_wp) then
   write(stderr,*) 'final value',psum
   write(stderr,*) 'error ', psum - pi
-  error stop 'FORTRAN pisum fail to converge'
+  write(stderr,*) 'FORTRAN pisum fail to converge'
+  stop 1
 endif
 
 !    endif
@@ -87,8 +88,8 @@ Program run_iter
   endif
 !-----------------------------------------------------
   print '(A,I12,A,I3,A)', '--> Fortran.  N=',N,' using',Ni,' images'
-  print *,compiler_version()
-  print *,compiler_options()
+  !print *,compiler_version()
+  !print *,compiler_options()
 
 !------pisum----------------
   t = pisum(N, Nrun)

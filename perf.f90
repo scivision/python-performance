@@ -1,6 +1,6 @@
 ! https://github.com/JuliaLang/julia/blob/master/test/perf/micro/perf.f90
 module perf
-  use, intrinsic :: iso_fortran_env, only : dp=>REAL64,INT64
+  use, intrinsic :: iso_fortran_env, only : dp=>REAL64,INT64, stderr=>error_unit
   implicit none
   private
   
@@ -38,7 +38,8 @@ elemental subroutine assert(cond)
   logical, intent(in) :: cond
 
   if (.not. cond) then
-    error stop 'assertion failed, halting test'
+    write(stderr,*) 'assertion failed, halting test'
+    stop 1
   end if
 
 end subroutine assert

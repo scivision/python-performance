@@ -11,8 +11,8 @@ Program run_matmul
   character(16) :: argv
   real(wp) :: tdmatmul,tsmatmul,tdblint, tsglint
   
-  print *,compiler_version()
-  print *,compiler_options()
+  !print *,compiler_version()
+  !print *,compiler_options()
 
   N=1000
   call get_command_argument(1,argv,status=ios); if(ios==0) read(argv,*) N
