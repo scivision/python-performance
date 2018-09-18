@@ -14,17 +14,14 @@ bdir = 'pisum'
 def main():
 
     p = ArgumentParser()
-    p.add_argument('juliapath', help='path to julia executable',
-                   nargs='?', default='')
     p.add_argument('-N', type=int, default=1000000)
     p.add_argument('-Nrun', type=int, default=10)
     p = p.parse_args()
 
-    test_pisum(p.juliapath, p.N, p.Nrun)
+    test_pisum(p.N, p.Nrun)
 
 
-def test_pisum(juliapath, N, Nrun):
-    juliapath = Path(juliapath).expanduser() / 'julia'
+def test_pisum(N, Nrun):
 
     cexe = './pisumc'
     fexe = './pisumfort'
@@ -48,7 +45,7 @@ def test_pisum(juliapath, N, Nrun):
     # %% Julia
     try:
         print()
-        S.check_call([str(juliapath), 'pisum.jl', str(N)], cwd=bdir)
+        S.check_call(['julia', 'pisum.jl', str(N)], cwd=bdir)
     except FileNotFoundError:
         logging.warning('Julia executable not found')
 

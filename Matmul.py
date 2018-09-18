@@ -15,17 +15,14 @@ bdir = 'matmul'
 def main():
 
     p = ArgumentParser()
-    p.add_argument('juliapath', help='path to julia executable',
-                   nargs='?', default='')
     p.add_argument('-N', type=int, default=1000)
     p.add_argument('-Nrun', type=int, default=10)
     p = p.parse_args()
 
-    test_matmul(p.juliapath, p.N, p.Nrun)
+    test_matmul(p.N, p.Nrun)
 
 
-def test_matmul(juliapath, N, Nrun):
-    juliapath = Path(juliapath).expanduser() / 'julia'
+def test_matmul(N, Nrun):
     # %% Fortran
     try:
         print('Fortran -->')
@@ -40,7 +37,7 @@ def test_matmul(juliapath, N, Nrun):
     # %% Julia
     try:
         print()
-        subprocess.check_call([str(juliapath), 'matmul.jl', str(N)], cwd=bdir)
+        subprocess.check_call(['julia', 'matmul.jl', str(N)], cwd=bdir)
     except FileNotFoundError:
         logging.warning('Julia executable not found')
 
