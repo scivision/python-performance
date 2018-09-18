@@ -34,7 +34,7 @@ subroutine init_random_seed()
 end subroutine
 
 
-elemental subroutine assert(cond)
+impure elemental subroutine assert(cond)
   logical, intent(in) :: cond
 
   if (.not. cond) then
