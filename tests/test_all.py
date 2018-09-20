@@ -11,11 +11,11 @@ def test_hypot():
 
 
 def test_matmul():
-    subprocess.check_call(['RunMatmul'])
+    subprocess.check_call(['Matmul'])
 
 
 def test_pisum():
-    subprocess.check_call(['RunPisum'])
+    subprocess.check_call(['Pisum'])
 
 
 if __name__ == '__main__':
