@@ -17,7 +17,7 @@ integer(i64) :: tic,toc,tmin
 !    real(wp) :: psum[*] = 0._wp
 integer :: k,j, im, Nimg
 real(wp), parameter :: pi = 4.0_wp*atan(1.0_wp)
-real(wp) :: psum
+real(wp), volatile :: psum
 
 tmin = huge(0_i64)
 
@@ -68,11 +68,11 @@ Program run_iter
 
   Implicit None
 
-  integer :: N=100000, Nrun=10, argc, Ni
+  integer :: N=1000000, Nrun=10, argc, Ni
   character(16) :: argv
 
   real(dp) :: t
-  
+
 !  Ni = num_images()
   Ni=1
 
@@ -94,7 +94,7 @@ Program run_iter
 !------pisum----------------
   t = pisum(N, Nrun)
 
-  print  '(A,ES12.4,A)', 'pisum:',t,' sec.'
+  print  '(ES12.4,A)', t,' sec.'
 
 
 End Program

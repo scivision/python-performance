@@ -1,17 +1,20 @@
 #!/usr/bin/env python
-import platform
+import numba
 import timeit
+from numba import jit
+import numpy as np
 from argparse import ArgumentParser
-import math
 
 
-def pisum_c(N: int) -> float:
+@jit(nopython=True)
+def pisum(N: int) -> float:
     """
     Machin formula for Pi http://mathworld.wolfram.com/PiFormulas.html
     """
     s = 0.
     for k in range(1, N+1):
         s += (-1)**(k+1) / (2*k-1)
+
     return 4.*s
 
 
@@ -21,11 +24,11 @@ def main():
     p.add_argument('Nrun', nargs='?', default=10, type=int)
     p = p.parse_args()
 
-    assert math.isclose(math.pi, pisum_c(p.N), rel_tol=1e-4), 'CPython convergence error'
+    assert np.isclose(np.pi, pisum(p.N), rtol=1e-4), 'Numba convergence error'
 
-    print('--> Python', platform.python_version(), 'N=', p.N)
-    t = timeit.repeat('pisum_c({})'.format(p.N),
-                      'import gc; gc.enable(); from __main__ import pisum_c',
+    print('--> Numba {}'.format(numba.__version__), 'N=', p.N)
+    t = timeit.repeat('pisum({})'.format(p.N),
+                      'import gc; gc.enable(); from __main__ import pisum',
                       repeat=p.Nrun, number=1)
 
     t = min(t)

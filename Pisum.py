@@ -1,92 +1,106 @@
 #!/usr/bin/env python
-from pythonperformance import Path
-import logging
-import subprocess as S
-from six import PY2
-import os
+from pathlib import Path
+import pythonperformance as pb
+import numpy as np
 from argparse import ArgumentParser
-if PY2:
-    FileNotFoundError = OSError
+from typing import Dict
+import math
+import subprocess
+try:
+    from matplotlib.pyplot import figure, show
+except ImportError:
+    figure = show = None
 
-bdir = 'pisum'
+bdir = Path(__file__).parent / 'pisum'
+cdir = Path(__file__).parent / 'bin' / 'pisum'
 
 
 def main():
 
     p = ArgumentParser()
-    p.add_argument('-N', type=int, default=1000000)
+    p.add_argument('-N', type=int, default=[10001, 100001, 1000001], nargs='+')
     p.add_argument('-Nrun', type=int, default=10)
     p = p.parse_args()
 
-    test_pisum(p.N, p.Nrun)
+    times = {}
+    for N in p.N:
+        print('\nN=', N)
+        print('----------------')
+        t = benchmark_pisum(N, p.Nrun)
+        t = {k: v for k, v in t.items() if math.isfinite(v)}
+        times[N] = dict(sorted(t.items(), key=lambda x: x[1]))  # Python >= 3.5
+
+        print(t)
+
+    if figure is not None and len(t) > 0:
+        ax = figure().gca()
+        for k, v in times.items():
+            ax.scatter(v.keys(), v.values(), label=str(k))
+
+        ax.set_title('PiSum, N={}'.format(p.N))
+        ax.set_ylabel('run time [sec.]')
+        ax.set_yscale('log')
+        ax.grid(True)
+        # ax.autoscale(True)  # bug?
+        # leave nanmin/nanmax for where some iterations fail
+        ax.set_ylim((0.1*np.nanmin(list(times[min(p.N)].values())),
+                     10*np.nanmax(list(times[max(p.N)].values()))))
+        ax.legend(loc='best')
+        show()
 
 
-def test_pisum(N, Nrun):
+def benchmark_pisum(N, Nrun, paths: Dict[str, Path] = None) -> Dict[str, float]:
 
-    cexe = './pisumc'
-    fexe = './pisumfort'
-    if os.name == 'nt':
-        cexe = cexe[2:]
-        fexe = fexe[2:]
-    # %% C
-    try:
-        print()
-        S.check_call([cexe, str(N)], cwd='bin/'+bdir)
-    except FileNotFoundError:
-        logging.error('please compile pisum.c as per README')
+    times = {}
 
-    # %% Fortran
-    try:
-        print()
-        S.check_call([fexe, str(N), str(Nrun)], cwd='bin/'+bdir)
-    except FileNotFoundError:
-        logging.error('please compile Pisum Fortran code as per README')
+    compinf = pb.compiler_info()
 
-    # %% Julia
-    try:
-        print()
-        S.check_call(['julia', 'pisum.jl', str(N)], cwd=bdir)
-    except FileNotFoundError:
-        logging.warning('Julia executable not found')
+    t = pb.run(['./pisumc', str(N), str(Nrun)], cdir, 'c')
+    if t is not None:
+        times['C\n'+compinf['cc']+'\n'+compinf['ccvers']] = t[0]
 
-    # %% GDL
-    try:
-        print('\n --> GDL')
-        S.check_call(['gdl', '--version'])
+    t = pb.run(['./pisumfort', str(N), str(Nrun)], cdir, 'fortran')
+    if t is not None:
+        times['Fortran\n'+compinf['fc']+'\n'+compinf['fcvers']] = t[0]
 
-        S.check_call(['gdl', '-q', '-e', 'pisum', '-arg', str(N)], cwd=bdir)
-    except FileNotFoundError:
-        logging.warning('GDL executable not found')
+    t = pb.run(['julia', 'pisum.jl', str(N)], bdir)
+    if t is not None:
+        times['julia \n'+t[1]] = t[0]
 
-    # %% IDL
-    try:
-        print('\n --> IDL')
+    vers = subprocess.check_output(['gdl', '--version'], universal_newlines=True).split()[-2]
+    t = pb.run(['gdl', '-q', '-e', 'pisum', '-arg', str(N), '--fakerelease', vers], bdir)
+    if t is not None:
+        times['gdl \n'+t[1]] = t[0]
 
-        S.check_call(['idl', '-e', 'pisum', '-arg', str(N)], cwd=bdir)
-    except FileNotFoundError:
-        logging.warning('IDL executable not found')
+    t = pb.run(['idl', '-quiet', '-e', 'pisum', '-arg', str(N)], bdir)
+    if t is not None:
+        times['idl \n'+t[1]] = t[0]
 
-    # %% Octave
-    try:
-        print()
-        S.check_call(['octave-cli', '-q', '--eval', 'pisum({})'.format(N)], cwd=bdir)
-    except FileNotFoundError:
-        logging.warning('Octave executable not found')
+    t = pb.run(['octave', '-q', '--eval', 'pisum({},{})'.format(N, Nrun)], bdir)
+    if t is not None:
+        times['octave \n'+t[1]] = t[0]
 
-    # %% Matlab
-    try:
-        print()
-        S.check_call(['matlab', '-nodesktop', '-nojvm', '-nosplash', '-r',
-                      'pisum({}); exit'.format(N)], cwd=bdir)
-    except FileNotFoundError:
-        logging.warning('Matlab executable not found')
+    t = pb.run(['matlab', '-nodesktop', '-nojvm', '-nosplash', '-r', 'pisum({}); exit'.format(N)], bdir)
+    if t is not None:
+        times['matlab \n'+t[1]] = t[0]
 
-    # %% Python
-    try:
-        print()
-        S.check_call(['python', 'pisum.py'], cwd=bdir)
-    except FileNotFoundError:
-        logging.warning('Python test skipped')
+    t = pb.run(['python', 'pisum.py', str(N), str(Nrun)], bdir)
+    if t is not None:
+        times['python \n'+t[1]] = t[0]
+
+    t = pb.run(['pypy3', 'pisum.py', str(N), str(Nrun)], bdir)
+    if t is not None:
+        times['pypy \n'+t[1]] = t[0]
+
+    t = pb.run(['python', 'pisum_cython.py', str(N), str(Nrun)], bdir)
+    if t is not None:
+        times['cython \n'+t[1]] = t[0]
+
+    t = pb.run(['python', 'pisum_numba.py', str(N), str(Nrun)], bdir)
+    if t is not None:
+        times['numba \n'+t[1]] = t[0]
+
+    return times
 
 
 # %%

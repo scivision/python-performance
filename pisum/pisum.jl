@@ -1,5 +1,4 @@
 #!/usr/bin/env julia
-println("--> Julia $VERSION")
 using Test
 
 try
@@ -12,24 +11,23 @@ catch
 end
 
 if length(ARGS) < 1
-  N = 1000
+  N = 1000000
 else
   N = parse(Int, ARGS[1]);
 end
 
-
+println("--> Julia $VERSION    N: $N")
 
 function g(N::Int)
   s = 0.
   for k = 1:N+1
-    s = s + (-1)^(k+1) / (2*k-1)
+    s = s + (-1.)^(k+1) / (2*k-1)
   end
 
-  x=4*s
+  x::Real=4.0*s
 return x
 end
 
-@test isapprox(g(100), pi, atol=0.01)
-println("pisum:   N: $N")
+@test isapprox(g(N), pi, atol=1e-4)
 o = @benchmark g(N)
-println(o)
+println(minimum(o).time/1e9, " seconds")

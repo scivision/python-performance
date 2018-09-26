@@ -6,10 +6,8 @@ git:
   quiet: true
 
 python:
-- 2.7
 - 3.5
 - 3.6
-- pypy3
 
 os:
 - linux

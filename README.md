@@ -13,7 +13,7 @@ Continuous integration conducted on:
 -   MacOS (Travis-CI)
 -   Windows (AppVeyor)
 
-Tested on Python 2.7, 3.5, 3.6 and PyPy3.
+Tested on Python 3.5, 3.6 and PyPy3.
 
 ## Install
 
@@ -25,11 +25,13 @@ This command compiles the Fortran code and prepares Python prereqs:
 
 Iterative benchmarks, here using the pisum algorithm:
 
-    ./RunPisum.py
+    ./Pisum.py
+
+![Pi (Machin) benchmark](tests/pisum.png)
 
 Matrix Multiplication benchmarks:
 
-    ./RunMatmul.py
+    ./Matmul.py
 
 ### Fortran
 

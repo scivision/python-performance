@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from pythonperformance import Path
+from pathlib import Path
 import logging
 import subprocess
 from six import PY2
