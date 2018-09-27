@@ -4,7 +4,7 @@
 
 # Python Performance
 
-All benchmarks are platform-indepenent (run on any computing device with appropriate hardware). 
+All benchmarks are platform-independent (run on any computing device with appropriate hardware). 
 A few tests require an NVIDIA GPU with Cuda toolkit installed.
 
 Continuous integration conducted on:
@@ -27,7 +27,7 @@ Iterative benchmarks, here using the pisum algorithm:
 
     ./Pisum.py
 
-![Pi (Machin) benchmark](tests/pisum.png)
+![Pi (Machin) benchmark](tests/pisum_gcc_unplug.png)
 
 Matrix Multiplication benchmarks:
 
@@ -93,7 +93,7 @@ MKLROOT=/opt/intel/mkl cmake ..
 ```
 Of course this option can be combined with `FC`.
 
-You can set this environment variable permanetly for your convenience
+You can set this environment variable permanently for your convenience
 (normally you always want to use MKL) by adding to your `~/.bashrc` the
 line:
 ```sh
