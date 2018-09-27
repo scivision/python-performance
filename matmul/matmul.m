@@ -1,8 +1,8 @@
-function matmul(N)
+function matmul(N, Nrun)
 
   addpath('..')
 
-  Nrun=10;
+  if nargin < 2, Nrun=10; end
 %%
   if isoctave
       v = ver('octave'); % else matlab syntax checker errors

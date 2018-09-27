@@ -83,7 +83,7 @@ def benchmark_pisum(N, Nrun, paths: Dict[str, Path] = None) -> Dict[str, float]:
     if t is not None:
         times['octave \n'+t[1]] = t[0]
 
-    t = pb.run(['matlab', '-nodesktop', '-nojvm', '-nosplash', '-r', 'pisum({}); exit'.format(N)], bdir)
+    t = pb.run(['matlab', '-nodesktop', '-nojvm', '-nosplash', '-r', 'pisum({},{}); exit'.format(N, Nrun)], bdir)
     if t is not None:
         times['matlab \n'+t[1]] = t[0]
 

@@ -34,13 +34,8 @@ install:
 - pip install -e .[tests]
 - if [[ $TRAVIS_PYTHON_VERSION == 3.6* ]]; then pip install -e .[cov]; fi
 
-- cd bin
-- cmake ..
-- cmake --build .
-
 script:
-- ctest -V
-- cd ..
+- pytest -v
 
 - if [[ $TRAVIS_PYTHON_VERSION == 3.6* ]]; then
   flake8;

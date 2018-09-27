@@ -3,7 +3,7 @@ import platform
 import timeit
 
 
-def bench_matmul(N, Nrun):
+def bench_matmul(N: int, Nrun: int) -> float:
 
     # A = np.matrix(np.random.randn(N,N))
     # B = np.matrix(np.random.randn(N,N))

@@ -21,4 +21,4 @@ B = randn(N,N);
 
 o=@benchmark A*B;
 println("N: $N")
-println(o)
+println(minimum(o).time/1e9, " seconds")

@@ -11,7 +11,7 @@ tic
 c=matrix_multiply(A,B)
 t=toc()
 
-print,'matmul: ',t,' seconds.'
+print,t,' seconds.'
 
 
 end

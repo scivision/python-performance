@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.7)
+cmake_minimum_required (VERSION 3.12)
 project(MatMult Fortran C)
 enable_testing()
 
@@ -45,7 +45,7 @@ if(MKL_FOUND OR BLAS_FOUND)
   add_test(NAME intelDGEMM COMMAND inteld)
 endif()
   
-find_package(PythonInterp)
+find_package(Python)
 if(PYTHON_VERSION_STRING VERSION_GREATER_EQUAL 3.6)
   add_test(NAME MatmulAll COMMAND python matmul.py WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
 endif()

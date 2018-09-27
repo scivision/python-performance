@@ -25,11 +25,10 @@ Program run_matmul
   tdblint = double_matmul(N,Nrun)
   tsglint = single_matmul(N,Nrun)
 
-  print *,''
-  print '(A25,F10.6)', 'double DGEMM (sec): ',tdmatmul
-  print '(A25,F10.6)', 'single SGEMM (sec): ',tsmatmul
-  print '(A25,F10.6)', 'double intrinsic (sec): ',tdblint
-  print '(A25,F10.6)', 'single intrinsic (sec): ',tsglint
+  print *, tsmatmul, 'single SGEMM (sec)'
+  print *, tdmatmul, 'double DGEMM (sec)'
+  print *, tsglint, 'single intrinsic (sec)'
+  print *, tdblint, 'double intrinsic (sec)'
 
 contains
 
