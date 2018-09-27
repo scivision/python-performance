@@ -67,10 +67,13 @@ def benchmark_pisum(N, Nrun, paths: Dict[str, Path] = None) -> Dict[str, float]:
     if t is not None:
         times['julia \n'+t[1]] = t[0]
 
-    vers = subprocess.check_output(['gdl', '--version'], universal_newlines=True).split()[-2]
-    t = pb.run(['gdl', '-q', '-e', 'pisum', '-arg', str(N), '--fakerelease', vers], bdir)
-    if t is not None:
-        times['gdl \n'+t[1]] = t[0]
+    try:
+        vers = subprocess.check_output(['gdl', '--version'], universal_newlines=True).split()[-2]
+        t = pb.run(['gdl', '-q', '-e', 'pisum', '-arg', str(N), '--fakerelease', vers], bdir)
+        if t is not None:
+            times['gdl \n'+t[1]] = t[0]
+    except FileNotFoundError:
+        pass
 
     t = pb.run(['idl', '-quiet', '-e', 'pisum', '-arg', str(N)], bdir)
     if t is not None:
