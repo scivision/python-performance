@@ -73,12 +73,14 @@ def run(cmd: List[str], bdir: Path, lang: str = None) -> Optional[Tuple[float, s
         t = float(ret[-2].split()[0])
 # %% version
         vers = ''
-        if cmd[0] in ('julia', 'idl', 'cython', 'numba', 'python', 'octave', 'pypy', 'pypy3'):
+        if cmd[0] in ('julia', 'cython', 'numba', 'python', 'octave', 'pypy', 'pypy3'):
             vers = ret[0].split()[2]
         elif cmd[0] == 'matlab':
             vers = ret[3].split()[0]
         elif cmd[0] == 'gdl':
             vers = ret[1].split()[0]
+        elif cmd[0] == 'idl':
+            vers = ret[-2].split()[0]
 
         return t, vers
     except FileNotFoundError:
