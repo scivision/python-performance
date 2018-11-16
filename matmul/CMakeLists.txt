@@ -1,53 +1,68 @@
 cmake_minimum_required (VERSION 3.12)
-project(MatMult Fortran C)
+project(MatMult Fortran C) # C is necessary to detect MKL
 enable_testing()
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/../cmake/Modules/")
+
+
+get_directory_property(hasParent PARENT_DIRECTORY)
+if(NOT hasParent)
+  include(${CMAKE_SOURCE_DIR}/../cmake/compiler.cmake)
+endif()
 #---------- MKL 
 # https://software.intel.com/en-us/articles/intel-mkl-link-line-advisor
-find_package(MKL)
-if(MKL_FOUND)
-  set(MKLROOT $ENV{MKLROOT})
-  include_directories(${MKL_INCLUDE_DIRS} ${MKLROOT}/include/intel64/ilp64)
- 
-  find_package(Threads REQUIRED)
- 
-  list(APPEND FLIBS ${MKL_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${CMAKE_DL_LIBS})
-  # this example requires MKL
-  if(${CMAKE_Fortran_COMPILER_ID} STREQUAL Intel)
-    list(APPEND FFLAGS -i8)
-    add_executable(intelg intel_gemm.f90)
-    target_compile_options(intelg PUBLIC ${FFLAGS})
-    target_link_libraries(intelg mkl_blas95_ilp64 ${MKL_LIBRARIES} ${FLIBS})
-    add_test(NAME intelGEMM COMMAND intelg)
-  elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL GNU)
-  # NOTE: -fdefault-integer-8 -m64  are crucial for MKL using gfortran to avoid SIGSEGV at runtime!
-    list(APPEND FFLAGS -fdefault-integer-8 -m64 -fbacktrace)
+# cmake -DMKL=on ..
+if(MKL)
+  if(NOT ${CMAKE_Fortran_COMPILER_ID} STREQUAL Intel)
+    # be sure Lapack95 is build for your compiler
+    if(FC)
+      # no "-j" make option ...=.
+      execute_process(COMMAND make libintel64 INSTALL_DIR=${CMAKE_CURRENT_BINARY_DIR} interface=lp64 FC=${FC}
+                    WORKING_DIRECTORY $ENV{MKLROOT}/interfaces/blas95
+                    )
+    else()
+      message(FATAL_ERROR "specify compiler, e.g.: FC=gfortran cmake -DMKL=on ..")
+    endif()
   endif()
-else()
-  find_package(BLAS)
-  list(APPEND FLIBS ${BLAS_LIBRARIES})
+  
+  set(BLA_F95 ON)
+  find_library(BLAS Intel10_64lp_seq REQUIRED)
+  
+  if(${CMAKE_Fortran_COMPILER_ID} STREQUAL Intel)
+    set(BLAS95_INCLUDE_DIRS $ENV{MKLROOT}/include/intel64/lp64)
+    set(BLAS95_LIBRARIES $ENV{MKLROOT}/lib/intel64/libmkl_blas95_lp64.a mkl_intel_lp64 mkl_sequential mkl_core)
+  else()
+    set(BLAS95_INCLUDE_DIRS ${CMAKE_CURRENT_BINARY_DIR}/include/intel64/lp64)
+    set(BLAS95_LIBRARIES ${CMAKE_CURRENT_BINARY_DIR}/lib/intel64/libmkl_blas95_lp64.a mkl_intel_lp64 mkl_sequential mkl_core)
+  endif()
+  
+  add_executable(intelg intel_gemm.f90)
+  target_compile_options(intelg PRIVATE ${FFLAGS})
+  target_include_directories(intelg PRIVATE ${BLAS95_INCLUDE_DIRS})
+  target_link_libraries(intelg PRIVATE ${BLAS95_LIBRARIES} ${FLIBS})
+  add_test(NAME intelGEMM COMMAND intelg)
 endif()
 
 
-
-
-if(MKL_FOUND OR BLAS_FOUND)
+set(BLA_F95 OFF)
+find_package(BLAS)
+if(BLAS_FOUND)
   add_executable(matmul matmul.f90 ../perf.f90)
   target_compile_options(matmul PUBLIC ${FFLAGS})
+  target_link_libraries(matmul ${BLAS_LIBRARIES} ${FLIBS})
+  add_test(NAME matmul COMMAND matmul)
+  
   add_executable(inteld intel_dgemm.f90)
   target_compile_options(inteld PUBLIC ${FFLAGS})
-
-  target_link_libraries(matmul ${FLIBS})
-  target_link_libraries(inteld ${FLIBS})
-  
-  add_test(NAME matmul COMMAND matmul)
+  target_link_libraries(inteld ${BLAS_LIBRARIES} ${FLIBS})
   add_test(NAME intelDGEMM COMMAND inteld)
 endif()
   
-find_package(Python)
-if(PYTHON_VERSION_STRING VERSION_GREATER_EQUAL 3.6)
-  add_test(NAME MatmulAll COMMAND python matmul.py WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
+find_package(Python3 COMPONENTS Interpreter)
+if(Python3_Interpreter_FOUND)
+  add_test(NAME MatmulAll 
+           COMMAND python matmul.py
+           WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 endif()
 
 
