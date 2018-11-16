@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
 
+from time import *
+from numpy import *
 import sys
 if len(sys.argv) < 1:
     print 'Usage:'
@@ -8,8 +10,6 @@ if len(sys.argv) < 1:
     print 'Please specify matrix dimensions'
     sys.exit()
 
-from numpy import *
-from time import *
 
 dim = int(sys.argv[1])
 

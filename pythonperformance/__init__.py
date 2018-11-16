@@ -5,11 +5,15 @@ from pathlib import Path
 from typing import Tuple, Optional, Dict, List
 
 
-def compiler_info() -> Dict[str, str]:
+def compiler_info() -> Optional[Dict[str, str]]:
     """
     assumes CMake project has been generated
     """
     fn = Path('bin') / 'CMakeCache.txt'
+
+    if not fn.is_file():
+        return None
+
     cc = ''
     fc = ''
     for ln in fn.open('r'):

@@ -3,6 +3,9 @@
 # -------------
 # Load modules
 # -------------
+import multiprocessing
+from matplotlib.ticker import ScalarFormatter, FormatStrFormatter
+import matplotlib.pyplot as plt            # pyplot module import
 import os
 import sys
 import time
@@ -12,9 +15,6 @@ import numpy as np
 import glob
 import matplotlib as mpl
 mpl.use('Agg')
-import matplotlib.pyplot as plt            # pyplot module import
-from matplotlib.ticker import ScalarFormatter, FormatStrFormatter
-import multiprocessing
 
 
 def calcPressureLevels(nlevs):

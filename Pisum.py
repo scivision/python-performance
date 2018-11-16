@@ -51,17 +51,17 @@ def main():
 
 def benchmark_pisum(N, Nrun, paths: Dict[str, Path] = None) -> Dict[str, float]:
 
-    times = {}
+    times = {}  # type: ignore
 
     compinf = pb.compiler_info()
 
     t = pb.run(['./pisumc', str(N), str(Nrun)], cdir, 'c')
     if t is not None:
-        times['C\n'+compinf['cc']+'\n'+compinf['ccvers']] = t[0]
+        times['C\n'+compinf['cc']+'\n'+compinf['ccvers']] = t[0]  # type: ignore
 
     t = pb.run(['./pisumfort', str(N), str(Nrun)], cdir, 'fortran')
     if t is not None:
-        times['Fortran\n'+compinf['fc']+'\n'+compinf['fcvers']] = t[0]
+        times['Fortran\n'+compinf['fc']+'\n'+compinf['fcvers']] = t[0]  # type: ignore
 
     t = pb.run(['julia', 'pisum.jl', str(N)], bdir)
     if t is not None:

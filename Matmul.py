@@ -42,7 +42,7 @@ def benchmark_matmul(N: int, Nrun: int) -> Dict[str, float]:
 # %% Fortran
     t = pb.run(['./matmul', str(N), str(Nrun)], cdir, 'fortran')
     if t is not None:
-        times['Fortran\n'+compinf['fc']+'\n'+compinf['fcvers']] = t[0]
+        times['Fortran\n'+compinf['fc']+'\n'+compinf['fcvers']] = t[0]  # type: ignore
 
 # %% Julia
     t = pb.run(['julia', 'matmul.jl', str(N)], bdir)

@@ -9,42 +9,34 @@ python:
 - 3.5
 - 3.6
 
-os:
-- linux
-
 env: FC=gfortran-6
 
 addons:
   apt:
     sources:
-      - ubuntu-toolchain-r-test
+    - ubuntu-toolchain-r-test
     packages:
-      - gfortran-6
-      - libopenblas-dev
+    - gfortran-6
+    - libopenblas-dev
+      
+matrix:
+  include:
+  - os: linux
+    python: 3.6
+    install: pip install -e .[tests,cov]
+    script: 
+    - flake8
+    - mypy . --ignore-missing-imports
+    after_success:
+    - pytest --cov --cov-config=setup.cfg
+    - coveralls
+    
+  #- os: osx
+  #  - brew update > /dev/null
+  #   - brew install gcc || brew link --overwrite gcc > /dev/null
+  #   - export FC=gfortran
 
-before_install:
-- if [[ $TRAVIS_OS_NAME == osx ]]; then
-  brew update > /dev/null;
-  brew install gcc > /dev/null || brew link --overwrite gcc > /dev/null;
-  brew install openblas opencoarrays;
-  export FC=gfortran;
-  fi
+install: pip install -e .[tests]
 
-install:
-- pip install -e .[tests]
-- if [[ $TRAVIS_PYTHON_VERSION == 3.6* ]]; then pip install -e .[cov]; fi
-
-script:
-- pytest -v
-
-- if [[ $TRAVIS_PYTHON_VERSION == 3.6* ]]; then
-  flake8;
-  mypy . --ignore-missing-imports;
-  fi
-
-after_success:
-- if [[ $TRAVIS_PYTHON_VERSION == 3.6* ]]; then
-  pytest --cov --cov-config=setup.cfg;
-  coveralls;
-  fi
+script: pytest -v
 

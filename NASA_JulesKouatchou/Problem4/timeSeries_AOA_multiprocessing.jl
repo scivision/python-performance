@@ -9,7 +9,7 @@ using NetCDF
 
 @everywhere using NetCDF
 @everywhere function calcPressureLevels(nlevs)
-    """
+   """
       This function takes the number of vertical levels
       to read a file that contains the values of ak and bk.
       It then computes the pressure levels using the formula:
@@ -33,9 +33,9 @@ using NetCDF
     lnum = 1
     k = 1
     for line in lines
-        lnum += 1
+       lnum += 1
         if (lnum > 3)
-            line = strip(line)
+           line = strip(line)
             columns = split(line)
             ak[k] = float(columns[2])
             bk[k] = float(columns[3])
@@ -54,7 +54,7 @@ end
 
 
 @everywhere function getData(file)
-    coef = 365.5
+   coef = 365.5
     vName = "aoa"
     ref_lat = -86.0
 
@@ -76,7 +76,7 @@ end
 
 
 @everywhere function getLevels(file)
-    levs = ncread(file, "lev")
+   levs = ncread(file, "lev")
     nlevs = length(levs)
     levs = calcPressureLevels(nlevs)
     return levs
@@ -84,7 +84,7 @@ end
 
 
 @everywhere function getWholeData(begYear, endYear)
-    numDays = 0
+   numDays = 0
     dataVal = zeros(72)
 
     # Loop over the years
@@ -110,8 +110,8 @@ end
             # Loop over the daily files
             # --------------------------
             @sync begin
-                tempVar = @parallel(hcat) for i = 1: numFiles
-                    getData(listFiles[i])
+               tempVar = @parallel(hcat) for i = 1: numFiles
+                   getData(listFiles[i])
                 end
             end
 
@@ -123,7 +123,7 @@ end
         end
     end
 
-        @everywhere Base.flush_gc_msgs()
+       @everywhere Base.flush_gc_msgs()
         @everywhere gc()
     return numDays, dataVal
 end
