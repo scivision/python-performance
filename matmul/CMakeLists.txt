@@ -61,7 +61,7 @@ endif()
 find_package(Python3 COMPONENTS Interpreter)
 if(Python3_Interpreter_FOUND)
   add_test(NAME MatmulAll 
-           COMMAND python matmul.py
+           COMMAND Python3::Interpreter matmul.py
            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 endif()
 
