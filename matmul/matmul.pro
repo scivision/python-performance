@@ -11,7 +11,8 @@ tic
 c=matrix_multiply(A,B)
 t=toc()
 
-print,t,' seconds.'
+print,!Version.Release
 
+print,t,' seconds.'
 
 end

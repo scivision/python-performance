@@ -27,7 +27,7 @@ Iterative benchmarks, here using the pisum algorithm:
 
     ./Pisum.py
 
-![Pi (Machin) benchmark](tests/pisum_gcc_unplug.png)
+![Pi (Machin) benchmark](tests/pisum_gcc_unplug-2019-01.png)
 
 Matrix Multiplication benchmarks:
 

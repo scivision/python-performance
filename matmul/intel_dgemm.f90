@@ -1,4 +1,3 @@
-PROGRAM   MAIN
 
       use,intrinsic :: iso_fortran_env, only: dp=>real64
 
@@ -44,5 +43,4 @@ PROGRAM   MAIN
 
  30   FORMAT(6(ES12.4,1x))
 
-stop "Example completed."
 end program

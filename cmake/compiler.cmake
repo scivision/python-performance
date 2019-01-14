@@ -1,15 +1,28 @@
-if(${CMAKE_Fortran_COMPILER_ID} STREQUAL Intel)
+if(CMAKE_BUILD_TYPE STREQUAL Debug)
+  add_compile_options(-O0)
+else()
+  add_compile_options(-O3)
+endif()
 
-#    message(STATUS "be sure you have in your ~/.bashrc source compilervars.sh")
-  list(APPEND FFLAGS -check all -fpe0 -warn -traceback -debug extended)
+if(CMAKE_Fortran_COMPILER_ID STREQUAL Intel)
 
-elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL GNU) # gfortran
+  list(APPEND FFLAGS -implicitnone)
 
+  if(CMAKE_BUILD_TYPE STREQUAL Debug)
+    list(APPEND FFLAGS -warn -traceback -debug extended -check all -fpe0)
+  endif()
+
+elseif(CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
+
+    list(APPEND FFLAGS -fimplicit-none)
+    
     add_compile_options(-mtune=native -Wall -Wextra -Wpedantic)
-    # -ffpe-trap=zero,overflow,underflow)
+    
+    if(CMAKE_BUILD_TYPE STREQUAL Debug)
+      list(APPEND FFLAGS -ffpe-trap=zero,overflow,underflow)
+    endif()
 elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL PGI)
 
-elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL Flang) # cmake >= 3.10
-  add_compile_options(-Mallocatable=03)
-  link_libraries(-static-flang-libs)
+elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL Flang)
+  list(APPEND FFLAGS -Mallocatable=03)
 endif()

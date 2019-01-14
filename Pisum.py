@@ -30,7 +30,8 @@ def main():
         t = {k: v for k, v in t.items() if math.isfinite(v)}
         times[N] = dict(sorted(t.items(), key=lambda x: x[1]))  # Python >= 3.5
 
-        print(t)
+        for k, v in t.items():
+            print(k, v)
 
     if figure is not None and len(t) > 0:
         ax = figure().gca()

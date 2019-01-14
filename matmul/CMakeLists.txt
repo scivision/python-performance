@@ -13,7 +13,7 @@ endif()
 # https://software.intel.com/en-us/articles/intel-mkl-link-line-advisor
 # cmake -DMKL=on ..
 if(MKL)
-  if(NOT ${CMAKE_Fortran_COMPILER_ID} STREQUAL Intel)
+  if(NOT CMAKE_Fortran_COMPILER_ID STREQUAL Intel)
     # be sure Lapack95 is build for your compiler
     if(FC)
       # no "-j" make option ...=.

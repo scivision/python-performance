@@ -1,6 +1,6 @@
 image:
 - Visual Studio 2017
-- Ubuntu
+- Ubuntu1804
 
 stack: python 3
 
@@ -25,7 +25,7 @@ install:
 - cmake --build .
 
 test_script:
-- ctest -V
+- ctest --output-on-failure
 - cd ..
 - pytest -rsv
 

@@ -6,8 +6,7 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
 add_executable(pisumfort pisum.f90 ../perf.f90)
-target_compile_options(pisumfort PUBLIC ${FFLAGS} ${FCOOPT})
-target_link_libraries(pisumfort ${FCOLIB})
+target_compile_options(pisumfort PRIVATE ${FFLAGS})
 add_test(NAME pisumFortran COMMAND pisumfort)
 
 add_executable(pisumc pisum.c)

@@ -58,9 +58,9 @@ end
     vName = "aoa"
     ref_lat = -86.0
 
-    #lats = ncread(file, "lat")
-    #lat_index = findfirst(lats, ref_lat)
-    #startList = [1,lat_index,1,1]
+    # lats = ncread(file, "lat")
+    # lat_index = findfirst(lats, ref_lat)
+    # startList = [1,lat_index,1,1]
     startList = [1, 5, 1, 1]
     countList = [-1, 1, -1, 1]
 
@@ -133,8 +133,8 @@ end
 tic()
 
 begYear = 1990
-#endYear = 1999
-#begYear = 2000
+# endYear = 1999
+# begYear = 2000
 endYear = 2009
 
 numDays, dataVal = getWholeData(begYear, endYear)
@@ -161,24 +161,24 @@ figName = "fig_TimeSeries_AgeOfAir"
 
 # COULD NOT DO THE CONTOUR PLOT
 
-#X, Y = np.meshgrid(np.array(days), levs)
+# X, Y = np.meshgrid(np.array(days), levs)
 #
-#fig = plt.figure(figsize=(13,13))
+# fig = plt.figure(figsize=(13,13))
 #
-#ax = fig.add_subplot(1,1,1)
+# ax = fig.add_subplot(1,1,1)
 #
-#CS = ax.contour(X, Y, dataVal)
-#ax.clabel(CS, inline=1, fontsize=10)
-#ax.set_title('Age-of-Air (years) at  $86^o$  S')
+# CS = ax.contour(X, Y, dataVal)
+# ax.clabel(CS, inline=1, fontsize=10)
+# ax.set_title('Age-of-Air (years) at  $86^o$  S')
 # y-axis
 # ax.set_yscale('log')
 # ax.set_ylim(plt.ylim()[::-1])
-#ax.set_ylabel('Pressure (hPa)')
+# ax.set_ylabel('Pressure (hPa)')
 # ax.yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
 #
 # x-axis
 # x_ticks = [day for day in days if day%365 == 0] # Only pull out full years
-#x_labels = [str(i+begYear) for i in range(len(x_ticks))]
+# x_labels = [str(i+begYear) for i in range(len(x_ticks))]
 # ax.set_xticks(x_ticks)
 # ax.set_xticklabels(x_labels)
 # ax.set_xlabel('Year')

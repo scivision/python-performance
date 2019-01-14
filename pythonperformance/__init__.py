@@ -81,10 +81,10 @@ def run(cmd: List[str], bdir: Path, lang: str = None) -> Optional[Tuple[float, s
             vers = ret[0].split()[2]
         elif cmd[0] == 'matlab':
             vers = ret[3].split()[0]
-        elif cmd[0] == 'gdl':
-            vers = ret[1].split()[0]
         elif cmd[0] == 'idl':
-            vers = ret[-2].split()[0]
+            vers = ret[-3].split()[0]
+        elif cmd[0] == 'gdl':
+            vers = ret[-3].split()[0]
 
         return t, vers
     except FileNotFoundError:

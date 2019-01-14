@@ -1,4 +1,3 @@
-PROGRAM   MAIN
 ! if you load the wrong library type LP vs. ILP it will say invalid parameter 8
 ! https://software.intel.com/en-us/mkl-developer-reference-fortran-gemm
  use blas95, only: gemm
@@ -47,5 +46,4 @@ PROGRAM   MAIN
 
 30   FORMAT(6(ES12.4,1x))
 
-      PRINT *, "Example completed."
 END program

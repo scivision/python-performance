@@ -21,13 +21,14 @@ def main():
     p = p.parse_args()
 
     times = benchmark_matmul(p.N, p.Nrun)
-    print(times)
+    for k, v in times.items():
+        print(k, v)
 
     if figure is not None and len(times) > 0:
         ax = figure().gca()
         ax.scatter(times.keys(), times.values())
 
-        ax.set_title('PiSum, N={}'.format(p.N))
+        ax.set_title('Matmul, N={}'.format(p.N))
         ax.set_ylabel('run time [sec.]')
         # ax.set_yscale('log')
         ax.grid(True)
@@ -61,11 +62,11 @@ def benchmark_matmul(N: int, Nrun: int) -> Dict[str, float]:
     if t is not None:
         times['idl \n'+t[1]] = t[0]
 # %% Octave
-    t = pb.run(['octave', '-q', '--eval', 'matmul({},{})'.format(N, Nrun)], bdir)
+    t = pb.run(['octave', '-q', '--eval', f'matmul({N},{Nrun})'], bdir)
     if t is not None:
         times['octave \n'+t[1]] = t[0]
 # %% Matlab
-    t = pb.run(['matlab', '-nodesktop', '-nojvm', '-nosplash', '-r', 'matmul({},{}); exit'.format(N, Nrun)], bdir)
+    t = pb.run(['matlab', '-nodesktop', '-nojvm', '-nosplash', '-r', f'matmul({N},{Nrun}); exit'], bdir)
     if t is not None:
         times['matlab \n'+t[1]] = t[0]
     # %% Python

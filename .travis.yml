@@ -1,5 +1,6 @@
 language: python
 group: travis_latest
+dist: xenial
 
 git:
   depth: 3
@@ -29,11 +30,12 @@ matrix:
     after_success:
     - pytest --cov --cov-config=setup.cfg
     - coveralls
-    
-  #- os: osx
-  #  - brew update > /dev/null
-  #   - brew install gcc || brew link --overwrite gcc > /dev/null
-  #   - export FC=gfortran
+  - os: osx
+    langauge: sh
+    env: FC=gfortran
+    - brew update > /dev/null
+    - brew install gcc > /dev/null
+    install: pip3 install -e .[tests]
 
 install: pip install -e .[tests]
 
