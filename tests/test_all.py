@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 import subprocess
 import pytest
-from pathlib import Path
-
-root = Path(__file__).parents[1]
 
 
 def test_hypot():
