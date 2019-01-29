@@ -10,27 +10,31 @@ try:
 except ImportError:
     numba = None
 print('Python version', sys.version)
+print('Numpy version', np.__version__)
 """
 Test speed of None vs. NaN
 
  ./RunNoneVsNan.py
-Numba version 0.37.0
-Python version 3.6.4 |Anaconda, Inc.| (default, Mar 13 2018, 01:15:57)
-[GCC 7.2.0]
---> Numba NaN sentinel: 2.430001586617436e-07
---> Numba None sentinel: 4.84999873151537e-07
---> CPython NaN sentinel: 1.1010001799149904e-06
---> CPython None sentinel: 2.100000529026147e-07
+Numba version 0.42.0
+Python version 3.7.2 (default, Dec 29 2018, 06:19:36) 
+Numpy version 1.16.0
+--> Numba NaN sentinel: 1.31e-07
+--> Numba None sentinel: 1.29e-07
+--> CPython NaN sentinel: 2.43e-07
+--> Numpy NaN sentinel: 8.40e-07
+--> CPython None sentinel: 1.43e-07
+
+
 
 Numba gives ~20x speed up on isnan(), making it like "is None"
 """
 
 
 P = ArgumentParser()
-P.add_argument('Nrun', type=int, nargs='?', default=3)
+P.add_argument('Nrun', type=int, nargs='?', default=100000)
 p = P.parse_args()
 
-x = np.nan
+x = 0.
 
 if numba is not None:
     @numba.jit(nopython=True)
@@ -60,7 +64,7 @@ if numba is not None:
                       'import gc; gc.enable(); from __main__ import nantest',
                       repeat=p.Nrun, number=1)
 
-    print(min(t))
+    print(f'{min(t):0.2e}')
 
 # %%
 
@@ -69,7 +73,7 @@ if numba is not None:
                       'import gc; gc.enable(); from __main__ import nonetest',
                       repeat=p.Nrun, number=1)
 
-    print(min(t))
+    print(f'{min(t):0.2e}')
 
 # %%
 
@@ -78,7 +82,7 @@ t = timeit.repeat('pynantest()',
                   'import gc; gc.enable(); from __main__ import pynantest',
                   repeat=p.Nrun, number=1)
 
-print(min(t))
+print(f'{min(t):0.2e}')
 
 # %%
 
@@ -87,7 +91,7 @@ t = timeit.repeat('numpynantest()',
                   'import gc; gc.enable(); from __main__ import numpynantest',
                   repeat=p.Nrun, number=1)
 
-print(min(t))
+print(f'{min(t):0.2e}')
 
 # %%
 
@@ -96,4 +100,4 @@ t = timeit.repeat('pynonetest()',
                   'import gc; gc.enable(); from __main__ import pynonetest',
                   repeat=p.Nrun, number=1)
 
-print(min(t))
+print(f'{min(t):0.2e}')
