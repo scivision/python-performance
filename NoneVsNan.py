@@ -16,7 +16,7 @@ Test speed of None vs. NaN
 
  ./RunNoneVsNan.py
 Numba version 0.42.0
-Python version 3.7.2 (default, Dec 29 2018, 06:19:36) 
+Python version 3.7.2 (default, Dec 29 2018, 06:19:36)
 Numpy version 1.16.0
 --> Numba NaN sentinel: 1.31e-07
 --> Numba None sentinel: 1.29e-07

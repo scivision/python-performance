@@ -19,13 +19,13 @@ init:
 install:
 - pip install -e .[tests]
 
-- cd bin
-- cmd: cmake -G "MinGW Makefiles" -DCMAKE_SH="CMAKE_SH-NOTFOUND" ..
-- sh: cmake ..
-- cmake --build .
+- cmd: cmake -G "MinGW Makefiles" -DCMAKE_SH="CMAKE_SH-NOTFOUND" -B build
+- sh: cmake -B build
+- cmake --build build --parallel
 
 test_script:
+- cd build
 - ctest --output-on-failure
 - cd ..
-- pytest -rsv
+- pytest -r a -v
 

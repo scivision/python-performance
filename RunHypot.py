@@ -39,7 +39,7 @@ def main():
 def bench_hypot(N, Nrun):
     pyrat = []
 
-    for i, n in enumerate(N):
+    for n in N:
         print('N=', n)
         thy = timeit.repeat('np.hypot(a, b)',
                             'import gc; gc.enable();import numpy as np; a = np.arange({},dtype=float); b = a.copy()'.format(n),
