@@ -6,6 +6,7 @@ from typing import Dict
 import math
 import platform
 import shutil
+import numpy as np
 
 try:
     from matplotlib.pyplot import figure, show
@@ -45,12 +46,12 @@ def main():
         ax.grid(True)
         # ax.autoscale(True)  # bug?
         # leave nanmin/nanmax for where some iterations fail
-        # ax.set_ylim(
-        # (
-        # 0.1 * np.nanmin(list(times[min(p.N)].values())),
-        # 10 * np.nanmax(list(times[max(p.N)].values())),
-        # )
-        # )
+        ax.set_ylim(
+            (
+                0.1 * np.nanmin(list(times[min(p.N)].values())),
+                10 * np.nanmax(list(times[max(p.N)].values())),
+            )
+        )
         ax.legend(loc="best")
         show()
 
