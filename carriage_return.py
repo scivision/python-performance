@@ -5,14 +5,15 @@ or that you don't print more than 80 characters per line.
 80 character is default Terminal & Command Prompt width.
 """
 from time import sleep
+
 # %% too wide
 for i in range(20):
-    x = f'testing {i-2}                                          '
-    x += f' {i-1}           {i}                  {i+1}      {i+2} '
-    print(x+'\r', end="")
+    x = f"testing {i-2}                                          "
+    x += f" {i-1}           {i}                  {i+1}      {i+2} "
+    print(x + "\r", end="")
     sleep(0.1)
 
-print('done             ')
+print("done             ")
 # %% progress indicator
 N = 12
 

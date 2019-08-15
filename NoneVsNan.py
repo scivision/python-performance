@@ -4,13 +4,15 @@ import timeit
 import sys
 import math
 from argparse import ArgumentParser
+
 try:
     import numba
-    print('Numba version', numba.__version__)
+
+    print("Numba version", numba.__version__)
 except ImportError:
     numba = None
-print('Python version', sys.version)
-print('Numpy version', np.__version__)
+print("Python version", sys.version)
+print("Numpy version", np.__version__)
 """
 Test speed of None vs. NaN
 
@@ -31,12 +33,13 @@ Numba gives ~20x speed up on isnan(), making it like "is None"
 
 
 P = ArgumentParser()
-P.add_argument('Nrun', type=int, nargs='?', default=100000)
+P.add_argument("Nrun", type=int, nargs="?", default=100000)
 p = P.parse_args()
 
-x = 0.
+x = 0.0
 
 if numba is not None:
+
     @numba.jit(nopython=True)
     def nonetest():
         return x is not None
@@ -59,45 +62,60 @@ def numpynantest():
 
 
 if numba is not None:
-    print('--> Numba NaN sentinel: ', end='')
-    t = timeit.repeat('nantest()',
-                      'import gc; gc.enable(); from __main__ import nantest',
-                      repeat=p.Nrun, number=1)
+    print("--> Numba NaN sentinel: ", end="")
+    t = timeit.repeat(
+        "nantest()",
+        "import gc; gc.enable(); from __main__ import nantest",
+        repeat=p.Nrun,
+        number=1,
+    )
 
-    print(f'{min(t):0.2e}')
+    print(f"{min(t):0.2e}")
 
-# %%
+    # %%
 
-    print('--> Numba None sentinel: ', end='')
-    t = timeit.repeat('nonetest()',
-                      'import gc; gc.enable(); from __main__ import nonetest',
-                      repeat=p.Nrun, number=1)
+    print("--> Numba None sentinel: ", end="")
+    t = timeit.repeat(
+        "nonetest()",
+        "import gc; gc.enable(); from __main__ import nonetest",
+        repeat=p.Nrun,
+        number=1,
+    )
 
-    print(f'{min(t):0.2e}')
-
-# %%
-
-print('--> CPython NaN sentinel: ', end='')
-t = timeit.repeat('pynantest()',
-                  'import gc; gc.enable(); from __main__ import pynantest',
-                  repeat=p.Nrun, number=1)
-
-print(f'{min(t):0.2e}')
+    print(f"{min(t):0.2e}")
 
 # %%
 
-print('--> Numpy NaN sentinel: ', end='')
-t = timeit.repeat('numpynantest()',
-                  'import gc; gc.enable(); from __main__ import numpynantest',
-                  repeat=p.Nrun, number=1)
+print("--> CPython NaN sentinel: ", end="")
+t = timeit.repeat(
+    "pynantest()",
+    "import gc; gc.enable(); from __main__ import pynantest",
+    repeat=p.Nrun,
+    number=1,
+)
 
-print(f'{min(t):0.2e}')
+print(f"{min(t):0.2e}")
 
 # %%
 
-print('--> CPython None sentinel: ', end='')
-t = timeit.repeat('pynonetest()',
-                  'import gc; gc.enable(); from __main__ import pynonetest',
-                  repeat=p.Nrun, number=1)
+print("--> Numpy NaN sentinel: ", end="")
+t = timeit.repeat(
+    "numpynantest()",
+    "import gc; gc.enable(); from __main__ import numpynantest",
+    repeat=p.Nrun,
+    number=1,
+)
 
-print(f'{min(t):0.2e}')
+print(f"{min(t):0.2e}")
+
+# %%
+
+print("--> CPython None sentinel: ", end="")
+t = timeit.repeat(
+    "pynonetest()",
+    "import gc; gc.enable(); from __main__ import pynonetest",
+    repeat=p.Nrun,
+    number=1,
+)
+
+print(f"{min(t):0.2e}")

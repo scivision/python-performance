@@ -12,20 +12,20 @@ from time import time
 SIZE = (3, 200000)  # arbitrary size to test
 
 # %% create random Boolean array
-xb = (random(SIZE) > 0.5)   # mean ~ 0.5
+xb = random(SIZE) > 0.5  # mean ~ 0.5
 xbl = xb.tolist()
 
-fn = mkstemp('.h5')[1]
-with h5py.File(fn, 'w') as f:
+fn = mkstemp(".h5")[1]
+with h5py.File(fn, "w") as f:
     tic = time()
-    f['bool'] = xb
-    print(f'{time()-tic:3e} sec. to write boolean from Numpy bool', fn)
+    f["bool"] = xb
+    print(f"{time()-tic:3e} sec. to write boolean from Numpy bool", fn)
 
     tic = time()
     xi = packbits(xbl, axis=0)  # each column becomes uint8 BIG-ENDIAN
-    f['uint8'] = xi
-    print(f'{time()-tic:3e} sec. to write uint8', fn)
-# %% here's what nidaqmx gives us
+    f["uint8"] = xi
+    print(f"{time()-tic:3e} sec. to write uint8", fn)
+    # %% here's what nidaqmx gives us
     tic = time()
-    f['listbool'] = xbl
-    print(f'{time()-tic:3e} sec. to write boolean from bool list', fn)
+    f["listbool"] = xbl
+    print(f"{time()-tic:3e} sec. to write boolean from bool list", fn)

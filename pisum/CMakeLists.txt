@@ -1,5 +1,8 @@
 cmake_minimum_required (VERSION 3.1)
-project(PiIterSum Fortran C)
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE Release CACHE STRING "Debug or Release" FORCE)
+endif()
+project(PiIterSum C Fortran)
 enable_testing()
 
 set(CMAKE_C_STANDARD 11)

@@ -9,6 +9,7 @@ None prints only error message, no traceback
 1 shows error and line error occured in.
 """
 import sys
+
 # 0 doesn't work, but None does.
 sys.tracebacklimit = None  # type: ignore
 
@@ -26,7 +27,7 @@ def funC():
 
 
 def funD():
-    raise RuntimeError('Demoing traceback disable')
+    raise RuntimeError("Demoing traceback disable")
 
 
 funA()

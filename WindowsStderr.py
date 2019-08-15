@@ -5,7 +5,7 @@ This function is to help test such configurations.
 """
 import logging
 
-print('this is a stdout message')
-logging.warning('this is a warning message')
-logging.critical('this is a critical message')
-raise RuntimeError('This is a RuntimeError')
+print("this is a stdout message")
+logging.warning("this is a warning message")
+logging.critical("this is a critical message")
+raise RuntimeError("This is a RuntimeError")

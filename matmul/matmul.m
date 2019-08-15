@@ -1,7 +1,6 @@
 function matmul(N, Nrun)
 
-addpath('..')
-
+addpath('..')  % isoctave
 if nargin < 2, Nrun=10; end
 %%
 if isoctave

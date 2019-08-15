@@ -1,33 +1,32 @@
 function pisum(N, Nrun)
 
-addpath('..')
+addpath('..')  % isoctave
 if nargin<2, Nrun=3; end
 
 if isoctave
-    v = ver('octave'); % else matlab syntax checker errors
-    disp(['--> Octave ', v.Version])
+  v = ver('octave'); % else matlab syntax checker errors
+  disp(['--> Octave ', v.Version])
 else
-    v = ver('matlab');
-    disp(['--> Matlab ',v.Version])
+  v = ver('matlab');
+  disp(['--> Matlab ',v.Version])
 end
 
 pitry = calcpisum(N);
 
 if abs(pitry-pi)>1e-4
-    warning('Pisum: failed to converge')
-    exit(1)  % necessary for Matlab, sigh
+  error('Pisum: failed to converge')
 end
 
 try
-    f = @() calcpisum(N);
-    t = timeit(f);
+  f = @() calcpisum(N);
+  t = timeit(f);
 catch
-    t = inf;
-    for i = 1:Nrun
-        tic
-        calcpisum(N);
-        t = min(toc,t);
-    end
+  t = inf;
+  for i = 1:Nrun
+    tic
+    calcpisum(N);
+    t = min(toc,t);
+  end
 end % try
 disp([num2str(t),' sec.'])
 

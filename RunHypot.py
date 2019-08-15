@@ -10,6 +10,7 @@ import timeit
 import sys
 import os
 import logging
+
 try:
     from matplotlib.pyplot import figure, show
 except (ImportError, RuntimeError):
@@ -25,29 +26,39 @@ def main():
         fortrat = benchmark_hypot_fortran(N, Nrun)
     except FileNotFoundError:
         fortrat = None
-        logging.error('Fortran Hypot skipped')
+        logging.error("Fortran Hypot skipped")
 
     if figure is not None:
         plotspeed(N, pyrat, fortrat)
         show()
     else:
-        print('Python', pyrat)
+        print("Python", pyrat)
 
-        print('Fortran', fortrat)
+        print("Fortran", fortrat)
 
 
 def bench_hypot(N, Nrun):
     pyrat = []
 
     for n in N:
-        print('N=', n)
-        thy = timeit.repeat('np.hypot(a, b)',
-                            'import gc; gc.enable();import numpy as np; a = np.arange({},dtype=float); b = a.copy()'.format(n),
-                            repeat=Nrun, number=3*Nrun)
+        print("N=", n)
+        thy = timeit.repeat(
+            "np.hypot(a, b)",
+            "import gc; gc.enable();import numpy as np; a = np.arange({},dtype=float); b = a.copy()".format(
+                n
+            ),
+            repeat=Nrun,
+            number=3 * Nrun,
+        )
 
-        tsq = timeit.repeat('np.sqrt(a**2+b**2)',
-                            'import gc; gc.enable();import numpy as np; a = np.arange({},dtype=float); b = a.copy()'.format(n),
-                            repeat=Nrun, number=3*Nrun)
+        tsq = timeit.repeat(
+            "np.sqrt(a**2+b**2)",
+            "import gc; gc.enable();import numpy as np; a = np.arange({},dtype=float); b = a.copy()".format(
+                n
+            ),
+            repeat=Nrun,
+            number=3 * Nrun,
+        )
 
         pyrat.append(min(tsq) / min(thy))
 
@@ -56,37 +67,45 @@ def bench_hypot(N, Nrun):
 
 def plotspeed(N, pyrat, fortrat):
     pyver = sys.version_info
-    pyver = '{}.{}.{}'.format(pyver[0], pyver[1], pyver[2])
+    pyver = "{}.{}.{}".format(pyver[0], pyver[1], pyver[2])
 
-    fortver = subprocess.check_output(['gfortran', '--version'],
-                                      universal_newlines=True).split('\n')[0].split(' ')[-1]
+    fortver = (
+        subprocess.check_output(["gfortran", "--version"], universal_newlines=True)
+        .split("\n")[0]
+        .split(" ")[-1]
+    )
 
     ax = figure().gca()
 
-    ax.plot(N, pyrat, label='Python')
+    ax.plot(N, pyrat, label="Python")
     if fortrat is not None:
-        ax.plot(N, fortrat, label='Fortran')
+        ax.plot(N, fortrat, label="Fortran")
 
-    ax.set_title('timeit(sqrt(a**2+b**2)) / timeit(hypot(a,b)) \n Numpy {} Python {} Gfortran {}'.format(
-        np.__version__, pyver, fortver))
-    ax.set_xscale('log')
-    ax.legend(loc='best')
-    ax.grid(True, which='both')
-    ax.set_xlabel('N length of vectors a,b')
+    ax.set_title(
+        "timeit(sqrt(a**2+b**2)) / timeit(hypot(a,b)) \n Numpy {} Python {} Gfortran {}".format(
+            np.__version__, pyver, fortver
+        )
+    )
+    ax.set_xscale("log")
+    ax.legend(loc="best")
+    ax.grid(True, which="both")
+    ax.set_xlabel("N length of vectors a,b")
 
 
 def benchmark_hypot_fortran(N, Nrun):
     fortrat = []
-    exe = './hypot'
-    if os.name == 'nt':
+    exe = "./hypot"
+    if os.name == "nt":
         exe = exe[2:]
 
     for n in N:
-        r = subprocess.check_output([exe, str(n), str(Nrun)], universal_newlines=True, cwd='bin')
-        fortrat.append(float(r.split(' ')[-1]))
+        r = subprocess.check_output(
+            [exe, str(n), str(Nrun)], universal_newlines=True, cwd="bin"
+        )
+        fortrat.append(float(r.split(" ")[-1]))
 
     return fortrat
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
