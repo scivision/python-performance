@@ -11,7 +11,7 @@ catch
 end
 
 if length(ARGS) < 1
-  N = 100
+  N = 1000
 else
   N = parse(Int,ARGS[1]);
 end

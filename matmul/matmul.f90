@@ -15,6 +15,7 @@ contains
 
 Real(wp) Function double_gemm(N,Nrun)
 
+external :: dgemm
 integer, intent(in) :: N,Nrun
 
 real(dp), dimension(N,N) :: A, B, D
@@ -55,10 +56,9 @@ end function double_gemm
 
 Real(wp) function single_gemm(N,Nrun)
 
+external :: sgemm
 integer, intent(in) :: N,Nrun
-
 real(sp),dimension(N,N) :: A, B, D
-
 integer :: k
 integer(int64) :: tic,toc, tmin=huge(0_int64)
 
@@ -178,7 +178,7 @@ end module malg
 Program run_matmul
 
 use malg
-use, intrinsic:: iso_fortran_env, only: compiler_version!, compiler_options
+!use, intrinsic:: iso_fortran_env, only: compiler_version, compiler_options
 
 implicit none
 
@@ -186,7 +186,7 @@ integer :: N, Nrun, ios
 character(16) :: argv
 real(wp) :: tdmatmul,tsmatmul,tdblint, tsglint
 
-print *,compiler_version()
+!print *,compiler_version()
 !print *,compiler_options()
 
 N=1000

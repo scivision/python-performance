@@ -1,4 +1,7 @@
 cmake_minimum_required(VERSION 3.1)
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE Release CACHE STRING "Debug or Release" FORCE)
+endif()
 project(bench Fortran)
 enable_testing()
 
