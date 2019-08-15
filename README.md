@@ -19,6 +19,8 @@ Iterative benchmarks, here using the pisum algorithm:
 
     python Pisum.py
 
+![Pi (Machin) benchmark Windows 10](tests/pisum_windows_9750H.png)
+
 ![Pi (Machin) benchmark](tests/pisum_gcc_unplug-2019-01.png)
 
 Matrix Multiplication benchmarks:

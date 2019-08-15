@@ -40,15 +40,16 @@ def main():
         for k, v in times.items():
             ax.scatter(v.keys(), v.values(), label=str(k))
 
-        ax.set_title(f"PiSum, N={p.N}\n{platform.system()} {platform.release()}")
+        ax.set_title(f"PiSum, N={p.N}   {platform.system()}")
         ax.set_ylabel("run time [sec.]")
         ax.set_yscale("log")
         ax.grid(True)
         # ax.autoscale(True)  # bug?
         # leave nanmin/nanmax for where some iterations fail
+        # list() is necessary as numpy.nanmin doesn't like the dict.values() generator
         ax.set_ylim(
             (
-                0.1 * np.nanmin(list(times[min(p.N)].values())),
+                max(1e-6, 0.1 * np.nanmin(list(times[min(p.N)].values()))),
                 10 * np.nanmax(list(times[max(p.N)].values())),
             )
         )
