@@ -1,15 +1,13 @@
-cmake_minimum_required (VERSION 3.12)
-if(NOT CMAKE_BUILD_TYPE)
-  set(CMAKE_BUILD_TYPE Release CACHE STRING "Debug or Release" FORCE)
+find_package(Python3 COMPONENTS Interpreter)
+if(Python3_Interpreter_FOUND)
+  add_test(NAME MatmulAll
+           COMMAND Python3::Interpreter matmul.py
+           WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 endif()
-project(MatMult C Fortran) # C is necessary to detect MKL
-enable_testing()
 
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/../cmake/Modules/")
 
-get_directory_property(hasParent PARENT_DIRECTORY)
-if(NOT hasParent)
-  include(${CMAKE_SOURCE_DIR}/../cmake/compiler.cmake)
+if(NOT CMAKE_Fortran_COMPILER)
+  return()
 endif()
 #---------- MKL
 # https://software.intel.com/en-us/articles/intel-mkl-link-line-advisor
@@ -58,13 +56,6 @@ if(BLAS_FOUND)
   target_compile_options(inteld PUBLIC ${FFLAGS})
   target_link_libraries(inteld ${BLAS_LIBRARIES} ${FLIBS})
   add_test(NAME IntelDGEMM COMMAND inteld)
-endif()
-
-find_package(Python3 COMPONENTS Interpreter)
-if(Python3_Interpreter_FOUND)
-  add_test(NAME MatmulAll
-           COMMAND Python3::Interpreter matmul.py
-           WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 endif()
 
 

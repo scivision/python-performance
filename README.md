@@ -9,9 +9,22 @@ CuPy tests require an NVIDIA GPU with CUDA toolkit installed.
 
 ## Install
 
-This command compiles the Fortran code and prepares Python prereqs:
+This command prepares Python prereqs:
 
-    pip install -e .
+```sh
+pip install -e .
+```
+
+Using the C and/or Fortran tests requires compilation using CMake.
+
+```sh
+cmake -B build
+
+cmake --build build --target test  # non-Visual Studio
+
+cmake --build build --target RUN_TESTS  # Visual Studio
+```
+
 
 ## Usage
 
