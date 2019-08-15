@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 from pathlib import Path
 import pythonperformance as pb
-import numpy as np
 from argparse import ArgumentParser
 from typing import Dict
 import math
+import platform
 import shutil
 
 try:
@@ -39,18 +39,18 @@ def main():
         for k, v in times.items():
             ax.scatter(v.keys(), v.values(), label=str(k))
 
-        ax.set_title("PiSum, N={}".format(p.N))
+        ax.set_title(f"PiSum, N={p.N}\n{platform.system()} {platform.release()}")
         ax.set_ylabel("run time [sec.]")
         ax.set_yscale("log")
         ax.grid(True)
         # ax.autoscale(True)  # bug?
         # leave nanmin/nanmax for where some iterations fail
-        ax.set_ylim(
-            (
-                0.1 * np.nanmin(list(times[min(p.N)].values())),
-                10 * np.nanmax(list(times[max(p.N)].values())),
-            )
-        )
+        # ax.set_ylim(
+        # (
+        # 0.1 * np.nanmin(list(times[min(p.N)].values())),
+        # 10 * np.nanmax(list(times[max(p.N)].values())),
+        # )
+        # )
         ax.legend(loc="best")
         show()
 

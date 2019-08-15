@@ -4,16 +4,8 @@
 
 # Python Performance
 
-All benchmarks are platform-independent (run on any computing device with appropriate hardware). 
-A few tests require an NVIDIA GPU with Cuda toolkit installed.
-
-Continuous integration conducted on:
-
--   Ubuntu (Travis-CI)
--   MacOS (Travis-CI)
--   Windows (AppVeyor)
-
-Tested on Python 3.5, 3.6 and PyPy3.
+All benchmarks are platform-independent (run on any computing device with appropriate hardware).
+CuPy tests require an NVIDIA GPU with CUDA toolkit installed.
 
 ## Install
 
@@ -25,19 +17,13 @@ This command compiles the Fortran code and prepares Python prereqs:
 
 Iterative benchmarks, here using the pisum algorithm:
 
-    ./Pisum.py
+    python Pisum.py
 
 ![Pi (Machin) benchmark](tests/pisum_gcc_unplug-2019-01.png)
 
 Matrix Multiplication benchmarks:
 
-    ./Matmul.py
-
-### Fortran
-
-"kind" demo:
-
-    ./bin/kind
+    python Matmul.py
 
 ### Hypotenuse
 
@@ -48,7 +34,7 @@ overflow for arguments near REALMAX. For example, in Python:
 ```python
 from math import sqrt, hypot
 
-a=1e154; hypot(a,a); sqrt(a**2+a**2); 
+a=1e154; hypot(a,a); sqrt(a**2+a**2);
 
 1.414213562373095e+154
 inf
@@ -68,16 +54,19 @@ Execute the Hypot speed test by:
 
 ### Julia
 
-Julia binaries are often downloaded to a particular directory. 
+Julia binaries are often downloaded to a particular directory.
 Python doesn't pickup `.bash_aliases`, which is commonly used to point to Julia.
 
 ### Compiler selection
 
 Intel Fortran:
+
 ```sh
 FC=ifort cmake ..
 ```
+
 GNU Fortran (gfortran &ge; 6 required):
+
 ```sh
 FC=gfortran cmake ..
 ```
@@ -86,7 +75,7 @@ FC=gfortran cmake ..
 
 https://software.intel.com/en-us/articles/intel-mkl-link-line-advisor
 
-We give a hint to CMake where your MKL libraries on. 
+We give a hint to CMake where your MKL libraries on.
 For example:
 ```sh
 MKLROOT=/opt/intel/mkl cmake ..

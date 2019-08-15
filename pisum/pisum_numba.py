@@ -24,7 +24,8 @@ def main():
     p.add_argument("Nrun", nargs="?", default=10, type=int)
     p = p.parse_args()
 
-    assert np.isclose(np.pi, pisum(p.N), rtol=1e-4), "Numba convergence error"
+    if not np.isclose(np.pi, pisum(p.N), rtol=1e-4):
+        raise SystemExit("Numba convergence error")
 
     print("--> Numba {}".format(numba.__version__), "N=", p.N)
     t = timeit.repeat(

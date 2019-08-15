@@ -8,7 +8,7 @@ if isoctave
   disp(['--> Octave ', v.Version])
 else
   v = ver('matlab');
-  disp(['--> Matlab ',v.Version])
+  disp(['--> Matlab ', v.Release(2:end-1)])
 end
 
 pitry = calcpisum(N);

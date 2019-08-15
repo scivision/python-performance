@@ -17,9 +17,8 @@ def main():
     p.add_argument("Nrun", nargs="?", default=10, type=int)
     p = p.parse_args()
 
-    assert math.isclose(
-        math.pi, cpisum.pisum(p.N), rel_tol=1e-4
-    ), "Cython convergence error"
+    if not math.isclose(math.pi, cpisum.pisum(p.N), rel_tol=1e-4):
+        raise SystemExit("Cython convergence error")
 
     print("--> Cython ", cython.__version__, "N=", p.N)
 

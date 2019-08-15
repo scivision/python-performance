@@ -21,9 +21,8 @@ def main():
     p.add_argument("Nrun", nargs="?", default=10, type=int)
     p = p.parse_args()
 
-    assert math.isclose(
-        math.pi, pisum_c(p.N), rel_tol=1e-4
-    ), "CPython convergence error"
+    if not math.isclose(math.pi, pisum_c(p.N), rel_tol=1e-4):
+        raise SystemExit("CPython convergence error")
 
     print("--> Python", platform.python_version(), "N=", p.N)
     t = timeit.repeat(

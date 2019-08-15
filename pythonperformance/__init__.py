@@ -4,23 +4,26 @@ import shutil
 from pathlib import Path
 from typing import Tuple, Dict, List
 
+R = Path(__file__).parents[1] / "build"
+
 
 def compiler_info() -> Dict[str, str]:
     """
     assumes CMake project has been generated
     """
-    fn = Path("build") / "CMakeCache.txt"
+    fn = R / "CMakeCache.txt"
 
     if not fn.is_file():
-        return None
+        print("Must build Fortran / C code via CMake or Meson", file=sys.stderr)
+        return {"cc": "", "fc": "", "ccvers": "", "fcvers": ""}
 
     cc = ""
     fc = ""
     for ln in fn.open("r"):
         if ln.startswith("CMAKE_C_COMPILER:"):
-            cc = ln.split("/")[-1].rstrip()
+            cc = ln.split("/")[-1].rstrip().replace(".exe", "")
         elif ln.startswith("CMAKE_Fortran_COMPILER:"):
-            fc = ln.split("/")[-1].rstrip()
+            fc = ln.split("/")[-1].rstrip().replace(".exe", "")
 
     if cc == "cc":
         cc = "gcc"
@@ -44,6 +47,11 @@ def compiler_info() -> Dict[str, str]:
                 [cc, "--version"], universal_newlines=True
             ).split("\n")
             cvers = ret[0].split()[-2][:4]
+        elif cc == "icl":
+            ret = subprocess.check_output(
+                [cc, "--version"], universal_newlines=True
+            ).split("\n")
+            cvers = ret[0].split()[-1]
         elif cc == "pgcc":
             ret = subprocess.check_output(
                 [cc, "--version"], universal_newlines=True
@@ -56,17 +64,17 @@ def compiler_info() -> Dict[str, str]:
             ).rstrip()
         elif fc == "gfortran":
             ret = subprocess.check_output(
-                [cc, "--version"], universal_newlines=True
+                [fc, "--version"], universal_newlines=True
             ).split("\n")
             fvers = ret[0].split()[-1]
         elif fc == "ifort":
             ret = subprocess.check_output(
-                [cc, "--version"], universal_newlines=True
+                [fc, "--version"], universal_newlines=True
             ).split("\n")
             fvers = ret[0].split()[-2][:4]
-        elif fc == "pgf90":
+        elif fc == "pgfortran":
             ret = subprocess.check_output(
-                [cc, "--version"], universal_newlines=True
+                [fc, "--version"], universal_newlines=True
             ).split("\n")
             fvers = ret[1].split()[1][:5]
     except (FileNotFoundError, subprocess.CalledProcessError):

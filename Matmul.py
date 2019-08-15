@@ -41,7 +41,7 @@ def main():
 def benchmark_matmul(N: int, Nrun: int) -> Dict[str, float]:
     times = {}
     compinf = pb.compiler_info()
-    matmul_exe = shutil.which("matmul", path=str(cdir))
+    matmul_exe = shutil.which("matmul_fort", path=str(cdir))
 
     t = pb.run([matmul_exe, str(N), str(Nrun)], cdir, "fortran")
     if t is not None:

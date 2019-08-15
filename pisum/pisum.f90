@@ -44,9 +44,8 @@ psum = 4._wp*psum
 
 if (abs(psum-pi) > 1e-4_wp) then
   write(stderr,*) 'final value',psum
-  write(stderr,*) 'error ', psum - pi
-  write(stderr,*) 'FORTRAN pisum fail to converge'
-  stop 1
+  write(stderr,*) 'absolute error ', abs(psum - pi)
+  error stop 'FORTRAN: pisum fail to converge'
 endif
 
 !    endif
