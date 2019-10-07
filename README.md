@@ -1,6 +1,5 @@
-[![image](https://travis-ci.org/scivision/python-performance.svg?branch=master)](https://travis-ci.org/scivision/python-performance)
-[![Coverage Status](https://coveralls.io/repos/github/scivision/python-performance/badge.svg?branch=master)](https://coveralls.io/github/scivision/python-performance?branch=master)
-[![image](https://ci.appveyor.com/api/projects/status/ofqahr0voj4bvmxw?svg=true)](https://ci.appveyor.com/project/scivision/python-performance)
+
+[![Actions Status](https://github.com/scivision/python-performance/workflows/ci/badge.svg)](https://github.com/scivision/python-performance/actions)
 
 # Python Performance
 

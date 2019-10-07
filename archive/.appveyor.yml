@@ -22,4 +22,3 @@ test_script:
 - sh: cmake --build build --parallel --target test
 - cmd: cmake --build build --target RUN_TESTS
 - pytest -r a -v
-
