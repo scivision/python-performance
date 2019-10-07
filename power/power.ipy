@@ -1,0 +1,15 @@
+#!/usr/bin/env ipython
+
+print('10**(-3)')
+%timeit 10**(-3)
+
+print('pow(10, -3)')
+%timeit pow(10, -3)
+
+print('math.pow(10, -3)')
+import math
+%timeit math.pow(10, -3)
+
+print('numpy.pow(10., -3)')
+import numpy
+%timeit numpy.power(10., -3)

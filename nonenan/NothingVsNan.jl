@@ -35,4 +35,3 @@ println("isnan", o)
 println("is nothing")
 o=@benchmark fnothing()
 println(o)
-
