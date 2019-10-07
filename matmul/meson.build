@@ -1,6 +1,6 @@
 
 blas = fc.find_library('blas', required: false)
-if not fc.links('dnrm2(1, [2.], 1)', dependencies: blas, name: 'BLAS OK')
+if not fc.links('x=dnrm2(1, [2.], 1); end', dependencies: blas, name: 'BLAS OK')
   blas = disabler()
 endif
 
