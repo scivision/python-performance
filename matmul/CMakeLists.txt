@@ -1,14 +1,10 @@
 find_package(Python3 COMPONENTS Interpreter)
 if(Python3_Interpreter_FOUND)
   add_test(NAME MatmulAll
-           COMMAND Python3::Interpreter matmul.py
+           COMMAND ${Python3_EXECUTABLE} matmul.py
            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 endif()
 
-
-if(NOT CMAKE_Fortran_COMPILER)
-  return()
-endif()
 #---------- MKL
 # https://software.intel.com/en-us/articles/intel-mkl-link-line-advisor
 # cmake -DMKL=on ..
@@ -37,9 +33,8 @@ if(MKL)
   endif()
 
   add_executable(intelg intel_gemm.f90)
-  target_compile_options(intelg PRIVATE ${FFLAGS})
   target_include_directories(intelg PRIVATE ${BLAS95_INCLUDE_DIRS})
-  target_link_libraries(intelg PRIVATE ${BLAS95_LIBRARIES} ${FLIBS})
+  target_link_libraries(intelg PRIVATE ${BLAS95_LIBRARIES})
   add_test(NAME intelGEMM COMMAND intelg)
 endif()
 
@@ -47,14 +42,12 @@ endif()
 set(BLA_F95 OFF)
 find_package(BLAS)
 if(BLAS_FOUND)
-  add_executable(matmul_fort matmul.f90 ../perf.f90)
-  target_compile_options(matmul_fort PUBLIC ${FFLAGS})
-  target_link_libraries(matmul_fort ${BLAS_LIBRARIES} ${FLIBS})
+  add_executable(matmul_fort matmul.f90)
+  target_link_libraries(matmul_fort ${BLAS_LIBRARIES} perf)
   add_test(NAME BLAS_Matmul COMMAND matmul_fort)
 
   add_executable(inteld intel_dgemm.f90)
-  target_compile_options(inteld PUBLIC ${FFLAGS})
-  target_link_libraries(inteld ${BLAS_LIBRARIES} ${FLIBS})
+  target_link_libraries(inteld ${BLAS_LIBRARIES})
   add_test(NAME IntelDGEMM COMMAND inteld)
 endif()
 

@@ -1,9 +1,8 @@
-project('Bench', 'c',
+project('Bench', 'c', 'fortran',
   meson_version: '>=0.50',
-  default_options : ['default_library=static', 'buildtype=release'])
+  default_options : ['default_library=static', 'buildtype=release', 'warning_level=3'])
 
 cc = meson.get_compiler('c')
-usefortran = add_languages('fortran', required: false)
 fc = meson.get_compiler('fortran')
 
 if fc.get_id() == 'intel'
@@ -13,11 +12,6 @@ elif fc.get_id() == 'intel-cl'
 endif
 
 subdir('pisum')
-
-if not usefortran
-  subdir_done()
-endif
-
 
 subdir('matmul')
 

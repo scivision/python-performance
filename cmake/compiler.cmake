@@ -1,23 +1,18 @@
 if(CMAKE_Fortran_COMPILER_ID STREQUAL Intel)
   if(WIN32)
-    list(APPEND FFLAGS /warn /heap-arrays)
+    string(APPEND CMAKE_Fortran_FLAGS " /warn /heap-arrays")
   else()
-    list(APPEND FFLAGS -warn -heap-arrays)
+    string(APPEND CMAKE_Fortran_FLAGS " -warn -heap-arrays")
   endif()
 
-  if(CMAKE_BUILD_TYPE STREQUAL Debug)
-    list(APPEND FFLAGS -traceback -debug extended -check all -fpe0)
-  endif()
+  string(APPEND CMAKE_Fortran_FLAGS_DEBUG " -traceback -debug extended -check all -fpe0")
 elseif(CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
-  list(APPEND FFLAGS -fimplicit-none)
+  string(APPEND CMAKE_Fortran_FLAGS " -fimplicit-none")
 
-  add_compile_options(-mtune=native -Wall -Wextra -Wpedantic)
+  add_compile_options(-mtune=native -Wall -Wextra)
 
-  if(CMAKE_BUILD_TYPE STREQUAL Debug)
-    list(APPEND FFLAGS -ffpe-trap=zero,overflow,underflow)
-  endif()
+  string(APPEND CMAKE_Fortran_FLAGS_DEBUG " -ffpe-trap=zero,overflow,underflow")
+
 elseif(CMAKE_Fortran_COMPILER_ID STREQUAL PGI)
-  list(APPEND FFLAGS -Mdclchk)
-elseif(CMAKE_Fortran_COMPILER_ID STREQUAL Flang)
-
+  string(APPEND CMAKE_Fortran_FLAGS " -Mdclchk")
 endif()

@@ -7,7 +7,7 @@ jobs:
   linux:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - uses: actions/setup-python@v1
       with:
         python-version: '3.x'
@@ -15,25 +15,25 @@ jobs:
     - run: pip install -e .[tests,lint]
     - run: flake8
     - run: mypy .
-    - run: pytest -r a -v
+    - run: pytest
 
   macos:
     runs-on: macos-latest
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - uses: actions/setup-python@v1
       with:
         python-version: '3.x'
     - run: brew install gcc
     - run: pip install -e .[tests]
-    - run: pytest -r a -v
+    - run: pytest
 
   windows:
     runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - uses: actions/setup-python@v1
       with:
         python-version: '3.x'
     - run: pip install -e .[tests]
-    - run: pytest -r a -v
+    - run: pytest
