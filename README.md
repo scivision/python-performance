@@ -1,7 +1,6 @@
-
-[![Actions Status](https://github.com/scivision/python-performance/workflows/ci/badge.svg)](https://github.com/scivision/python-performance/actions)
-
 # Python Performance
+
+![Actions Status](https://github.com/scivision/python-performance/workflows/ci/badge.svg)
 
 All benchmarks are platform-independent (run on any computing device with appropriate hardware).
 CuPy tests require an NVIDIA GPU with CUDA toolkit installed.
@@ -19,17 +18,22 @@ Using the C and/or Fortran tests requires compilation using CMake.
 ```sh
 cmake -B build
 
-cmake --build build --target test  # non-Visual Studio
+cmake --build build
 
-cmake --build build --target RUN_TESTS  # Visual Studio
+cd build
+
+ctest
 ```
-
 
 ## Usage
 
 Iterative benchmarks, here using the pisum algorithm:
 
-    python Pisum.py
+```sh
+python Pisum.py
+```
+
+![Pi (Machin) benchmark Windows 10 Intel 19.1](tests/pisum_intel_9750.png)
 
 ![Pi (Machin) benchmark Windows 10](tests/pisum_windows_9750H.png)
 

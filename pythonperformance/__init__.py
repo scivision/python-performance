@@ -1,6 +1,7 @@
 import subprocess
 import sys
 import shutil
+import os
 from pathlib import Path
 from typing import Tuple, Dict, List
 
@@ -93,7 +94,16 @@ def run(cmd: List[str], bdir: Path, lang: str = None) -> Tuple[float, str]:
     if not lang:
         lang = cmd[0]
 
-    exe = shutil.which(cmd[0])
+    path = None
+    exe = None
+    if cmd[0] == "octave-cli":
+        oc = os.getenv("OCTAVE_EXECUTABLE")
+        if oc is not None:
+            path = Path(oc).parent
+        if path:
+            exe = shutil.which(cmd[0], path=str(path))
+    if not exe:
+        exe = shutil.which(cmd[0])
     if exe is None:
         print(f"{lang}: MISSING", file=sys.stderr)
         return None
