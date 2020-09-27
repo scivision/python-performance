@@ -13,7 +13,7 @@ try:
     import numba
 
     print("Numba version", numba.__version__)
-except ImportError:
+except (ImportError, OSError):
     numba = None
 print("Python version", sys.version)
 print("Numpy version", np.__version__)
