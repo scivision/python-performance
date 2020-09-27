@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
-from setuptools import setup
+import site
+import setuptools
 
-setup()
+# PEP517 workaround
+site.ENABLE_USER_SITE = True
+
+setuptools.setup()
