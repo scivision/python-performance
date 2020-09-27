@@ -1,6 +1,4 @@
-#!/usr/bin/env python
 import subprocess
-import pytest
 
 
 def test_hypot():
@@ -13,7 +11,3 @@ def test_matmul():
 
 def test_pisum():
     subprocess.check_call(["python", "Pisum.py", "-N", "100"])
-
-
-if __name__ == "__main__":
-    pytest.main([__file__])
