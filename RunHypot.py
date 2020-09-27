@@ -1,9 +1,10 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 Compare speed of hypot(x,y) vs. sqrt(x**2 + y**2)
-hypot() is faster for small arrays, but gets a little slower for large arrays.
-Breakpoint around 10**5 elements on my PC.
+
+hypot() is generally faster and more stable than sqrt()
 """
+
 import subprocess
 import numpy as np
 import timeit

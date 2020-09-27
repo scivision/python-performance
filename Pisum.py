@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 from pathlib import Path
-import pythonperformance as pb
 from argparse import ArgumentParser
-from typing import Dict
+import typing as T
 import math
 import platform
 import shutil
 import numpy as np
+
+import python_performance as pb
 
 try:
     from matplotlib.pyplot import figure, show
@@ -30,7 +31,7 @@ def main():
         print("----------------")
         t = benchmark_pisum(N, p.Nrun)
         t = {k: v for k, v in t.items() if math.isfinite(v)}
-        times[N] = dict(sorted(t.items(), key=lambda x: x[1]))  # Python >= 3.5
+        times[N] = dict(sorted(t.items(), key=lambda x: x[1]))
 
         for k, v in t.items():
             print(k, v)
@@ -57,16 +58,16 @@ def main():
         show()
 
 
-def benchmark_pisum(N, Nrun, paths: Dict[str, Path] = None) -> Dict[str, float]:
+def benchmark_pisum(N, Nrun, paths: T.Dict[str, Path] = None) -> T.Dict[str, float]:
     times = {}
     compinf = pb.compiler_info()
 
-    exe = shutil.which("pisumc", path=str(cdir))
+    exe = shutil.which("pisumc", path=cdir)
     t = pb.run([exe, str(N), str(Nrun)], cdir, "c")
     if t is not None:
         times["C\n" + compinf["cc"] + "\n" + compinf["ccvers"]] = t[0]
 
-    exe = shutil.which("pisumfort", path=str(cdir))
+    exe = shutil.which("pisumfort", path=cdir)
     t = pb.run([exe, str(N), str(Nrun)], cdir, "fortran")
     if t is not None:
         times["Fortran\n" + compinf["fc"] + "\n" + compinf["fcvers"]] = t[0]
@@ -111,6 +112,5 @@ def benchmark_pisum(N, Nrun, paths: Dict[str, Path] = None) -> Dict[str, float]:
     return times
 
 
-# %%
 if __name__ == "__main__":
     main()

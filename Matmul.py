@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 from pathlib import Path
 from argparse import ArgumentParser
-import pythonperformance as pb
-from typing import Dict
+import typing as T
 import shutil
+
+import python_performance as pb
 
 try:
     from matplotlib.pyplot import figure, show
@@ -38,7 +39,7 @@ def main():
         show()
 
 
-def benchmark_matmul(N: int, Nrun: int) -> Dict[str, float]:
+def benchmark_matmul(N: int, Nrun: int) -> T.Dict[str, float]:
     times = {}
     compinf = pb.compiler_info()
     matmul_exe = shutil.which("matmul_fort", path=str(cdir))
