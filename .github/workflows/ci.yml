@@ -1,6 +1,12 @@
 name: ci
 
-on: [push, pull_request]
+on:
+  push:
+    paths:
+      - "**.py"
+      - "**.cmake"
+      - .github/workflows/ci.yml
+
 
 jobs:
 
@@ -8,10 +14,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: actions/setup-python@v1
+    - uses: actions/setup-python@v2
       with:
         python-version: '3.x'
-    - run: sudo apt install -yq --no-install-recommends gfortran
+
     - run: pip install -e .[tests,lint]
     - run: flake8
     - run: mypy .
@@ -21,10 +27,10 @@ jobs:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: actions/setup-python@v1
+    - uses: actions/setup-python@v2
       with:
         python-version: '3.x'
-    - run: brew install gcc
+
     - run: pip install -e .[tests]
     - run: pytest
 
@@ -32,8 +38,9 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: actions/setup-python@v1
+    - uses: actions/setup-python@v2
       with:
         python-version: '3.x'
+
     - run: pip install -e .[tests]
     - run: pytest

@@ -99,9 +99,7 @@ def benchmark_hypot_fortran(N, Nrun):
         exe = exe[2:]
 
     for n in N:
-        r = subprocess.check_output(
-            [exe, str(n), str(Nrun)], universal_newlines=True, cwd="bin"
-        )
+        r = subprocess.check_output([exe, str(n), str(Nrun)], universal_newlines=True, cwd="bin")
         fortrat.append(float(r.split(" ")[-1]))
 
     return fortrat
