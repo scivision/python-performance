@@ -15,7 +15,7 @@ def compiler_info() -> Dict[str, str]:
     fn = R / "CMakeCache.txt"
 
     if not fn.is_file():
-        print("Must build Fortran / C code via CMake or Meson", file=sys.stderr)
+        print("Must build Fortran / C code via CMake", file=sys.stderr)
         return {"cc": "", "fc": "", "ccvers": "", "fcvers": ""}
 
     cc = ""

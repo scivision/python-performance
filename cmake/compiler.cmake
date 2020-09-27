@@ -14,7 +14,4 @@ elseif(CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
   add_compile_options(-march=native -Wall -Wextra)
 
   string(APPEND CMAKE_Fortran_FLAGS_DEBUG " -ffpe-trap=zero,overflow,underflow")
-
-elseif(CMAKE_Fortran_COMPILER_ID STREQUAL PGI)
-  string(APPEND CMAKE_Fortran_FLAGS " -Mdclchk")
 endif()
