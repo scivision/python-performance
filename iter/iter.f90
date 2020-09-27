@@ -1,7 +1,7 @@
 module siter
 
 use, intrinsic :: iso_fortran_env, only : dp=>real64,i64=>int64, stderr=>error_unit
-use perf, only: sysclock2ms, assert
+use perf, only: sysclock2ms
 Implicit None
 integer, parameter :: wp=dp
 
@@ -40,7 +40,7 @@ end module siter
 program s
 
 use siter, only: simple_iter, dp
-use perf, only : init_random_seed
+
 implicit none
 
 
@@ -49,8 +49,7 @@ character(16) :: argv
 
 real(dp) :: t
 
-call init_random_seed()
-
+call random_init(.false.,.false.)
 
 argc = command_argument_count()
 if (argc>0) then

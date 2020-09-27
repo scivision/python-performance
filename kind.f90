@@ -1,5 +1,7 @@
 program kindsize
-use iso_c_binding,only:complex128=>c_double_complex, real64=>c_double, c_sizeof, real32=>c_float, complex64=>c_float_complex
+
+use iso_c_binding, only: complex128=>c_double_complex, real64=>c_double, c_sizeof, real32=>c_float, complex64=>c_float_complex
+implicit none
 
 complex(real32) :: s
 complex(real64) :: d

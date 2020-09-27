@@ -1,6 +1,8 @@
+program intel_dgemm
+
 use,intrinsic :: iso_fortran_env, only: dp=>real64
 
-IMPLICIT NONE
+IMPLICIT NONE (type, external)
 
 external :: dgemm
 real(dp) ALPHA, BETA

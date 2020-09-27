@@ -1,10 +1,12 @@
 ! if you load the wrong library type LP vs. ILP it will say invalid parameter 8
 ! https://software.intel.com/en-us/mkl-developer-reference-fortran-gemm
 
+program intel_gemm
+
 use blas95, only: gemm
 use,intrinsic :: iso_fortran_env, only: dp=>real64
 
-IMPLICIT NONE
+IMPLICIT NONE (type, external)
 
 real(dp) ALPHA, BETA
 INTEGER          M, K, N, I, J

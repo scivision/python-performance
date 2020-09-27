@@ -1,7 +1,7 @@
 module malg
 use, intrinsic :: iso_fortran_env, only : sp=>REAL32,dp=>REAL64, INT64, stdout=>output_unit
 
-use perf, only : init_random_seed, sysclock2ms
+use perf, only : sysclock2ms
 
 implicit none
 
@@ -24,9 +24,7 @@ integer(int64) :: tic,toc,tmin=huge(0_int64)  ! MUST BE _int64!!!
 
 D(:,:) = 0. ! cannot initialize automatic array directly
 
-!call init_random_seed()
-! https://github.com/JuliaLang/julia/blob/master/test/perf/micro/perf.f90
-call random_seed()
+call random_init(.false., .false.)
 
 print *,'priming double-prec. DGEMM loop'
 ! recommended to call once before loop per Intel manual
@@ -64,9 +62,7 @@ integer(int64) :: tic,toc, tmin=huge(0_int64)
 
 D(:,:) = 0.
 
-call init_random_seed()
-
-! https://github.com/JuliaLang/julia/blob/master/test/perf/micro/perf.f90
+call random_init(.false., .false.)
 
 print *,'priming single-prec. SGEMM loop'
 ! recommended to call once before loop per Intel manual
@@ -78,7 +74,7 @@ do k = 1, Nrun
   call random_number(B)
 
   call system_clock(tic)
-  call sgemm('N','N',N,N,N,1_sp,A,N,B,N,0_sp,D,N)
+  call sgemm('N','N',N,N,N,1._sp,A,N,B,N,0._sp,D,N)
   call system_clock(toc)
 
   if (toc-tic < tmin) tmin=toc-tic
@@ -104,8 +100,7 @@ integer(int64) :: tic,toc,tmin=huge(0_int64)  ! MUST BE _int64!!!
 
 D(:,:) = 0. ! cannot initialize automatic array directly
 
-call init_random_seed()
-! https://github.com/JuliaLang/julia/blob/master/test/perf/micro/perf.f90
+call random_init(.false., .false.)
 
 print *,'priming double-prec. matmul loop'
 ! recommended to call once before loop per Intel manual
@@ -143,8 +138,7 @@ integer(int64) :: tic,toc,tmin=huge(0_int64)  ! MUST BE _int64!!!
 
 D(:,:) = 0. ! cannot initialize automatic array directly
 
-call init_random_seed()
-! https://github.com/JuliaLang/julia/blob/master/test/perf/micro/perf.f90
+call random_init(.false., .false.)
 
 print *,'priming single-prec. matmul loop'
 ! recommended to call once before loop per Intel manual
@@ -208,4 +202,3 @@ print *, tsglint, 'single intrinsic (sec)'
 print *, tdblint, 'double intrinsic (sec)'
 
 end program
-

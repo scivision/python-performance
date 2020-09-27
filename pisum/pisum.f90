@@ -1,9 +1,11 @@
 module benchmark_iter
 
-  use, intrinsic :: iso_fortran_env, only : dp=>real64,i64=>int64, stderr=>error_unit
-  use perf, only : init_random_seed, sysclock2ms, assert
-  Implicit None
-  integer, parameter :: wp=dp
+use, intrinsic :: iso_fortran_env, only : dp=>real64,i64=>int64, stderr=>error_unit
+use perf, only : sysclock2ms
+
+implicit none
+
+integer, parameter :: wp=dp
 
 contains
 
