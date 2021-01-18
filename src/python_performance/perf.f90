@@ -2,7 +2,7 @@
 module perf
 
 use, intrinsic :: iso_fortran_env, only : dp=>REAL64,INT64, stderr=>error_unit
-implicit none
+implicit none (type, external)
 
 contains
 

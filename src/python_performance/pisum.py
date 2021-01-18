@@ -15,7 +15,7 @@ except ImportError:
     figure = show = None
 
 bdir = Path(__file__).parent / "pisum"
-cdir = Path(__file__).parent / "build" / "pisum"
+cdir = Path(__file__).parent / "build"
 
 
 def main():
@@ -89,7 +89,7 @@ def benchmark_pisum(N, Nrun, paths: T.Dict[str, Path] = None) -> T.Dict[str, flo
     if t is not None:
         times["octave \n" + t[1]] = t[0]
 
-    t = pb.run(["matlab", "-batch", "pisum({},{}); exit".format(N, Nrun)], bdir)
+    t = pb.run(["matlab", "-batch", f"pisum({N},{Nrun})"], bdir)
     if t is not None:
         times["matlab \n" + t[1]] = t[0]
 

@@ -11,6 +11,8 @@ import timeit
 import sys
 import os
 import logging
+import shutil
+from pathlib import Path
 
 try:
     from matplotlib.pyplot import figure, show
@@ -23,11 +25,8 @@ def main():
     N = np.logspace(1, 6.5, 20, True, dtype=int)
 
     pyrat = bench_hypot(N, Nrun)
-    try:
-        fortrat = benchmark_hypot_fortran(N, Nrun)
-    except FileNotFoundError:
-        fortrat = None
-        logging.error("Fortran Hypot skipped")
+
+    fortrat = benchmark_hypot_fortran(N, Nrun)
 
     if figure is not None:
         plotspeed(N, pyrat, fortrat)
@@ -68,7 +67,7 @@ def bench_hypot(N, Nrun):
 
 def plotspeed(N, pyrat, fortrat):
     pyver = sys.version_info
-    pyver = "{}.{}.{}".format(pyver[0], pyver[1], pyver[2])
+    pyver = f"{pyver[0]}.{pyver[1]}.{pyver[2]}"
 
     fortver = (
         subprocess.check_output(["gfortran", "--version"], universal_newlines=True)
@@ -79,13 +78,11 @@ def plotspeed(N, pyrat, fortrat):
     ax = figure().gca()
 
     ax.plot(N, pyrat, label="Python")
-    if fortrat is not None:
+    if fortrat is not None and len(fortrat) > 0:
         ax.plot(N, fortrat, label="Fortran")
 
     ax.set_title(
-        "timeit(sqrt(a**2+b**2)) / timeit(hypot(a,b)) \n Numpy {} Python {} Gfortran {}".format(
-            np.__version__, pyver, fortver
-        )
+        f"timeit(sqrt(a**2+b**2)) / timeit(hypot(a,b)) \n Numpy {np.__version__} Python {pyver} Gfortran {fortver}"
     )
     ax.set_xscale("log")
     ax.legend(loc="best")
@@ -94,13 +91,20 @@ def plotspeed(N, pyrat, fortrat):
 
 
 def benchmark_hypot_fortran(N, Nrun):
+    R = Path(__file__).parent
+    build_dir = R / "build"
+
     fortrat = []
-    exe = "./hypot"
-    if os.name == "nt":
-        exe = exe[2:]
+    exe = shutil.which("hypot", path=build_dir)
+    if exe is None:
+        subprocess.check_call(["cmake", f"-S{R}", f"-B{build_dir}"])
+        subprocess.check_call(["cmake", "--build", str(build_dir)])
+        exe = shutil.which("hypot", path=build_dir)
+        if not exe:
+            return fortrat
 
     for n in N:
-        r = subprocess.check_output([exe, str(n), str(Nrun)], universal_newlines=True, cwd="bin")
+        r = subprocess.check_output([exe, str(n), str(Nrun)], universal_newlines=True)
         fortrat.append(float(r.split(" ")[-1]))
 
     return fortrat

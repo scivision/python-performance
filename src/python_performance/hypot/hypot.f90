@@ -2,13 +2,14 @@ Program run_hypot
 
 use, intrinsic :: iso_fortran_env, only : wp=>REAL64,INT64
 use perf, only : sysclock2ms
-Implicit None
+
+implicit none (type, external)
 
 integer :: N, Nrun, ios
 character(16) :: argv
 real(wp) :: Rhypot
 
-call random_init(.false., .false.)
+! call random_init(.false., .false.)
 
 N = 1000
 call get_command_argument(1,argv, status=ios); if(ios==0) read(argv,*) N

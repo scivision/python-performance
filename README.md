@@ -13,24 +13,14 @@ This command prepares Python prereqs:
 pip install -e .
 ```
 
-Using the C and/or Fortran tests requires compilation using CMake.
-
-```sh
-cmake -B build
-
-cmake --build build
-
-cd build
-
-ctest
-```
+The C and Fortran tests build automatically using CMake
 
 ## Usage
 
 Iterative benchmarks, here using the pisum algorithm:
 
 ```sh
-python Pisum.py
+python -m python_performance.pisum
 ```
 
 ![Pi (Machin) benchmark Windows 10 Intel 19.1](tests/pisum_intel_9750.png)
@@ -41,7 +31,9 @@ python Pisum.py
 
 Matrix Multiplication benchmarks:
 
-    python Matmul.py
+```sh
+python -m python_performance.matmul
+```
 
 ### Hypotenuse
 
@@ -60,7 +52,9 @@ inf
 
 Execute the Hypot speed test by:
 
-    ./RunHypot.py
+```sh
+python -m python_performance.hypot
+```
 
 ![Python 3.6 hypot() vs rsq()](tests/py36hypot.png)
 
@@ -75,19 +69,6 @@ Execute the Hypot speed test by:
 Julia binaries are often downloaded to a particular directory.
 Python doesn't pickup `.bash_aliases`, which is commonly used to point to Julia.
 
-### Compiler selection
-
-Intel Fortran:
-
-```sh
-FC=ifort cmake ..
-```
-
-GNU Fortran (gfortran &ge; 6 required):
-
-```sh
-FC=gfortran cmake ..
-```
 
 ### MKL selection
 
@@ -95,10 +76,10 @@ https://software.intel.com/en-us/articles/intel-mkl-link-line-advisor
 
 We give a hint to CMake where your MKL libraries on.
 For example:
+
 ```sh
-MKLROOT=/opt/intel/mkl cmake ..
+ cmake -B build -DMKLROOT=/opt/intel/mkl
 ```
-Of course this option can be combined with `FC`.
 
 You can set this environment variable permanently for your convenience
 (normally you always want to use MKL) by adding to your `~/.bashrc` the

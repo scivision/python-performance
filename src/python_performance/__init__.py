@@ -5,7 +5,7 @@ import os
 from pathlib import Path
 from typing import Tuple, Dict, List
 
-R = Path(__file__).parents[1] / "build"
+R = Path(__file__).parent / "build"
 
 
 def compiler_info() -> Dict[str, str]:

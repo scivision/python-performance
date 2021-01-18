@@ -1,14 +1,16 @@
 program intel_dgemm
 
-use,intrinsic :: iso_fortran_env, only: dp=>real64
+use, intrinsic :: iso_fortran_env, only: dp=>real64
 
 IMPLICIT NONE (type, external)
 
 external :: dgemm
-real(dp) ALPHA, BETA
-INTEGER          M, K, N, I, J
-PARAMETER        (M=2000, K=200, N=1000)
-real(dp) A(M,K), B(K,N), C(M,N)
+real(dp) :: ALPHA, BETA
+INTEGER, parameter  :: M=2000, K=200, N=1000
+integer :: I, J
+real(dp), allocatable :: A(:,:), B(:,:), C(:,:)
+
+allocate(A(M,K), B(K,N), C(M,N))
 
 PRINT *, "Initializing data for matrix multiplication C=A*B for "
 PRINT '(a,I5,a,I5,a,I5,a,I5,a,/)', " matrix A(",M," x",K, ") and matrix B(", K," x", N, ")"

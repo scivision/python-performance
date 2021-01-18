@@ -2,7 +2,9 @@ module siter
 
 use, intrinsic :: iso_fortran_env, only : dp=>real64,i64=>int64, stderr=>error_unit
 use perf, only: sysclock2ms
-Implicit None
+
+implicit none (type, external)
+
 integer, parameter :: wp=dp
 
 contains
@@ -49,7 +51,7 @@ character(16) :: argv
 
 real(dp) :: t
 
-call random_init(.false.,.false.)
+! call random_init(.false.,.false.)
 
 argc = command_argument_count()
 if (argc>0) then

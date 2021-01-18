@@ -1,9 +1,10 @@
 module malg
+
 use, intrinsic :: iso_fortran_env, only : sp=>REAL32,dp=>REAL64, INT64, stdout=>output_unit
 
 use perf, only : sysclock2ms
 
-implicit none
+implicit none (type, external)
 
 private
 
@@ -24,7 +25,7 @@ integer(int64) :: tic,toc,tmin=huge(0_int64)  ! MUST BE _int64!!!
 
 D(:,:) = 0. ! cannot initialize automatic array directly
 
-call random_init(.false., .false.)
+! call random_init(.false., .false.)
 
 print *,'priming double-prec. DGEMM loop'
 ! recommended to call once before loop per Intel manual
@@ -62,7 +63,7 @@ integer(int64) :: tic,toc, tmin=huge(0_int64)
 
 D(:,:) = 0.
 
-call random_init(.false., .false.)
+! call random_init(.false., .false.)
 
 print *,'priming single-prec. SGEMM loop'
 ! recommended to call once before loop per Intel manual
@@ -100,7 +101,7 @@ integer(int64) :: tic,toc,tmin=huge(0_int64)  ! MUST BE _int64!!!
 
 D(:,:) = 0. ! cannot initialize automatic array directly
 
-call random_init(.false., .false.)
+! call random_init(.false., .false.)
 
 print *,'priming double-prec. matmul loop'
 ! recommended to call once before loop per Intel manual
@@ -138,7 +139,7 @@ integer(int64) :: tic,toc,tmin=huge(0_int64)  ! MUST BE _int64!!!
 
 D(:,:) = 0. ! cannot initialize automatic array directly
 
-call random_init(.false., .false.)
+! call random_init(.false., .false.)
 
 print *,'priming single-prec. matmul loop'
 ! recommended to call once before loop per Intel manual

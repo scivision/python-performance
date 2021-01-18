@@ -15,3 +15,6 @@ elseif(CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
 
   string(APPEND CMAKE_Fortran_FLAGS_DEBUG " -ffpe-trap=zero,overflow,underflow")
 endif()
+
+include(CheckFortranSourceCompiles)
+check_fortran_source_compiles("call random_init(.false., .false.); end" f18random SRC_EXT f90)

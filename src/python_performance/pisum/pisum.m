@@ -1,5 +1,8 @@
 function pisum(N, Nrun)
 
+validateattributes(N, {'numeric'}, {'integer', 'positive'}, 1)
+validateattributes(Nrun, {'numeric'}, {'integer', 'positive'}, 2)
+
 addpath('..')  % isoctave
 if nargin<2, Nrun=3; end
 
@@ -8,7 +11,7 @@ if isoctave
   disp(['--> Octave ', v.Version])
 else
   v = ver('matlab');
-  disp(['--> Matlab ', v.Release(2:end-1)])
+  disp("--> Matlab " + v.Release(2:end-1))
 end
 
 pitry = calcpisum(N);
