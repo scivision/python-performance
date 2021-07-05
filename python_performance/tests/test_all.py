@@ -10,4 +10,4 @@ def test_matmul():
 
 
 def test_pisum():
-    subprocess.check_call(["python", "Pisum.py", "-N", "100"])
+    subprocess.check_call(["python", "Pisum.py", "-N", "10000"])

@@ -1,8 +1,9 @@
 #!/usr/bin/env python
+from __future__ import annotations
 from pathlib import Path
 from argparse import ArgumentParser
-import typing as T
 import math
+import sys
 import platform
 import shutil
 import numpy as np
@@ -58,56 +59,80 @@ def main():
         show()
 
 
-def benchmark_pisum(N, Nrun, paths: T.Dict[str, Path] = None) -> T.Dict[str, float]:
+def benchmark_pisum(N, Nrun, paths: dict[str, Path] = None) -> dict[str, float]:
     times = {}
     compinf = pb.compiler_info()
 
     exe = shutil.which("pisumc", path=cdir)
-    t = pb.run([exe, str(N), str(Nrun)], cdir, "c")
-    if t is not None:
+    try:
+        t = pb.run([exe, str(N), str(Nrun)], cdir, "c")
         times["C\n" + compinf["cc"] + "\n" + compinf["ccvers"]] = t[0]
+    except EnvironmentError:
+        pass
 
     exe = shutil.which("pisumfort", path=cdir)
-    t = pb.run([exe, str(N), str(Nrun)], cdir, "fortran")
-    if t is not None:
+    try:
+        t = pb.run([exe, str(N), str(Nrun)], cdir, "fortran")
         times["Fortran\n" + compinf["fc"] + "\n" + compinf["fcvers"]] = t[0]
+    except EnvironmentError:
+        pass
 
-    t = pb.run(["julia", "pisum.jl", str(N)], bdir)
-    if t is not None:
+    try:
+        t = pb.run(["julia", "pisum.jl", str(N)], bdir)
         times["julia \n" + t[1]] = t[0]
+    except EnvironmentError:
+        pass
 
-    t = pb.run(["gdl", "-q", "-e", "pisum", "-arg", str(N)], bdir)
-    if t is not None:
+    try:
+        t = pb.run(["gdl", "-q", "-e", "pisum", "-arg", str(N)], bdir)
         times["gdl \n" + t[1]] = t[0]
+    except EnvironmentError:
+        pass
 
-    t = pb.run(["idl", "-quiet", "-e", "pisum", "-arg", str(N)], bdir)
-    if t is not None:
+    try:
+        t = pb.run(["idl", "-quiet", "-e", "pisum", "-arg", str(N)], bdir)
         times["idl \n" + t[1]] = t[0]
+    except EnvironmentError:
+        pass
 
     # octave-cli, not octave in general
-    t = pb.run(["octave-cli", "--eval", f"pisum({N},{Nrun})"], bdir)
-    if t is not None:
+    try:
+        t = pb.run(["octave-cli", "--eval", f"pisum({N},{Nrun})"], bdir)
         times["octave \n" + t[1]] = t[0]
+    except EnvironmentError:
+        pass
 
-    t = pb.run(["matlab", "-batch", "pisum({},{}); exit".format(N, Nrun)], bdir)
-    if t is not None:
+    try:
+        t = pb.run(["matlab", "-batch", "pisum({},{}); exit".format(N, Nrun)], bdir)
         times["matlab \n" + t[1]] = t[0]
+    except EnvironmentError:
+        pass
 
-    t = pb.run(["python", "pisum.py", str(N), str(Nrun)], bdir)
-    if t is not None:
+    try:
+        t = pb.run([sys.executable, "pisum.py", str(N), str(Nrun)], bdir)
         times["python \n" + t[1]] = t[0]
+    except EnvironmentError:
+        pass
 
-    t = pb.run(["pypy3", "pisum.py", str(N), str(Nrun)], bdir)
-    if t is not None:
+    try:
+        t = pb.run(["pypy3", "pisum.py", str(N), str(Nrun)], bdir)
         times["pypy \n" + t[1]] = t[0]
+    except EnvironmentError:
+        pass
 
-    t = pb.run(["python", "pisum_cython.py", str(N), str(Nrun)], bdir)
-    if t is not None:
+    try:
+        import cython  # noqa: F401
+        t = pb.run([sys.executable, "pisum_cython.py", str(N), str(Nrun)], bdir)
         times["cython \n" + t[1]] = t[0]
+    except ImportError:
+        pass
 
-    t = pb.run(["python", "pisum_numba.py", str(N), str(Nrun)], bdir)
-    if t is not None:
+    try:
+        import numba  # noqa: F401
+        t = pb.run([sys.executable, "pisum_numba.py", str(N), str(Nrun)], bdir)
         times["numba \n" + t[1]] = t[0]
+    except ImportError:
+        pass
 
     return times
 
