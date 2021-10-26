@@ -1,10 +1,9 @@
 add_executable(pisumc pisum.c)
-if(NOT MSVC)
-  target_link_libraries(pisumc m)
-endif()
-if (UNIX AND NOT APPLE)
-  target_link_libraries(pisumc rt)
-endif()
+target_link_libraries(pisumc PRIVATE
+$<$<NOT:$<BOOL:${MSVC}>>:m>
+$<$<STREQUAL:${CMAKE_SYSTEM_NAME},Linux>:rt>
+)
+
 add_test(NAME pisumC COMMAND pisumc)
 target_compile_features(pisumc PRIVATE c_std_99)
 

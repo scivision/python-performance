@@ -1,9 +1,12 @@
-find_package(Python3 COMPONENTS Interpreter)
-if(Python3_Interpreter_FOUND)
-  add_test(NAME MatmulAll
-           COMMAND ${Python3_EXECUTABLE} matmul.py
-           WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-endif()
+find_package(Python COMPONENTS Interpreter)
+add_test(NAME MatmulAll
+COMMAND Python::Interpreter matmul.py
+WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
+set_tests_properties(MatmulAll PROPERTIES
+DISABLED $<NOT:$<BOOL:${Python_Interpreter_FOUND}>>
+)
+
 
 #---------- MKL
 # https://software.intel.com/en-us/articles/intel-mkl-link-line-advisor
@@ -70,4 +73,3 @@ endif()
 
 # Broken due to gfortran <= std=f95:
 # gfortran -O3 -march=native -I${F95ROOT}/include/intel64/lp64 -m64 -I${MKLROOT}/include ../perf.f90 ../matmul.f90   ${F95ROOT}/lib/intel64/libmkl_blas95_lp64.a ${F95ROOT}/lib/intel64/libmkl_lapack95_lp64.a -L${MKLROOT}/lib/intel64 -Wl,--no-as-needed -lmkl_gf_lp64 -lmkl_sequential -lmkl_core -lpthread -lm -ldl
-

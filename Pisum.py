@@ -122,6 +122,7 @@ def benchmark_pisum(N, Nrun, paths: dict[str, Path] = None) -> dict[str, float]:
 
     try:
         import cython  # noqa: F401
+
         t = pb.run([sys.executable, "pisum_cython.py", str(N), str(Nrun)], bdir)
         times["cython \n" + t[1]] = t[0]
     except ImportError:
@@ -129,6 +130,7 @@ def benchmark_pisum(N, Nrun, paths: dict[str, Path] = None) -> dict[str, float]:
 
     try:
         import numba  # noqa: F401
+
         t = pb.run([sys.executable, "pisum_numba.py", str(N), str(Nrun)], bdir)
         times["numba \n" + t[1]] = t[0]
     except ImportError:
