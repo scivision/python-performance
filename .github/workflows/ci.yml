@@ -19,11 +19,11 @@ jobs:
     - uses: actions/checkout@v2
     - uses: actions/setup-python@v2
       with:
-        python-version: '3.x'
+        python-version: '3.9'
 
     - run: pip install -e .[tests,lint]
     - run: flake8
-    - run: mypy .
+    - run: mypy
     - run: pytest
 
   macos:
@@ -32,7 +32,7 @@ jobs:
     - uses: actions/checkout@v2
     - uses: actions/setup-python@v2
       with:
-        python-version: '3.x'
+        python-version: '3.9'
 
     - run: pip install -e .[tests]
     - run: pytest
@@ -43,7 +43,7 @@ jobs:
     - uses: actions/checkout@v2
     - uses: actions/setup-python@v2
       with:
-        python-version: '3.x'
+        python-version: '3.9'
 
     - run: pip install -e .[tests]
     - run: pytest
