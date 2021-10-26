@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.15...3.21)
+cmake_minimum_required(VERSION 3.18...3.22)
 
 project(bench
 LANGUAGES C Fortran)
@@ -8,6 +8,8 @@ enable_testing()
 # https://software.intel.com/en-us/mkl-developer-reference-fortran-fortran-95-interface-conventions-for-blas-routines
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/)
+
+option(mkl "Use Intel oneMKL")
 
 include(cmake/compiler.cmake)
 

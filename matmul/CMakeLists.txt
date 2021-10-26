@@ -11,46 +11,24 @@ DISABLED $<NOT:$<BOOL:${Python_Interpreter_FOUND}>>
 #---------- MKL
 # https://software.intel.com/en-us/articles/intel-mkl-link-line-advisor
 # cmake -DMKL=on ..
-if(MKL)
-  if(NOT CMAKE_Fortran_COMPILER_ID STREQUAL Intel)
-    # be sure Lapack95 is build for your compiler
-    if(FC)
-      # no "-j" make option ...=.
-      execute_process(COMMAND make libintel64 INSTALL_DIR=${CMAKE_CURRENT_BINARY_DIR} interface=lp64 FC=${FC}
-                    WORKING_DIRECTORY $ENV{MKLROOT}/interfaces/blas95
-                    )
-    else()
-      message(FATAL_ERROR "specify compiler, e.g.: FC=gfortran cmake -DMKL=on ..")
-    endif()
-  endif()
-
-  set(BLA_F95 ON)
-  find_library(BLAS Intel10_64lp_seq REQUIRED)
-
-  if(${CMAKE_Fortran_COMPILER_ID} STREQUAL Intel)
-    set(BLAS95_INCLUDE_DIRS $ENV{MKLROOT}/include/intel64/lp64)
-    set(BLAS95_LIBRARIES $ENV{MKLROOT}/lib/intel64/libmkl_blas95_lp64.a mkl_intel_lp64 mkl_sequential mkl_core)
-  else()
-    set(BLAS95_INCLUDE_DIRS ${CMAKE_CURRENT_BINARY_DIR}/include/intel64/lp64)
-    set(BLAS95_LIBRARIES ${CMAKE_CURRENT_BINARY_DIR}/lib/intel64/libmkl_blas95_lp64.a mkl_intel_lp64 mkl_sequential mkl_core)
-  endif()
+if(mkl)
+  include(${PROJECT_SOURCE_DIR}/cmake/mkl_lapack95.cmake)
 
   add_executable(intelg intel_gemm.f90)
-  target_include_directories(intelg PRIVATE ${BLAS95_INCLUDE_DIRS})
-  target_link_libraries(intelg PRIVATE ${BLAS95_LIBRARIES})
+  target_link_libraries(intelg PRIVATE LAPACK::LAPACK95 LAPACK::LAPACK)
   add_test(NAME intelGEMM COMMAND intelg)
 endif()
 
-
-set(BLA_F95 OFF)
-find_package(BLAS)
-if(BLAS_FOUND)
+if(NOT LAPACK_FOUND)
+  find_package(LAPACK)
+endif()
+if(LAPACK_FOUND)
   add_executable(matmul_fort matmul.f90)
-  target_link_libraries(matmul_fort ${BLAS_LIBRARIES} perf)
+  target_link_libraries(matmul_fort LAPACK::LAPACK perf)
   add_test(NAME BLAS_Matmul COMMAND matmul_fort)
 
   add_executable(inteld intel_dgemm.f90)
-  target_link_libraries(inteld ${BLAS_LIBRARIES})
+  target_link_libraries(inteld LAPACK::LAPACK)
   add_test(NAME IntelDGEMM COMMAND inteld)
 endif()
 
