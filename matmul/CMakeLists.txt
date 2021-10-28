@@ -12,10 +12,16 @@ DISABLED $<NOT:$<BOOL:${Python_Interpreter_FOUND}>>
 # https://software.intel.com/en-us/articles/intel-mkl-link-line-advisor
 # cmake -DMKL=on ..
 if(mkl)
+  add_executable(intelg intel_gemm.f90)
+
   include(${PROJECT_SOURCE_DIR}/cmake/mkl_lapack95.cmake)
 
-  add_executable(intelg intel_gemm.f90)
-  target_link_libraries(intelg PRIVATE LAPACK::LAPACK95 LAPACK::LAPACK)
+  target_include_directories(intelg PRIVATE ${MKL_BLAS95_INCLUDE_DIRS})
+  target_link_libraries(intelg PRIVATE
+  $<$<TARGET_EXISTS:LAPACK::LAPACK95>:LAPACK::LAPACK95>
+  $${MKL_BLAS95_LIBRARIES}
+  LAPACK::LAPACK
+  )
   add_test(NAME intelGEMM COMMAND intelg)
 endif()
 

@@ -1,9 +1,8 @@
 # build MKL Lapack95 for non-Intel compiler
 include(ExternalProject)
 
-find_package(LAPACK COMPONENTS MKL LAPACK95 REQUIRED)
-
 if(CMAKE_Fortran_COMPILER_ID MATCHES "^Intel")
+  find_package(LAPACK COMPONENTS MKL LAPACK95 REQUIRED)
   return()
 endif()
 
@@ -12,19 +11,23 @@ if(WIN32)
   return()
 endif()
 
+find_package(LAPACK COMPONENTS MKL REQUIRED)
+
+cmake_path(GET CMAKE_Fortran_COMPILER FILENAME FCname)
 
 find_program(MAKE_EXECUTABLE NAMES gmake make REQUIRED)
 
-set(BLAS95_INCLUDE_DIRS ${CMAKE_CURRENT_BINARY_DIR}/include/intel64/lp64)
-set(BLAS95_LIBRARIES ${CMAKE_CURRENT_BINARY_DIR}/lib/intel64/libmkl_blas95_lp64.a mkl_intel_lp64 mkl_sequential mkl_core)
+set(MKL_BLAS95_INCLUDE_DIRS ${CMAKE_CURRENT_BINARY_DIR}/include/intel64/lp64)
+set(MKL_BLAS95_LIBRARIES ${CMAKE_CURRENT_BINARY_DIR}/lib/intel64/libmkl_blas95_lp64.a)
 
 ExternalProject_Add(MKL_LAPACK95
 SOURCE_DIR $ENV{MKLROOT}/interfaces/blas95
 CONFIGURE_COMMAND ""
 # no "-j" make option
-BUILD_COMMAND ${MAKE_EXECUTABLE} libintel64 INSTALL_DIR=${CMAKE_CURRENT_BINARY_DIR} interface=lp64 FC=${CMAKE_Fortran_COMPILER}
-INSTALL_COMMAND ${MAKE_EXECUTABLE} install
-BUILD_BYPRODUCTS ${MKL_LAPACK95_LIBRARIES}
+BUILD_COMMAND ${MAKE_EXECUTABLE} libintel64 INSTALL_DIR=${CMAKE_CURRENT_BINARY_DIR} interface=lp64 FC=${FCname}
+BUILD_IN_SOURCE true
+INSTALL_COMMAND ""
+BUILD_BYPRODUCTS ${MKL_BLAS95_LIBRARIES}
 )
 
-add_dependencies(MKL_LAPACK95 intelg)
+add_dependencies(intelg MKL_LAPACK95)

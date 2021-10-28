@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.18...3.22)
+cmake_minimum_required(VERSION 3.20...3.22)
 
 project(bench
 LANGUAGES C Fortran)
