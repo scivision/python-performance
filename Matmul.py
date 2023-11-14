@@ -4,7 +4,7 @@ from argparse import ArgumentParser
 import typing as T
 import shutil
 
-import python_performance as pb
+import benchmark as pb
 
 try:
     from matplotlib.pyplot import figure, show

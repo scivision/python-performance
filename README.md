@@ -33,11 +33,11 @@ Iterative benchmarks, here using the pisum algorithm:
 python Pisum.py
 ```
 
-![Pi (Machin) benchmark Windows 10 Intel 19.1](tests/pisum_intel_9750.png)
+![Pi (Machin) benchmark Windows 10 Intel 19.1](./gfx/pisum_intel_9750.png)
 
-![Pi (Machin) benchmark Windows 10](tests/pisum_windows_9750H.png)
+![Pi (Machin) benchmark Windows 10](./gfx/pisum_windows_9750H.png)
 
-![Pi (Machin) benchmark](tests/pisum_gcc_unplug-2019-01.png)
+![Pi (Machin) benchmark](./gfx/pisum_gcc_unplug-2019-01.png)
 
 Matrix Multiplication benchmarks:
 
@@ -62,11 +62,11 @@ Execute the Hypot speed test by:
 
     ./RunHypot.py
 
-![Python 3.6 hypot() vs rsq()](tests/py36hypot.png)
+![Python 3.6 hypot() vs rsq()](.gfx/py36hypot.png)
 
-![Python 2.7 hypot() vs rsq()](tests/py27hypot.png)
+![Python 2.7 hypot() vs rsq()](./gfx/py27hypot.png)
 
-![Python 3.5 hypot() vs rsq()](tests/py35hypot.png)
+![Python 3.5 hypot() vs rsq()](./gfx/py35hypot.png)
 
 ## Notes
 

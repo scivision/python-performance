@@ -6,9 +6,10 @@ import math
 import sys
 import platform
 import shutil
+
 import numpy as np
 
-import python_performance as pb
+import benchmark as pb
 
 try:
     from matplotlib.pyplot import figure, show
