@@ -6,16 +6,20 @@ hypot() is generally faster and more stable than sqrt()
 """
 
 import subprocess
-import numpy as np
+from pathlib import Path
 import timeit
 import sys
-import os
-import logging
+import shutil
+
+import numpy as np
 
 try:
-    from matplotlib.pyplot import figure, show
+    from matplotlib.pyplot import figure
 except (ImportError, RuntimeError):
-    figure = show = None
+    figure = None
+
+bdir = Path(__file__).parent
+cdir = bdir / "build"
 
 
 def main():
@@ -23,18 +27,12 @@ def main():
     N = np.logspace(1, 6.5, 20, True, dtype=int)
 
     pyrat = bench_hypot(N, Nrun)
-    try:
-        fortrat = benchmark_hypot_fortran(N, Nrun)
-    except FileNotFoundError:
-        fortrat = None
-        logging.error("Fortran Hypot skipped")
+    fortrat = benchmark_hypot_fortran(N, Nrun)
 
     if figure is not None:
         plotspeed(N, pyrat, fortrat)
-        show()
     else:
         print("Python", pyrat)
-
         print("Fortran", fortrat)
 
 
@@ -74,7 +72,8 @@ def plotspeed(N, pyrat, fortrat):
         subprocess.check_output(["gfortran", "--version"], text=True).split("\n")[0].split(" ")[-1]
     )
 
-    ax = figure().gca()
+    fg = figure()
+    ax = fg.gca()
 
     ax.plot(N, pyrat, label="Python")
     if fortrat is not None:
@@ -90,15 +89,17 @@ def plotspeed(N, pyrat, fortrat):
     ax.grid(True, which="both")
     ax.set_xlabel("N length of vectors a,b")
 
+    figfn = bdir / "hypot.png"
+    print("saved figure to", figfn)
+    fg.savefig(figfn)
+
 
 def benchmark_hypot_fortran(N, Nrun):
     fortrat = []
-    exe = "./hypot"
-    if os.name == "nt":
-        exe = exe[2:]
+    exe = shutil.which("hypot", path=cdir)
 
     for n in N:
-        r = subprocess.check_output([exe, str(n), str(Nrun)], text=True, cwd="bin")
+        r = subprocess.check_output([exe, str(n), str(Nrun)], text=True)
         fortrat.append(float(r.split(" ")[-1]))
 
     return fortrat

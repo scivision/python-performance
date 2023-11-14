@@ -5,13 +5,14 @@ import shutil
 import os
 from pathlib import Path
 
-R = Path(__file__).parents[1] / "build"
+R = Path(__file__).parent / "build"
 
 
 def compiler_info() -> dict[str, str]:
     """
     assumes CMake project has been generated
     """
+
     fn = R / "CMakeCache.txt"
 
     if not fn.is_file():
@@ -32,32 +33,32 @@ def compiler_info() -> dict[str, str]:
     # %% versions
     cvers = fvers = ""
     try:
-        if cc == "clang":
-            cvers = subprocess.check_output([cc, "-dumpversion"], text=True).rstrip()
-        elif cc == "gcc":
-            ret = subprocess.check_output([cc, "--version"], text=True).split("\n")
-            cvers = ret[0].split()[-1]
-        elif cc in {"icc", "icx"}:
-            ret = subprocess.check_output([cc, "--version"], text=True).split("\n")
-            cvers = ret[0].split()[-2][:4]
-        elif cc == "icl":
-            ret = subprocess.check_output([cc, "--version"], text=True).split("\n")
-            cvers = ret[0].split()[-1]
-        elif cc == "nvcc":
-            ret = subprocess.check_output([cc, "--version"], text=True).split("\n")
-            cvers = ret[1].split()[1][:5]
+        match cc:
+            case "clang":
+                cvers = subprocess.check_output([cc, "-dumpversion"], text=True).rstrip()
+            case "gcc":
+                ret = subprocess.check_output([cc, "--version"], text=True).split("\n")
+                cvers = ret[0].split()[-1]
+            case "icx":
+                ret = subprocess.check_output([cc, "--version"], text=True).split("\n")
+                cvers = ret[0].split()[-2][:4]
+            case "nvcc":
+                ret = subprocess.check_output([cc, "--version"], text=True).split("\n")
+                cvers = ret[1].split()[1][:5]
 
-        if fc == "flang":
-            fvers = subprocess.check_output([fc, "-dumpversion"], text=True).rstrip()
-        elif fc == "gfortran":
-            ret = subprocess.check_output([fc, "--version"], text=True).split("\n")
-            fvers = ret[0].split()[-1]
-        elif fc in {"ifx", "ifort"}:
-            ret = subprocess.check_output([fc, "--version"], text=True).split("\n")
-            fvers = ret[0].split()[-2][:4]
-        elif fc == "nvfortran":
-            ret = subprocess.check_output([fc, "--version"], text=True).split("\n")
-            fvers = ret[1].split()[1][:5]
+        match fc:
+            case "flang":
+                fvers = subprocess.check_output([fc, "-dumpversion"], text=True).rstrip()
+            case "gfortran":
+                ret = subprocess.check_output([fc, "--version"], text=True).split("\n")
+                fvers = ret[0].split()[-1]
+            case "ifx":
+                ret = subprocess.check_output([fc, "--version"], text=True).split("\n")
+                fvers = ret[0].split()[-2][:4]
+            case "nvfortran":
+                ret = subprocess.check_output([fc, "--version"], text=True).split("\n")
+                fvers = ret[1].split()[1][:5]
+
     except (FileNotFoundError, subprocess.CalledProcessError):
         pass
 
@@ -96,7 +97,7 @@ def run(cmd: list[str | None], bdir: Path, lang: str | None = None) -> tuple[flo
     t = float(ret[-2].split()[0])
     # %% version
     vers = ""
-    if cmd[0] in (
+    if cmd[0] in {
         "julia",
         "cython",
         "matlab",
@@ -106,7 +107,7 @@ def run(cmd: list[str | None], bdir: Path, lang: str | None = None) -> tuple[flo
         "octave-cli",
         "pypy",
         "pypy3",
-    ):
+    }:
         vers = ret[0].split()[2]
     elif cmd[0] == "idl":
         vers = ret[-3].split()[0]

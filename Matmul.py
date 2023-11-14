@@ -7,9 +7,9 @@ import shutil
 import benchmark as pb
 
 try:
-    from matplotlib.pyplot import figure, show
+    from matplotlib.pyplot import figure
 except ImportError:
-    figure = show = None
+    figure = None
 
 bdir = Path(__file__).parent / "matmul"
 cdir = Path(__file__).parent / "build" / "matmul"
@@ -26,7 +26,8 @@ def main():
         print(k, v)
 
     if figure is not None and len(times) > 0:
-        ax = figure().gca()
+        fg = figure()
+        ax = fg.gca()
         ax.scatter(times.keys(), times.values())
 
         ax.set_title("Matmul, N={}".format(p.N))
@@ -35,7 +36,9 @@ def main():
         ax.grid(True)
         # ax.autoscale(True)  # bug?
         # ax.legend(loc='best')
-        show()
+        figfn = bdir / "matmul.png"
+        print("saved figure to", figfn)
+        fg.savefig(figfn)
 
 
 def benchmark_matmul(N: int, Nrun: int) -> T.Dict[str, float]:

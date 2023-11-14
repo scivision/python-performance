@@ -12,12 +12,12 @@ import numpy as np
 import benchmark as pb
 
 try:
-    from matplotlib.pyplot import figure, show
+    from matplotlib.pyplot import figure
 except ImportError:
-    figure = show = None
+    figure = None
 
 bdir = Path(__file__).parent / "pisum"
-cdir = Path(__file__).parent / "build" / "pisum"
+cdir = Path(__file__).parent / "build"
 
 
 def main():
@@ -38,7 +38,8 @@ def main():
             print(k, v)
 
     if figure is not None and len(t) > 0:
-        ax = figure().gca()
+        fg = figure()
+        ax = fg.gca()
         for k, v in times.items():
             ax.scatter(v.keys(), v.values(), label=str(k))
 
@@ -56,7 +57,9 @@ def main():
             )
         )
         ax.legend(loc="best")
-        show()
+        figfn = bdir / "pisum.png"
+        print("saved figure to", figfn)
+        fg.savefig(figfn)
 
 
 def benchmark_pisum(N: int, Nrun: int) -> dict[str, float]:
@@ -64,18 +67,12 @@ def benchmark_pisum(N: int, Nrun: int) -> dict[str, float]:
     compinf = pb.compiler_info()
 
     exe = shutil.which("pisumc", path=cdir)
-    try:
-        t = pb.run([exe, str(N), str(Nrun)], cdir, "c")
-        times["C\n" + compinf["cc"] + "\n" + compinf["ccvers"]] = t[0]
-    except EnvironmentError:
-        pass
+    t = pb.run([exe, str(N), str(Nrun)], cdir, "c")
+    times["C\n" + compinf["cc"] + "\n" + compinf["ccvers"]] = t[0]
 
     exe = shutil.which("pisumfort", path=cdir)
-    try:
-        t = pb.run([exe, str(N), str(Nrun)], cdir, "fortran")
-        times["Fortran\n" + compinf["fc"] + "\n" + compinf["fcvers"]] = t[0]
-    except EnvironmentError:
-        pass
+    t = pb.run([exe, str(N), str(Nrun)], cdir, "fortran")
+    times["Fortran\n" + compinf["fc"] + "\n" + compinf["fcvers"]] = t[0]
 
     try:
         t = pb.run(["julia", "pisum.jl", str(N)], bdir)
