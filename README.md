@@ -16,13 +16,7 @@ pip install -e .
 Using the C and/or Fortran tests requires compilation using CMake.
 
 ```sh
-cmake -B build
-
-cmake --build build
-
-cd build
-
-ctest
+cmake --workflow --preset default
 ```
 
 ## Usage
