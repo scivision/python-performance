@@ -10,7 +10,7 @@ CuPy tests require an NVIDIA GPU with CUDA toolkit installed.
 This command prepares Python prereqs:
 
 ```sh
-pip install -e .
+pip install -r requirements.txt
 ```
 
 Using the C and/or Fortran tests requires compilation using CMake.
@@ -33,9 +33,13 @@ python Pisum.py
 
 ![Pi (Machin) benchmark](./gfx/pisum_gcc_unplug-2019-01.png)
 
+---
+
 Matrix Multiplication benchmarks:
 
-    python Matmul.py
+```sh
+python Matmul.py
+```
 
 ### Hypotenuse
 
@@ -54,7 +58,9 @@ inf
 
 Execute the Hypot speed test by:
 
-    ./RunHypot.py
+```sh
+python RunHypot.py
+```
 
 ![Python 3.6 hypot() vs rsq()](.gfx/py36hypot.png)
 
