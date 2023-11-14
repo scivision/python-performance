@@ -75,20 +75,6 @@ Execute the Hypot speed test by:
 Julia binaries are often downloaded to a particular directory.
 Python doesn't pickup `.bash_aliases`, which is commonly used to point to Julia.
 
-### Compiler selection
-
-Intel Fortran:
-
-```sh
-FC=ifort cmake ..
-```
-
-GNU Fortran (gfortran &ge; 6 required):
-
-```sh
-FC=gfortran cmake ..
-```
-
 ### MKL selection
 
 https://software.intel.com/en-us/articles/intel-mkl-link-line-advisor
