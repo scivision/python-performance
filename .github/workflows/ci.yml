@@ -13,37 +13,21 @@ on:
 
 jobs:
 
-  linux:
-    runs-on: ubuntu-latest
+  core:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        
+    runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-python@v2
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v4
       with:
-        python-version: '3.9'
+        python-version: '3.10'
 
     - run: pip install -e .[tests,lint]
     - run: flake8
     - run: mypy
     - run: pytest
 
-  macos:
-    runs-on: macos-latest
-    steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-python@v2
-      with:
-        python-version: '3.9'
 
-    - run: pip install -e .[tests]
-    - run: pytest
-
-  windows:
-    runs-on: windows-latest
-    steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-python@v2
-      with:
-        python-version: '3.9'
-
-    - run: pip install -e .[tests]
-    - run: pytest
