@@ -71,9 +71,7 @@ def plotspeed(N, pyrat, fortrat):
     pyver = "{}.{}.{}".format(pyver[0], pyver[1], pyver[2])
 
     fortver = (
-        subprocess.check_output(["gfortran", "--version"], universal_newlines=True)
-        .split("\n")[0]
-        .split(" ")[-1]
+        subprocess.check_output(["gfortran", "--version"], text=True).split("\n")[0].split(" ")[-1]
     )
 
     ax = figure().gca()
@@ -100,7 +98,7 @@ def benchmark_hypot_fortran(N, Nrun):
         exe = exe[2:]
 
     for n in N:
-        r = subprocess.check_output([exe, str(n), str(Nrun)], universal_newlines=True, cwd="bin")
+        r = subprocess.check_output([exe, str(n), str(Nrun)], text=True, cwd="bin")
         fortrat.append(float(r.split(" ")[-1]))
 
     return fortrat

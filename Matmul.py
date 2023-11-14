@@ -16,7 +16,6 @@ cdir = Path(__file__).parent / "build" / "matmul"
 
 
 def main():
-
     p = ArgumentParser()
     p.add_argument("-N", type=int, default=1000)
     p.add_argument("-Nrun", type=int, default=10)

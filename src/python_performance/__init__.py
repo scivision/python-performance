@@ -4,7 +4,6 @@ import sys
 import shutil
 import os
 from pathlib import Path
-import typing as T
 
 R = Path(__file__).parents[1] / "build"
 
@@ -67,7 +66,7 @@ def compiler_info() -> dict[str, str]:
     return cinf
 
 
-def run(cmd: list[T.Optional[str]], bdir: Path, lang: str = None) -> tuple[float, str]:
+def run(cmd: list[str | None], bdir: Path, lang: str | None = None) -> tuple[float, str]:
     if cmd[0] is None:
         raise EnvironmentError(f"{lang}: MISSING")
 
@@ -77,11 +76,10 @@ def run(cmd: list[T.Optional[str]], bdir: Path, lang: str = None) -> tuple[float
     path = None
     exe = None
     if cmd[0] == "octave-cli":
-        oc = os.getenv("OCTAVE_EXECUTABLE")
-        if oc is not None:
+        if oc := os.getenv("OCTAVE_EXECUTABLE"):
             path = Path(oc).parent
         if path:
-            exe = shutil.which(cmd[0], path=str(path))
+            exe = shutil.which(cmd[0], path=path)
     if not exe:
         exe = shutil.which(cmd[0])
     if exe is None:

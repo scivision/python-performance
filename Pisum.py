@@ -20,7 +20,6 @@ cdir = Path(__file__).parent / "build" / "pisum"
 
 
 def main():
-
     p = ArgumentParser()
     p.add_argument("-N", type=int, default=[10001, 100001, 1000001], nargs="+")
     p.add_argument("-Nrun", type=int, default=10)
@@ -59,7 +58,7 @@ def main():
         show()
 
 
-def benchmark_pisum(N, Nrun, paths: dict[str, Path] = None) -> dict[str, float]:
+def benchmark_pisum(N: int, Nrun: int) -> dict[str, float]:
     times = {}
     compinf = pb.compiler_info()
 
