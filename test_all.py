@@ -2,7 +2,7 @@ import subprocess
 
 
 def test_hypot():
-    subprocess.check_call(["python", "RunHypot.py"])
+    subprocess.check_call(["python", "hypot/Hypot.py"])
 
 
 def test_matmul():
