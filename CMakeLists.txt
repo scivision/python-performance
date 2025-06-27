@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.19...3.28)
+cmake_minimum_required(VERSION 3.19...4.0)
 
 if(NOT CMAKE_BUILD_TYPE AND NOT DEFINED ENV{CMAKE_BUILD_TYPE})
   set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type")

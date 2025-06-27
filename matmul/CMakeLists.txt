@@ -37,7 +37,6 @@ endif()
 
 
 if(NOT MKL_FOUND)
-  set(BLA_F95 OFF)
   find_package(BLAS)
 endif()
 
