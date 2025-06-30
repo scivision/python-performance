@@ -17,7 +17,7 @@ end
 
 
 % Check for GPU availability
-[hgpu, canMeasurePower] = check_gpu(useGpu);
+hgpu = check_gpu(useGpu);
 
 %% dynamic memory size constraint
 [Ns, expected_bytes] = problem_size(Fsize, precision);
@@ -28,9 +28,6 @@ num_trials = 5;  % 5 trials are taken for accurate readings
 cpuFFT_times = zeros(size(Ns));
 gpuFFT_times = nan(size(Ns));
 dft_times = nan(size(Ns));
-
-cpuFFT_memory = zeros(size(Ns));
-gpuFFT_memory = nan(size(Ns));
 
 gpuFFT_energy = nan(size(Ns));
 
@@ -45,22 +42,6 @@ xlabel(timeAxes, 'Array Size (N)')
 ylabel(timeAxes, 'Time (seconds)')
 set(timeAxes, 'XScale', 'log', 'YScale', 'log', 'XGrid', 'on', 'YGrid', 'on')
 
-fg = figure('Name', 'FFT Benchmarks: Memory');
-memAxes = axes('Parent', fg, 'NextPlot', 'add');
-title(memAxes, 'Memory Usage')
-xlabel(memAxes, 'Array Size (N)')
-ylabel(memAxes, 'Memory (MB)')
-set(memAxes,  'XScale', 'log', 'YScale', 'log', 'XGrid', 'on', 'YGrid', 'on')
-
-if canMeasurePower
-  fg = figure('Name', 'FFT Benchmarks: Energy');
-  energyAxes = axes('Parent', fg, 'NextPlot', 'add');
-  title(energyAxes, 'Energy Consumption')
-  xlabel(energyAxes, 'Array Size (N)')
-  ylabel(energyAxes, 'Energy (Joules)')
-  set(energyAxes,  'XScale', 'log', 'YScale', 'log', 'XGrid', 'on', 'YGrid', 'on')
-end
-
 % Main benchmarking loop
 for i = 1:length(Ns)
   N = Ns(i);
@@ -71,51 +52,26 @@ for i = 1:length(Ns)
 
   % 1. CPU FFT Benchmarking
   fprintf('  CPU FFT: ');
-  t_cpu = zeros(1, num_trials);
-  mem_cpu = zeros(1, num_trials);
 
-  for j = 1:num_trials
-    [t_cpu(j), mem_cpu(j), X_fft] = cpu_fft(x);
-    fprintf('.');
-  end
+  h = @() fft(x);
+  cpuFFT_times(i) = timeit(h);
 
-  mem_cpu(mem_cpu < 0) = NaN;
-
-  cpuFFT_times(i) = mean(t_cpu);
-  cpuFFT_memory(i) = mean(mem_cpu, "omitnan");
-  fprintf(' %.4f s, %.2f MB\n', cpuFFT_times(i), cpuFFT_memory(i));
+  fprintf(' %.4f s\n', cpuFFT_times(i));
 
   % 2. DFT Benchmarking (only for small N)
   if N <= 2048
     fprintf('  DFT:     ');
-    t_dft = zeros(1, num_trials);
 
-    for j = 1:num_trials
-      [t_dft(j), X_dft] = cpu_dft(x, N);
-      fprintf('.');
-    end
+    h = @() cpu_dft(x, N);
+    dft_times(i) = timeit(h);
 
-    dft_times(i) = mean(t_dft);
     fprintf(' %.4f s\n', dft_times(i));
-
-    % Verify results match between DFT and FFT
-    fprintf('  Max difference between DFT and FFT: %.10e\n', max(abs(X_dft - X_fft)));
-    clear('X_dft')
   end
 
   % 3. GPU FFT Benchmarking
   if useGpu
-    [gpuFFT_times(i), gpuFFT_memory(i), gpuFFT_energy(i), X_gpu] = bench_gpu(x, N, num_trials, canMeasurePower, hgpu);
-
-    % Verify GPU results match CPU
-    X_from_gpu = gather(X_gpu);
-    max_error = max(abs(X_from_gpu - X_fft));
-    fprintf('  Max error between GPU and CPU: %.10e\n', max_error);
-
-    clear("X_gpu", "X_from_gpu")
+    [gpuFFT_times(i), gpuFFT_energy(i)] = bench_gpu(x, N, num_trials, hgpu);
   end
-
-  clear('X_fft')
 
   % Update plots in real-time
   % Time plot
@@ -129,28 +85,6 @@ for i = 1:length(Ns)
   end
   legend(timeAxes, 'Location', 'northwest');
   drawnow();
-
-  % Memory plot
-  cla(memAxes);
-
-  loglog(memAxes, Ns(1:i), cpuFFT_memory(1:i), 'b-s', 'LineWidth', 1.5, 'DisplayName', 'CPU FFT');
-
-  if any(~isnan(gpuFFT_memory))
-    loglog(memAxes, Ns(1:i), gpuFFT_memory(1:i), 'g-^', 'LineWidth', 1.5, 'DisplayName', 'GPU FFT');
-  end
-
-  legend(memAxes, 'Location', 'northwest');
-  drawnow();
-
-  % Energy plot
-  if canMeasurePower
-    cla(energyAxes);
-    if any(~isnan(gpuFFT_energy))
-      loglog(energyAxes, Ns(1:i), gpuFFT_energy(1:i), 'g-^', 'LineWidth', 1.5, 'DisplayName', 'GPU FFT');
-      legend(energyAxes, 'Location', 'northwest');
-      drawnow();
-    end
-  end
 
 end
 
@@ -210,15 +144,14 @@ if sum(~isnan(dft_times)) >= 2 && sum(~isnan(cpuFFT_times)) >= 2
 end
 
 % Generate comprehensive report table
-fprintf('\n%-10s | %-10s | %-10s | %-10s | %-10s | %-10s | %-10s\n', ...
-    'N', 'DFT Time', 'CPU Time', 'GPU Time', 'DFT Mem', 'CPU Mem', 'GPU Mem');
-fprintf(repmat('-', 1, 80));
+fprintf('\n%-10s | %-10s | %-10s | %-10s\n', ...
+    'N', 'DFT Time', 'CPU Time', 'GPU Time');
+fprintf(repmat('-', 1, 40));
 fprintf('\n');
 
 for i = 1:length(Ns)
-    fprintf('%-10d | %-10.4f | %-10.4f | %-10.4f | %-10s | %-10.2f | %-10.2f\n', ...
-        Ns(i), dft_times(i), cpuFFT_times(i), gpuFFT_times(i), '', ...
-         cpuFFT_memory(i), gpuFFT_memory(i));
+    fprintf('%-10d | %-10.4f | %-10.4f | %-10.4f\n', ...
+        Ns(i), dft_times(i), cpuFFT_times(i), gpuFFT_times(i));
 end
 
 % Save results to MAT file
@@ -231,7 +164,7 @@ matfn = sprintf('fft_%s_%s.mat', precision, ts);
 figfn = sprintf('fft_%s_%s.png', precision, ts);
 
 save(matfn, 'Ns', 'dft_times', 'cpuFFT_times', 'gpuFFT_times', ...
-    'cpuFFT_memory', 'gpuFFT_memory', 'gpuFFT_energy', 'precision');
+    'gpuFFT_energy', 'precision');
 
 fprintf('\nResults saved to %s %s\n', matfn, figfn);
 
@@ -241,11 +174,11 @@ fa = figure('Name', 'Comprehensive FFT Benchmark Results', 'Position', [100, 100
 %% Time
 ax = subplot(2, 2, 1, 'Parent', fa, 'NextPlot', 'add');
 if any(~isnan(dft_times))
-    loglog(Ns, dft_times, 'r-o', 'LineWidth', 1.5, 'DisplayName', 'DFT (O(N²))');
+    loglog(ax, Ns, dft_times, 'r-o', 'LineWidth', 1.5, 'DisplayName', 'DFT (O(N²))');
 end
-loglog(Ns, cpuFFT_times, 'b-s', 'LineWidth', 1.5, 'DisplayName',  'FFT CPU (O(N log N))');
+loglog(ax, Ns, cpuFFT_times, 'b-s', 'LineWidth', 1.5, 'DisplayName',  'FFT CPU (O(N log N))');
 if any(~isnan(gpuFFT_times))
-    loglog(Ns, gpuFFT_times, 'g-^', 'LineWidth', 1.5, 'DisplayName', 'FFT GPU');
+    loglog(ax, Ns, gpuFFT_times, 'g-^', 'LineWidth', 1.5, 'DisplayName', 'FFT GPU');
 end
 grid(ax, 'on');
 xlabel(ax, 'Signal Length (N)');
@@ -258,10 +191,6 @@ ax = subplot(2, 2, 2, 'Parent', fa, 'NextPlot', 'add');
 
 loglog(ax, Ns, expected_bytes/1e6, '--', 'DisplayName', 'theoretical')
 
-loglog(ax, Ns, cpuFFT_memory, 'b-s', 'LineWidth', 1.5, 'DisplayName', 'FFT CPU');
-if any(~isnan(gpuFFT_memory))
-    loglog(ax, Ns, gpuFFT_memory, 'g-^', 'LineWidth', 1.5, 'DisplayName', 'FFT GPU');
-end
 grid(ax, 'on')
 xlabel(ax, 'Signal Length (N)');
 ylabel(ax, 'Memory (MB)');
@@ -341,9 +270,8 @@ function power = getGpuPower()
 end
 
 
-function [g, canMeasurePower] = check_gpu(useGpu)
+function g = check_gpu(useGpu)
 
-canMeasurePower = false;
 g = [];
 if ~useGpu, return, end
 
@@ -359,17 +287,7 @@ end
 
 function [Ns, expected_bytes] = problem_size(Fsize, precision)
 
-try
-  m = memory();
-  am = m.MaxPossibleArrayBytes;
-catch e
-  switch e.identifier
-    case {'MATLAB:memory:unsupported', 'Octave:undefined-function'}
-      b = java.lang.management.ManagementFactory.getOperatingSystemMXBean();
-      am = b.getFreePhysicalMemorySize();
-    otherwise, rethrow(e)
-  end
-end
+am = ram_avail();
 
 fprintf('Available system memory: %.2f GB\n', am/1e9);
 
@@ -380,35 +298,37 @@ else
 % Base sizes that work on most systems
 Ns = 2.^(8:18);
 
-if am < 250e6, return, end
+if am > 250e6
 Ns = [Ns, 2.^(19:20)];
+end
 
-if am < 500e6, return, end 
+if am > 500e6
 Ns = [Ns, 2.^(21:22)];
-    
-if am < 1e9, return, end
+end
+
+if am > 1e9
 Ns = [Ns, 2^23];
+end
 
-if am < 2e9, return, end 
+if am > 2e9 
 Ns = [Ns, 2^24];
+end
 
-if am < 4e9, return, end
+if am > 4e9
 Ns = [Ns, 2^25];
+end
 
-if am < 8e9, return, end
+if am > 8e9
 Ns = [Ns, 2.^(26:27)];
+end
 
-if am < 16e9, return, end
+if am > 16e9
 Ns = [Ns, 2.^28];
+end
 
-if am < 32e9, return, end
+if am > 32e9
 Ns = [Ns, 2.^29];
-
-if am < 64e9, return, end
-Ns = [Ns, 2.^30];
-
-if am < 64e9, return, end
-Ns = [Ns, 2.^31];
+end
 
 end
 
@@ -442,31 +362,14 @@ end
 end
 
 
-function [t, mem, X] = cpu_fft(x)
+function X = cpu_dft(x, N)
 
-% Time the operation
-t0 = tic;
-X = fft(x);
-t = toc(t0);
-
-v = whos('X');
-mem = v.Bytes / 1e6;
-
-end
-
-
-function [t, X] = cpu_dft(x, N)
-
-% Create twiddle factors
 n = 0:N-1;
 k = n';
 WN = exp(-1j*2*pi/N);
 twiddle = WN .^ (k*n);
 
-% Time the operation
-t0 = tic;
 X = x * twiddle;
-t = toc(t0);
 
 end
 
@@ -490,12 +393,12 @@ avgPower = (powerBefore + powerAfter) / 2;
 energy = avgPower * t;
 
 v = whos('X');
-mem = v.Bytes / 1e6;
+mem = v.bytes / 1e6;
 
 end
 
 
-function [ts, ms, es, X] = bench_gpu(x, N, num_trials, canMeasurePower, hgpu)
+function [ts, ms, es, X] = bench_gpu(x, N, num_trials, hgpu)
 
 ts = NaN;
 ms = NaN;
@@ -516,7 +419,7 @@ mem = zeros(1, num_trials);
 e = zeros(1, num_trials);
 
 for j = 1:num_trials
-  [t(j), mem(j), e(j), X] = gpu_fft(x, canMeasurePower, hgpu);
+  [t(j), mem(j), e(j), X] = gpu_fft(x, hgpu);
   fprintf('.');
 end
 
@@ -524,11 +427,7 @@ mem(mem < 0) = NaN;
 
 ts = mean(t);
 ms = mean(mem, "omitnan");
-if canMeasurePower
-  es = mean(e);
-  fprintf(' %.4f s, %.2f MB, %.2f J\n', ts, ms, es);
-else
-  fprintf(' %.4f s, %.2f MB\n', ts, ms);
-end
+es = mean(e);
+fprintf(' %.4f s, %.2f MB, %.2f J\n', ts, ms, es);
 
 end
