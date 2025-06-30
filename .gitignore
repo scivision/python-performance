@@ -1,4 +1,7 @@
 *.png
+*.asv
+
+
 .eggs/
 .mypy_cache/
 .pytest_cache/

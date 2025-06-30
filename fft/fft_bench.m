@@ -332,12 +332,6 @@ end
 end
 
 
-function hasNvidiaSmi = checkNvidiaSmi()
-  s = system("nvidia-smi --version");
-  hasNvidiaSmi = s == 0;
-end
-
-
 function power = getGpuPower()
   power = NaN;
   [status, output] = system('nvidia-smi --query-gpu=power.draw --format=csv,noheader,nounits');
@@ -359,19 +353,23 @@ reset(g);
 assert(g.DeviceAvailable, 'GPU %s not available', g.Name)
 
 fprintf('Using GPU: %s with %.2f GB memory\n', g.Name, g.AvailableMemory/1e9);
-% Check for nvidia-smi for power measurements
-canMeasurePower = checkNvidiaSmi();
-if ~canMeasurePower
-  fprintf(2, 'NVIDIA SMI not available - cannot measure GPU power')
-end
 
 end
 
 
 function [Ns, expected_bytes] = problem_size(Fsize, precision)
 
-m = memory();
-am = m.MemAvailableAllArrays;
+try
+  m = memory();
+  am = m.MaxPossibleArrayBytes;
+catch e
+  switch e.identifier
+    case {'MATLAB:memory:unsupported', 'Octave:undefined-function'}
+      b = java.lang.management.ManagementFactory.getOperatingSystemMXBean();
+      am = b.getFreePhysicalMemorySize();
+    otherwise, rethrow(e)
+  end
+end
 
 fprintf('Available system memory: %.2f GB\n', am/1e9);
 
@@ -446,18 +444,13 @@ end
 
 function [t, mem, X] = cpu_fft(x)
 
-m = memory();
-before = m.MemUsedMATLAB;
-
 % Time the operation
 t0 = tic;
 X = fft(x);
 t = toc(t0);
 
-% Measure memory after
-m = memory();
-after = m.MemUsedMATLAB;
-mem = (after - before) / 1e6; % Convert to MBs
+v = whos('X');
+mem = v.Bytes / 1e6;
 
 end
 
@@ -478,20 +471,12 @@ t = toc(t0);
 end
 
 
-function [t, mem, energy, X] = gpu_fft(x, canMeasurePower, g)
-
-energy = 0;
-
-% Measure GPU memory before
-memBefore = g.AvailableMemory;
+function [t, mem, energy, X] = gpu_fft(x, g)
 
 % Transfer data to GPU
 xg = gpuArray(x);
 
-% Measure power before
-if canMeasurePower
-  powerBefore = getGpuPower();
-end
+powerBefore = getGpuPower();
 
 % Time the operation
 wait(g);
@@ -500,15 +485,12 @@ X = fft(xg);
 wait(g);
 t = toc(t0);
 
-% Measure power after benchmarking results
-if canMeasurePower
-    powerAfter = getGpuPower();
-    avgPower = (powerBefore + powerAfter) / 2;
-    energy = avgPower * t;
-end
+powerAfter = getGpuPower();
+avgPower = (powerBefore + powerAfter) / 2;
+energy = avgPower * t;
 
-% Measure GPU memory after results
-mem = (memBefore - g.AvailableMemory) / 1e6; % Convert to MB
+v = whos('X');
+mem = v.Bytes / 1e6;
 
 end
 
