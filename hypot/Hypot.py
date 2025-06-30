@@ -1,4 +1,8 @@
-#!/usr/bin/env python3
+#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = ">=3.10"
+# dependencies = ["numpy", "matplotlib"]
+# ///
 """
 Compare speed of hypot(x,y) vs. sqrt(x**2 + y**2)
 
@@ -13,28 +17,11 @@ import shutil
 import platform
 
 import numpy as np
+import matplotlib.pyplot as plt
 
-try:
-    from matplotlib.pyplot import figure
-except (ImportError, RuntimeError):
-    figure = None  # type: ignore
 
 bdir = Path(__file__).parent
 cdir = bdir / "build"
-
-
-def main():
-    Nrun = 3
-    N = np.logspace(1, 6.5, 20, True, dtype=int)
-
-    pyrat = bench_hypot(N, Nrun)
-    fortrat = benchmark_hypot_fortran(N, Nrun)
-
-    if figure is not None:
-        plotspeed(N, pyrat, fortrat)
-    else:
-        print("Python", pyrat)
-        print("Fortran", fortrat)
 
 
 def bench_hypot(N, Nrun):
@@ -61,7 +48,7 @@ def bench_hypot(N, Nrun):
     return pyrat
 
 
-def plotspeed(N, pyrat, fortrat):
+def plotspeed(N: int, pyrat, fortrat):
     pyver = sys.version_info
     pyver = f"{pyver[0]}.{pyver[1]}.{pyver[2]}"
 
@@ -69,7 +56,7 @@ def plotspeed(N, pyrat, fortrat):
         subprocess.check_output(["gfortran", "--version"], text=True).split("\n")[0].split(" ")[-1]
     )
 
-    fg = figure()
+    fg = plt.figure()
     ax = fg.gca()
 
     ax.plot(N, pyrat, label="Python")
@@ -103,4 +90,10 @@ def benchmark_hypot_fortran(N, Nrun):
 
 
 if __name__ == "__main__":
-    main()
+    Nrun = 3
+    N = np.logspace(1, 6.5, 20, True, dtype=int)
+
+    pyrat = bench_hypot(N, Nrun)
+    fortrat = benchmark_hypot_fortran(N, Nrun)
+
+    plotspeed(N, pyrat, fortrat)

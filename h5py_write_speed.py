@@ -1,4 +1,9 @@
-#!/usr/bin/env python3
+#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = ">=3.10"
+# dependencies = ["h5py", "numpy"]
+# ///
+
 """
 benchmarks writing boolean array vs uint8 array of same values.
 For high-speed in the loop writing where performance is critical.

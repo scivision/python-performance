@@ -64,7 +64,7 @@ For **Fortran**, observe that with Gfortran compiler that `sqrt(x**2 + y**2)` is
 Execute the Hypot speed test by:
 
 ```sh
-python Hypot.py
+python hypot/Hypot.py
 ```
 
 ![hypot() vs rsq()](./gfx/hypot.png)
