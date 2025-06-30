@@ -239,24 +239,9 @@ else
 end
 
 ttxt = sprintf('%s precision FFT Benchmark Results', precision);
-try
-  sgtitle(fa, ttxt);
-catch e
-  switch e.identifier
-    case {'MATLAB:UndefinedFunction', 'Octave:undefined-function'}
-      axes('Parent', fa, 'visible', 'off', 'title', ttxt)
-    otherwise, rethrow(e)
-  end
-end
+sgtitle(fa, ttxt);
 
-try
-  exportgraphics(fa, figfn)
-catch e
-  switch e.identifier
-    case {'MATLAB:UndefinedFunction', 'Octave:undefined-function'}, print(fa, figfn)
-    otherwise, rethrow(e)
-  end
-end
+exportgraphics(fa, figfn)
 
 end
 
