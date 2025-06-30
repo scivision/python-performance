@@ -1,12 +1,25 @@
 %% FFT_BENCH compare CPU vs. GPU on FFT()
 %
 % suggest measuring effects of fftw() with "swisdom" or "dwisdom"
+% by SciVision
 % 
 % Inputs
 % * useGpu: use the default GPU. If not available, errors.
 % * precision: single (32 bit) or double (64 bit)
 %
-% original by https://github.com/mgagan544/Performance-Benchmarking-of-DFT-vs-FFT-
+% examples:
+%
+%   N = round(2.^(21.0:0.5:25.0));   % deliberately not all powers of 2 to illustrate
+%
+%   fftw('swisdom', []);  % clear previous training
+%   fftw('planner', 'estimate');
+%   fft_bench(0, 'single', N)
+%
+%   fftw('swisdom', []);  % clear 'estimate' training
+%   fftw('planner', 'hybrid');
+%   fft_bench(0, 'single', N)
+%
+% original concept by https://github.com/mgagan544/Performance-Benchmarking-of-DFT-vs-FFT-
 
 function fft_bench(useGpu, precision, Fsize)
 arguments
@@ -31,15 +44,22 @@ dft_times = nan(size(Ns));
 
 gpuFFT_energy = nan(size(Ns));
 
-disp('==== Comprehensive FFT Benchmark ====');
+fftw_plan = fftw('planner');
+fprintf("FFTW method %s\n", fftw_plan)
 fprintf('Testing %d sizes from %d to %d points\n', length(Ns), min(Ns), max(Ns));
 
 % Create figures for real-time plotting
+xpow = nextpow2(Ns);
+for i = 1:length(Ns)
+  pow_labels(i) = sprintf("2^{%d}", xpow(i)); %#ok<AGROW>
+end
+
 fg = figure(Name=sprintf("%s precision FFT Benchmarks: Time", precision));
 timeAxes = axes(Parent=fg, NextPlot='add');
-title(timeAxes, 'Execution Time')
+title(timeAxes, sprintf('%s precision: Execution Time; FFTW %s', precision, fftw_plan))
 xlabel(timeAxes, 'Array Size (N)')
 ylabel(timeAxes, 'Time (seconds)')
+grid(timeAxes, 'on')
 
 % Main benchmarking loop
 for i = 1:length(Ns)
@@ -52,6 +72,10 @@ for i = 1:length(Ns)
   % 1. CPU FFT Benchmarking
   fprintf('  CPU FFT: ');
 
+  if ~strcmp(fftw_plan, "estimate")
+    fprintf('warmup ')
+    fft(x);
+  end
   h = @() fft(x);
   cpuFFT_times(i) = timeit(h);
 
@@ -59,7 +83,7 @@ for i = 1:length(Ns)
 
   % 2. DFT Benchmarking (only for small N)
   if N <= 2048
-    fprintf('  DFT:     ');
+    fprintf('  DFT:     ')
 
     h = @() cpu_dft(x, N);
     dft_times(i) = timeit(h);
@@ -82,10 +106,15 @@ for i = 1:length(Ns)
   if any(~isnan(gpuFFT_times))
     loglog(timeAxes, Ns(1:i), gpuFFT_times(1:i), 'g-^', LineWidth=1.5, DisplayName='GPU FFT');
   end
-  legend(timeAxes, Location='northwest');
-  drawnow();
+
+  legend(timeAxes, Location='northwest')
+  drawnow()
 
 end
+
+xline(timeAxes, 2.^nextpow2(Ns), 'g:', pow_labels, LabelVerticalAlignment='bottom', HandleVisibility='off')
+
+clear('x')
 
 if useGpu
     gpuDevice([]); 
@@ -118,7 +147,6 @@ end
 
 if sum(~isnan(dft_times)) >= 2 && sum(~isnan(cpuFFT_times)) >= 2
     disp('Algorithmic Complexity Verification:')
-
 
     valid_dft = find(~isnan(dft_times));
     valid_fft = find(~isnan(cpuFFT_times));
@@ -168,80 +196,81 @@ save(matfn, 'Ns', 'dft_times', 'cpuFFT_times', 'gpuFFT_times', ...
 fprintf('\nResults saved to %s %s\n', matfn, figfn);
 
 % final comparison figure with all metrics
-fa = figure(Name='Comprehensive FFT Benchmark Results', Position=[100, 100, 1200, 800]);
+fa = figure(Name=sprintf('%s precision: FFTW %s', precision, fftw_plan), Position=[100, 100, 1200, 800]);
 td = tiledlayout(2, 2, Parent=fa);
 %% Time
-ax = nexttile(td);
-hold(ax, 'on');
+axt = nexttile(td);
+hold(axt, 'on')
 if any(~isnan(dft_times))
-    loglog(ax, Ns, dft_times, 'r-o', LineWidth=1.5, DisplayName='DFT (O(N²))');
+    loglog(axt, Ns, dft_times, 'r-o', LineWidth=1.5, DisplayName='DFT (O(N²))')
 end
-loglog(ax, Ns, cpuFFT_times, 'b-s', LineWidth=1.5, DisplayName='FFT CPU (O(N log N))');
+loglog(axt, Ns, cpuFFT_times, 'b-s', LineWidth=1.5, DisplayName='FFT CPU (O(N log N))')
 if any(~isnan(gpuFFT_times))
-    loglog(ax, Ns, gpuFFT_times, 'g-^', LineWidth=1.5, DisplayName='FFT GPU');
+    loglog(axt, Ns, gpuFFT_times, 'g-^', LineWidth=1.5, DisplayName='FFT GPU')
 end
-grid(ax, 'on');
-xlabel(ax, 'Signal Length (N)');
-ylabel(ax, 'Time (seconds)');
-title(ax, 'Execution Time');
-legend(ax, Location='northwest');
+
+xline(axt, 2.^nextpow2(Ns), 'g:', pow_labels, LabelVerticalAlignment='bottom', HandleVisibility='off')
+
+grid(axt, 'on')
+xlabel(axt, 'Signal Length (N)')
+ylabel(axt, 'Time (seconds)')
+title(axt, 'Execution Time')
+legend(axt, Location='northwest')
 
 %% Memory
-ax = nexttile(td);
-hold(ax, 'on');
+axm = nexttile(td);
+hold(axm, 'on');
 
-loglog(ax, Ns, expected_bytes/1e6, '--', DisplayName='theoretical')
+loglog(axm, Ns, expected_bytes/1e6, '--', DisplayName='theoretical')
 
-grid(ax, 'on')
-xlabel(ax, 'Signal Length (N)');
-ylabel(ax, 'Memory (MB)');
-title(ax, 'Memory Usage');
-legend(ax, Location='northwest');
-ylims = ylim(ax);
-ylim(ax, [ylims(1), 1.1*max(expected_bytes)/1e6])
+grid(axm, 'on')
+ylabel(axm, 'Memory (MB)');
+title(axm, 'Memory Usage');
+legend(axm, Location='northwest');
+ylims = ylim(axm);
+ylim(axm, [ylims(1), 1.1*max(expected_bytes)/1e6])
 
 %% Energy (if available)
-ax = nexttile(td);
-hold(ax, 'on');
+axe = nexttile(td);
+hold(axe, 'on');
 
 if any(~isnan(gpuFFT_energy))
-    loglog(ax, Ns, gpuFFT_energy, 'g-^', LineWidth=1.5, DisplayName='FFT GPU');
-    grid(ax, 'on')
-    xlabel(ax, 'Signal Length (N)')
-    ylabel(ax, 'Energy (Joules)')
-    title(ax, 'Energy Consumption (GPU)')
-    legend(ax,Location='northwest')
+  loglog(axe, Ns, gpuFFT_energy, 'g-^', LineWidth=1.5, DisplayName='FFT GPU');
+  grid(axe, 'on')
+  xlabel(axe, 'Signal Length (N)')
+  ylabel(axe, 'Energy (Joules)')
+  title(axe, 'Energy Consumption (GPU)')
+  legend(axe, Location='northwest')
 else
-    text(ax, 0.5, 0.5, 'Energy data not available', HorizontalAlignment='center')
-    title(ax, 'Energy Consumption')
+  text(axe, 0.5, 0.5, 'Energy data not available', HorizontalAlignment='center')
+  title(axe, 'Energy Consumption')
 end
 
 %% Efficiency (computations per joule)
-ax = nexttile(td);
+axf = nexttile(td);
 if any(~isnan(gpuFFT_energy))
-    % Calculate efficiency: N*log2(N) operations per Joule
-    valid_energy = ~isnan(gpuFFT_energy) & gpuFFT_energy > 0;
-    if any(valid_energy)
-        N_valid = Ns(valid_energy);
-        ops_valid = N_valid .* log2(N_valid); % Approximate number of operations
-        energy_valid = gpuFFT_energy(valid_energy);
-        efficiency = ops_valid ./ energy_valid;
+  % Calculate efficiency: N*log2(N) operations per Joule
+  valid_energy = ~isnan(gpuFFT_energy) & gpuFFT_energy > 0;
+  if any(valid_energy)
+    N_valid = Ns(valid_energy);
+    ops_valid = N_valid .* log2(N_valid); % Approximate number of operations
+    energy_valid = gpuFFT_energy(valid_energy);
+    efficiency = ops_valid ./ energy_valid;
 
-        loglog(ax, N_valid, efficiency, 'g-^', LineWidth=1.5);
-        grid(ax, 'on')
-        xlabel(ax, 'Signal Length (N)');
-        ylabel(ax, 'Operations per Joule');
-        title(ax, 'Computational Efficiency (GPU)');
-    else
-        text(ax, 0.5, 0.5, 'Efficiency data not available', HorizontalAlignment='center');
-        title(ax, 'Computational Efficiency');
-    end
+    loglog(axf, N_valid, efficiency, 'g-^', LineWidth=1.5);
+    grid(axf, 'on')
+    ylabel(axf, 'Operations per Joule');
+    title(axf, 'Computational Efficiency (GPU)');
+  else
+    text(axf, 0.5, 0.5, 'Efficiency data not available', HorizontalAlignment='center');
+    title(axf, 'Computational Efficiency');
+  end
 else
-    text(ax, 0.5, 0.5, 'Energy data not available', HorizontalAlignment='center');
-    title(ax, 'Computational Efficiency');
+  text(axf, 0.5, 0.5, 'Energy data not available', HorizontalAlignment='center');
+  title(axf, 'Computational Efficiency');
 end
 
-ttxt = sprintf('%s precision FFT Benchmark Results', precision);
+ttxt = sprintf('%s precision FFT Benchmark; FFTW %s', precision, fftw_plan);
 sgtitle(fa, ttxt);
 
 exportgraphics(fa, figfn)
@@ -413,9 +442,9 @@ end
 
 mem(mem < 0) = NaN;
 
-ts = mean(t);
-ms = mean(mem, "omitnan");
-es = mean(e);
+ts = median(t);
+ms = median(mem, "omitnan");
+es = median(e);
 fprintf(' %.4f s, %.2f MB, %.2f J\n', ts, ms, es);
 
 end

@@ -17,7 +17,9 @@ ws = s.matlab.desktop.workspace;
 
 % Check if the maximum array size limit is enabled
 if ws.ArraySizeLimitEnabled.ActiveValue
-  limit_bytes = double(ws.ArraySizeLimit.ActiveValue) / 100 * stdlib.ram_total();
+  b = java.lang.management.ManagementFactory.getOperatingSystemMXBean();
+  total = b.getTotalPhysicalMemorySize();
+  limit_bytes = double(ws.ArraySizeLimit.ActiveValue) / 100 * total;
 end
 
 
