@@ -2,7 +2,7 @@
 %
 % suggest measuring effects of fftw() with "swisdom" or "dwisdom"
 % by SciVision
-% 
+%
 % Inputs
 % * useGpu: use the default GPU. If not available, errors.
 % * precision: single (32 bit) or double (64 bit)
@@ -13,21 +13,23 @@
 %
 %   fftw('swisdom', []);  % clear previous training
 %   fftw('planner', 'estimate');
-%   fft_bench(0, 'single', N)
+%   fft_bench("cpu", "single", N)
 %
 %   fftw('swisdom', []);  % clear 'estimate' training
 %   fftw('planner', 'hybrid');
-%   fft_bench(0, 'single', N)
+%   fft_bench("cpu", "single", N)
 %
 % original concept by https://github.com/mgagan544/Performance-Benchmarking-of-DFT-vs-FFT-
 
-function fft_bench(useGpu, precision, Fsize)
+function fft_bench(use, precision, Fsize)
 arguments
-  useGpu (1,1) logical = false  % require GPU to be present and working
-  precision string {mustBeMember(precision, ["single", "double"])} = "single"
+  use (1,:) string {mustBeMember(use, ["gpu", "cpu"])} = "cpu"
+  precision (1,1) string {mustBeMember(precision, ["single", "double"])} = "single"
   Fsize (1,:) {mustBeInteger,mustBePositive} = []
 end
 
+useGpu = any(contains(use, "gpu"));
+useCpu = any(contains(use, "cpu"));
 
 % Check for GPU availability
 hgpu = check_gpu(useGpu);
@@ -38,7 +40,7 @@ hgpu = check_gpu(useGpu);
 num_trials = 5;  % 5 trials are taken for accurate readings
 
 %  result arrays
-cpuFFT_times = zeros(size(Ns));
+cpuFFT_times = nan(size(Ns));
 gpuFFT_times = nan(size(Ns));
 dft_times = nan(size(Ns));
 
@@ -55,7 +57,7 @@ for i = 1:length(Ns)
 end
 
 fg = figure(Name=sprintf("%s precision FFT Benchmarks: Time", precision));
-timeAxes = axes(Parent=fg, NextPlot='add');
+timeAxes = axes(Parent=fg, NextPlot='add', Xscale='log', Yscale='log');
 title(timeAxes, sprintf('%s precision: Execution Time; FFTW %s', precision, fftw_plan))
 xlabel(timeAxes, 'Array Size (N)')
 ylabel(timeAxes, 'Time (seconds)')
@@ -70,27 +72,28 @@ for i = 1:length(Ns)
   x = signal_gen(N, precision);
 
   % 1. CPU FFT Benchmarking
-  fprintf('  CPU FFT: ');
+  if useCpu
+    fprintf('  CPU FFT: ');
 
-  if ~strcmp(fftw_plan, "estimate")
-    fprintf('warmup ')
-    fft(x);
-  end
-  h = @() fft(x);
-  cpuFFT_times(i) = timeit(h);
+    if ~strcmp(fftw_plan, "estimate")
+      fprintf('warmup ')
+      fft(x);
+    end
+    h = @() fft(x);
+    cpuFFT_times(i) = timeit(h);
 
-  fprintf(' %.4f s\n', cpuFFT_times(i));
+    fprintf(' %.4f s\n', cpuFFT_times(i));
 
   % 2. DFT Benchmarking (only for small N)
-  if N <= 2048
-    fprintf('  DFT:     ')
+    if N <= 2048
+      fprintf('  DFT:     ')
 
-    h = @() cpu_dft(x, N);
-    dft_times(i) = timeit(h);
+      h = @() cpu_dft(x, N);
+      dft_times(i) = timeit(h);
 
-    fprintf(' %.4f s\n', dft_times(i));
+      fprintf(' %.4f s\n', dft_times(i));
+    end
   end
-
   % 3. GPU FFT Benchmarking
   if useGpu
     [gpuFFT_times(i), gpuFFT_energy(i)] = bench_gpu(x, N, num_trials, hgpu);
@@ -102,7 +105,9 @@ for i = 1:length(Ns)
   if any(~isnan(dft_times))
     loglog(timeAxes, Ns(1:i), dft_times(1:i), 'r-o', LineWidth=1.5, DisplayName='DFT');
   end
-  loglog(timeAxes, Ns(1:i), cpuFFT_times(1:i), 'b-s', LineWidth=1.5, DisplayName='CPU FFT');
+  if any(~isnan(cpuFFT_times))
+    loglog(timeAxes, Ns(1:i), cpuFFT_times(1:i), 'b-s', LineWidth=1.5, DisplayName='CPU FFT');
+  end
   if any(~isnan(gpuFFT_times))
     loglog(timeAxes, Ns(1:i), gpuFFT_times(1:i), 'g-^', LineWidth=1.5, DisplayName='GPU FFT');
   end
@@ -117,7 +122,7 @@ xline(timeAxes, 2.^nextpow2(Ns), 'g:', pow_labels, LabelVerticalAlignment='botto
 clear('x')
 
 if useGpu
-    gpuDevice([]); 
+    gpuDevice([]);
     % avoid hanging handle that might require restarting Matlab
 end
 %% Final Results and Analysis
@@ -177,8 +182,8 @@ fprintf(repmat('-', 1, 48));
 fprintf('\n');
 
 for i = 1:length(Ns)
-    fprintf('%-10d | %-10.4f | %-10.4f | %-10.4f\n', ...
-        Ns(i), dft_times(i), cpuFFT_times(i), gpuFFT_times(i));
+  fprintf('%-10d | %-10.4f | %-10.4f | %-10.4f\n', ...
+      Ns(i), dft_times(i), cpuFFT_times(i), gpuFFT_times(i));
 end
 
 % Save results to MAT file
@@ -201,12 +206,15 @@ td = tiledlayout(2, 2, Parent=fa);
 %% Time
 axt = nexttile(td);
 hold(axt, 'on')
+set(axt, Xscale='log', Yscale='log')
 if any(~isnan(dft_times))
-    loglog(axt, Ns, dft_times, 'r-o', LineWidth=1.5, DisplayName='DFT (O(N²))')
+  loglog(axt, Ns, dft_times, 'r-o', LineWidth=1.5, DisplayName='DFT (O(N²))')
 end
-loglog(axt, Ns, cpuFFT_times, 'b-s', LineWidth=1.5, DisplayName='FFT CPU (O(N log N))')
+if any(~isnan(cpuFFT_times))
+  loglog(axt, Ns, cpuFFT_times, 'b-s', LineWidth=1.5, DisplayName='FFT CPU (O(N log N))')
+end
 if any(~isnan(gpuFFT_times))
-    loglog(axt, Ns, gpuFFT_times, 'g-^', LineWidth=1.5, DisplayName='FFT GPU')
+  loglog(axt, Ns, gpuFFT_times, 'g-^', LineWidth=1.5, DisplayName='FFT GPU')
 end
 
 xline(axt, 2.^nextpow2(Ns), 'g:', pow_labels, LabelVerticalAlignment='bottom', HandleVisibility='off')
@@ -282,7 +290,7 @@ function power = getGpuPower()
   power = NaN;
   [status, output] = system('nvidia-smi --query-gpu=power.draw --format=csv,noheader,nounits');
   if status == 0
-    power = str2double(output); 
+    power = str2double(output);
   end
 end
 
@@ -327,7 +335,7 @@ if am > 1e9
 Ns = [Ns, 2^23];
 end
 
-if am > 2e9 
+if am > 2e9
 Ns = [Ns, 2^24];
 end
 
@@ -370,7 +378,7 @@ f3 = min(375, N/2-10);       % High frequency
 t = linspace(0, 1, N);
 x = sin(2*pi*f1*t) + 0.5*sin(2*pi*f2*t) + 0.25*sin(2*pi*f3*t);
 % conversion to single below spikes RAM
-clear('t') 
+clear('t')
 
 if strcmp(precision, "single")
   x = single(x);
