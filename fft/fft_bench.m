@@ -31,8 +31,11 @@ end
 useGpu = any(contains(use, "gpu"));
 useCpu = any(contains(use, "cpu"));
 
-% Check for GPU availability
-hgpu = check_gpu(useGpu);
+if useGpu
+  hgpu = check_gpu();
+else
+  hgpu = [];
+end
 
 %% dynamic memory size constraint
 [Ns, expected_bytes] = problem_size(Fsize, precision);
@@ -293,11 +296,7 @@ function power = getGpuPower()
 end
 
 
-function g = check_gpu(useGpu)
-
-g = [];
-if ~useGpu, return, end
-
+function g = check_gpu()
 
 g = gpuDevice();
 reset(g);
