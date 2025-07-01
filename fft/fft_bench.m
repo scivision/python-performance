@@ -37,8 +37,6 @@ hgpu = check_gpu(useGpu);
 %% dynamic memory size constraint
 [Ns, expected_bytes] = problem_size(Fsize, precision);
 
-num_trials = 5;  % 5 trials are taken for accurate readings
-
 %  result arrays
 cpuFFT_times = nan(size(Ns));
 gpuFFT_times = nan(size(Ns));
@@ -96,7 +94,7 @@ for i = 1:length(Ns)
   end
   % 3. GPU FFT Benchmarking
   if useGpu
-    [gpuFFT_times(i), gpuFFT_energy(i)] = bench_gpu(x, N, num_trials, hgpu);
+    [gpuFFT_times(i), gpuFFT_energy(i)] = bench_gpu(x, N, hgpu);
   end
 
   % Update plots in real-time
@@ -399,36 +397,7 @@ X = x * twiddle;
 end
 
 
-function [t, mem, energy, X] = gpu_fft(x, g)
-
-% Transfer data to GPU
-xg = gpuArray(x);
-
-powerBefore = getGpuPower();
-
-% Time the operation
-wait(g);
-t0 = tic;
-X = fft(xg);
-wait(g);
-t = toc(t0);
-
-powerAfter = getGpuPower();
-avgPower = (powerBefore + powerAfter) / 2;
-energy = avgPower * t;
-
-v = whos('X');
-mem = v.bytes / 1e6;
-
-end
-
-
-function [ts, ms, es, X] = bench_gpu(x, N, num_trials, hgpu)
-
-ts = NaN;
-ms = NaN;
-es = NaN;
-X = NaN;
+function [t, energy] = bench_gpu(x, N, hgpu)
 
 fprintf('  GPU FFT: ');
 
@@ -439,20 +408,18 @@ if mem_needed > hgpu.AvailableMemory * 0.8  % Allow 20% overhead
   return
 end
 
-t = zeros(1, num_trials);
-mem = zeros(1, num_trials);
-e = zeros(1, num_trials);
+xg = gpuArray(x);
 
-for j = 1:num_trials
-  [t(j), mem(j), e(j), X] = gpu_fft(x, hgpu);
-  fprintf('.');
-end
+powerBefore = getGpuPower();
 
-mem(mem < 0) = NaN;
+h = @() fft(xg);
+t = gputimeit(h);
 
-ts = median(t);
-ms = median(mem, "omitnan");
-es = median(e);
-fprintf(' %.4f s, %.2f MB, %.2f J\n', ts, ms, es);
+powerAfter = getGpuPower();
+avgPower = (powerBefore + powerAfter) / 2;
+energy = avgPower * t;
+
+
+fprintf(' %.4f s, %.2f J\n', t, energy);
 
 end
