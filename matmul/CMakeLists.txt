@@ -14,22 +14,11 @@ DISABLED $<NOT:$<BOOL:${Python_Interpreter_FOUND}>>
 #---------- MKL
 # https://software.intel.com/en-us/articles/intel-mkl-link-line-advisor
 
-if(DEFINED ENV{MKLROOT})
-  if(NOT CMAKE_Fortran_COMPILER_ID MATCHES "Intel")
-    # be sure Lapack95 is build for your compiler
-    ExternalProject_add(L95
-    SOURCE_DIR $ENV{MKLROOT}/interfaces/blas95
-    CONFIGURE_COMMAND ""
-    BUILD_COMMAND make libintel64 INSTALL_DIR=${CMAKE_CURRENT_BINARY_DIR} interface=lp64
-    INSTALL_COMMAND make install
-    TEST_COMMAND ""
-    )
-  endif()
+set(ENABLE_BLAS95 true)
+set(ENABLE_LAPACK95 true)
+find_package(MKL CONFIG HINTS $ENV{MKLROOT})
 
-  set(ENABLE_BLAS95 true)
-  set(ENABLE_LAPACK95 true)
-  find_package(MKL CONFIG HINTS $ENV{MKLROOT} REQUIRED)
-
+if(MKL_FOUND)
   add_executable(intelg intel_gemm.f90)
   target_link_libraries(intelg PRIVATE MKL::MKL)
   add_test(NAME intelGEMM COMMAND intelg)
